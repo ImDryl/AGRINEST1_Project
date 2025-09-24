@@ -60,7 +60,7 @@ body {
 
 
 .hero {
-    
+    position: relative; 
     text-align: center;
     padding: 3rem;
     background: #f9f9f9;
@@ -71,9 +71,29 @@ body {
     background-repeat: no-repeat;
 
 }
+
+.hero::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.45);
+    border-radius: 10px;
+    z-index: 1;
+}
+
+.hero h1,
+.hero p {
+    position: relative;
+    z-index: 2;
+    color: #fff; 
+    text-shadow: 0 2px 8px rgba(0,0,0,0.7); 
+}
+
+
+
 .hero h1 {
     font-size: 2.5rem;
-    color: #000000f5;
+    color: #fffffff5;
 }
 .hero p {
     font-size: 1.2rem;
