@@ -1,0 +1,168 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Product index{% endblock %}
+
+{% block body %}
+    <style>
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #f9d423 0%, #ff4e50 100%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+    margin: 32px 0 16px 0;
+    font-size: 2.2rem;
+    color: #fff;
+    letter-spacing: 2px;
+    text-shadow: 0 4px 16px rgba(0,0,0,0.18);
+}
+
+.table-container {
+    width: 95%;
+    max-width: 1100px;
+    margin: 32px auto 0 auto;
+    background: rgba(255,255,255,0.25);
+    backdrop-filter: blur(8px);
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    padding: 32px 18px 24px 18px;
+    border: 1.5px solid rgba(255,255,255,0.35);
+    overflow-x: auto;
+}
+
+.product-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: transparent;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.product-table th {
+    /* background: linear-gradient(90deg, #f9d423 0%, #ff4e50 100%); */
+     background: #f39c12;
+     
+    color: #fff;
+    padding: 14px 10px;
+    text-align: left;
+    font-size: 15px;
+    letter-spacing: 1px;
+    border: none;
+}
+
+.product-table td {
+    padding: 13px 10px;
+    font-size: 15px;
+    border-bottom: 1px solid #ffe5b4;
+    color: #333;
+    background: rgba(255,255,255,0.7);
+}
+
+.product-table tr:last-child td {
+    border-bottom: none;
+}
+
+.product-table tr:nth-child(even) td {
+    background: rgba(255,255,255,0.5);
+}
+
+.product-table tr:hover td {
+    background: #fffbe7;
+}
+
+.actions a {
+    display: inline-block;
+    text-decoration: none;
+    padding: 7px 14px;
+    margin-right: 6px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: 0.3s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+
+.btn-show {
+    background: linear-gradient(90deg, #2ecc71 0%, #27ae60 100%);
+    color: white;
+}
+.btn-show:hover {
+    background: linear-gradient(90deg, #27ae60 0%, #2ecc71 100%);
+}
+
+.btn-edit {
+    background: #f39c12;
+    color: white;
+}
+.btn-edit:hover {
+    background: linear-gradient(90deg, #f9d423 0%, #f39c12 100%);
+}
+
+
+
+.create-btn {
+    display: block;
+    width: fit-content;
+    margin: 32px auto 0 auto;
+    padding: 12px 22px;
+    /* background: linear-gradient(90deg, #f9d423 0%, #ff4e50 100%); */
+    background: #f39c12;
+    color: white;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: 0.3s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    border: none;
+}
+.create-btn:hover {
+    background: linear-gradient(90deg, #ff4e50 0%, #f9d423 100%);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.14);
+}
+</style>
+
+    <h1>🧺Product</h1>
+<div class="table-container">
+    <table class="product-table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for product in products %}
+            <tr>
+                <td>{{ product.id }}</td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.category }}</td>
+                <td>{{ product.price }}</td>
+                <td>{{ product.quantity }}</td>
+                <td>{{ product.description }}</td>
+                <td>{{ product.date ? product.date|date('Y-m-d') : '' }}</td>
+                <td class="actions">
+                    <a href="{{ path('app_product_show', {'id': product.id}) }}" class="btn-show">Show</a>
+                    <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn-edit">Edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">No records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+    <a href="{{ path('app_product_new') }}" class="create-btn">+ Create New</a>
+{% endblock %}

@@ -1,0 +1,155 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Product Details{% endblock %}
+
+{% block body %}
+    <style>
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #f9d423 0%, #ff4e50 100%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+    margin: 32px 0 16px 0;
+    font-size: 2.2rem;
+    color: #fff;
+    letter-spacing: 2px;
+    text-shadow: 0 4px 16px rgba(0,0,0,0.18);
+}
+
+.details-table {
+    width: 95%;
+    max-width: 600px;
+    margin: 32px auto 0 auto;
+    background: rgba(255,255,255,0.25);
+    backdrop-filter: blur(8px);
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    border: 1.5px solid rgba(255,255,255,0.35);
+    overflow: hidden;
+}
+
+.details-table th {
+    /* background: linear-gradient(90deg, #f9d423 0%, #ff4e50 100%); */
+    background:white:
+    color: #fff;
+    text-align: left;
+    padding: 14px 10px;
+    font-size: 15px;
+    letter-spacing: 1px;
+    border: none;
+    width: 35%;
+}
+
+.details-table td {
+    padding: 14px 10px;
+    font-size: 15px;
+    border-bottom: 1px solid #ffe5b4;
+    color: #333;
+    background: rgba(255,255,255,0.7);
+}
+
+.details-table tr:last-child td {
+    border-bottom: none;
+}
+
+.actions {
+    width: 95%;
+    max-width: 600px;
+    margin: 28px auto 0 auto;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.btn-link {
+    display: inline-block;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 15px;
+    transition: 0.3s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    border: none;
+}
+
+.btn-back {
+    background: #7f8c8d;
+    color: white;
+}
+.btn-back:hover {
+    background: #c5cfcfff;
+}
+
+.btn-edit {
+    background: #f39c12;
+    color: white;
+}
+.btn-edit:hover {
+    background: linear-gradient(90deg, #ff4e50 0%, #f9d423 100%);
+}
+
+.btn-delete button {
+    background: #ff1900ff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+.btn-delete button:hover {
+    background: linear-gradient(90deg, #ff7675 0%, #e74c3c 100%);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.14);
+}
+</style>
+
+    <h1>📋Product Details</h1>
+
+    <table class="details-table">
+        <tr>
+            <th>Id</th>
+            <td>{{ product.id }}</td>
+        </tr>
+        <tr>
+            <th>Name</th>
+            <td>{{ product.name }}</td>
+        </tr>
+        <tr>
+            <th>Category</th>
+            <td>{{ product.category }}</td>
+        </tr>
+        <tr>
+            <th>Price</th>
+            <td>{{ product.price }}</td>
+        </tr>
+        <tr>
+            <th>Quantity</th>
+            <td>{{ product.quantity }}</td>
+        </tr>
+        <tr>
+            <th>Description</th>
+            <td>{{ product.description }}</td>
+        </tr>
+        <tr>
+            <th>Date</th>
+            <td>{{ product.date ? product.date|date('Y-m-d') : '' }}</td>
+        </tr>
+    </table>
+
+    <div class="actions">
+        <a href="{{ path('app_product_index') }}" class="btn-link btn-back">⬅ Back</a>
+        <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn-link btn-edit">✏ Edit</a>
+        <div class="btn-delete">
+            {{ include('product/_delete_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

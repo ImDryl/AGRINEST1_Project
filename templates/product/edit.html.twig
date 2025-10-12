@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Product{% endblock %}
+
+{% block body %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        .form-container {
+            width: 60%;
+            margin: 30px auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input, select, textarea {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        .links {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .links a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        .delete-form {
+            margin-top: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .delete-form button {
+            /* background: #ff1900ff;
+            margin:0;
+            width: 100%;
+            max-width: 240px; */
+            background: #ff1900ff;
+            margin: 0;
+            width: 100% !important;
+            max-width: 500px !important;
+            font-size: 20px;         /* Make text bigger */
+            border-radius: 8px;
+        }
+
+        .delete-form button:hover {
+            background: #c0392b;
+        }
+    </style>
+
+    <h1>🛠️Edit Product</h1>
+
+    <div class="form-container">
+        {{ include('product/_form.html.twig', {'button_label': 'Update'}) }}
+
+        <div class="links">
+            {# <a href="{{ path('app_product_index') }}"> Back to list</a> #}
+        </div>
+
+        <div class="delete-form">
+            {{ include('product/_delete_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

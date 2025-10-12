@@ -1,0 +1,88 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f9f9f9;
+    margin: 20px;
+}
+
+h1, h2, h3 {
+    color: #333;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background: #4CAF50;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+tr:hover {
+    background: #f1f1f1;
+}
+
+a {
+    margin: 0 5px;
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.create-link {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 15px;
+    background: #4CAF50;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.create-link:hover {
+    background: #45a049;
+}
+
+.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #fff;
+    transition: 0.2s ease-in-out;
+}
+
+.btn-show {
+    background: #007bff;
+}
+
+.btn-show:hover {
+    background: #0056b3;
+}
+
+.btn-edit {
+    background: #ff9800;
+}
+
+.btn-edit:hover {
+    background: #e68900;
+}
