@@ -18,9 +18,6 @@ class Product
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $category = null;
-
     // #[ORM\Column(type: 'float')]
     // private ?float $price = null;
 
@@ -33,13 +30,20 @@ class Product
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
+    
+
 
     #[ORM\Column(type: 'float')]
     #[Assert\NotBlank(message: "Price cannot be blank.")]
     #[Assert\PositiveOrZero(message: "Price cannot be negative.")]
     private ?float $price = null;
 
-    
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Category $category = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
 
 
     public function getId(): ?int
@@ -55,18 +59,6 @@ class Product
     public function setName(string $name): static
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getCategory(): ?string
-    {
-        return $this->category;
-    }
-
-    public function setCategory(string $category): static
-    {
-        $this->category = $category;
 
         return $this;
     }
@@ -115,6 +107,30 @@ class Product
     public function setDate(\DateTimeInterface $date): static
     {
         $this->date = $date;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
 
         return $this;
     }

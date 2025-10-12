@@ -137,6 +137,7 @@ h1 {
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Description</th>
+                <th>Image</th>
                 <th>Date</th>
                 <th>Actions</th>
             </tr>
@@ -146,10 +147,18 @@ h1 {
             <tr>
                 <td>{{ product.id }}</td>
                 <td>{{ product.name }}</td>
-                <td>{{ product.category }}</td>
+                <td>{{ product.category ? product.category.name : 'No category' }}</td>
                 <td>{{ product.price }}</td>
                 <td>{{ product.quantity }}</td>
                 <td>{{ product.description }}</td>
+                <td>
+                     {% if product.image %}
+                         <img src="{{ asset('uploads/' ~ product.image) }}" alt="{{ product.name }}" width="80">
+                     {% else %}
+                           No image
+                     {% endif %}
+                </td>
+                
                 <td>{{ product.date ? product.date|date('Y-m-d') : '' }}</td>
                 <td class="actions">
                     <a href="{{ path('app_product_show', {'id': product.id}) }}" class="btn-show">Show</a>
