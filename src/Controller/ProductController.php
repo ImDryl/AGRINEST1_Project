@@ -42,7 +42,7 @@ public function new(Request $request, EntityManagerInterface $entityManager, Slu
 
             try {
                 $imageFile->move(
-                    $this->getParameter('uploads_directory'),
+                    $this->getParameter('uploads_directory') . '/images',
                     $newFilename
                 );
             } catch (FileException $e) {

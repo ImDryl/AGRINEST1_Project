@@ -5,8 +5,8 @@
 {% block body %}
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            font-family: 'Poppins', sans-serif;
+            background: #f8f9fa;
             margin: 0;
             padding: 0;
         }
@@ -14,16 +14,18 @@
         h1 {
             text-align: center;
             color: #333;
-            margin-top: 20px;
+            margin-top: 40px;
+            font-size: 2rem;
+            font-weight: 600;
         }
 
         .form-container {
-            width: 60%;
-            margin: 30px auto;
+            max-width: 600px;
+            margin: 40px auto;
             background: #fff;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 30px 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
 
         form {
@@ -33,44 +35,55 @@
         }
 
         label {
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
         }
 
-        input, select, textarea {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 14px;
+        input[type="text"],
+        input[type="number"],
+        input[type="file"],
+        textarea,
+        select {
             width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
         }
 
         button {
-            background: #4CAF50;
-            color: white;
-            padding: 12px;
+            background: #007bff;
+            color: #fff;
             border: none;
-            border-radius: 6px;
-            font-size: 16px;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 1rem;
             cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s;
+            transition: 0.3s;
         }
 
         button:hover {
-            background: #45a049;
+            background: #0056b3;
         }
 
         .links {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
+            text-align: center;
+            margin-top: 15px;
         }
 
         .links a {
-            color: #4CAF50;
+            color: #007bff;
             text-decoration: none;
-            font-weight: bold;
+            font-size: 0.95rem;
         }
 
         .links a:hover {
@@ -78,38 +91,24 @@
         }
 
         .delete-form {
-            margin-top: 24px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            margin-top: 20px;
+            text-align: center;
         }
 
-        .delete-form button {
-            /* background: #ff1900ff;
-            margin:0;
-            width: 100%;
-            max-width: 240px; */
-            background: #ff1900ff;
-            margin: 0;
-            width: 100% !important;
-            max-width: 500px !important;
-            font-size: 20px;         /* Make text bigger */
-            border-radius: 8px;
+        .delete-form form button {
+            background: #dc3545;
         }
 
-        .delete-form button:hover {
-            background: #c0392b;
+        .delete-form form button:hover {
+            background: #b02a37;
         }
     </style>
 
-    <h1>🛠️Edit Product</h1>
+    <h1>🛠️ Edit Product</h1>
 
     <div class="form-container">
         {{ include('product/_form.html.twig', {'button_label': 'Update'}) }}
 
-        <div class="links">
-            {# <a href="{{ path('app_product_index') }}"> Back to list</a> #}
-        </div>
 
         <div class="delete-form">
             {{ include('product/_delete_form.html.twig') }}
