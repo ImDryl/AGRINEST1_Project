@@ -1,53 +1,74 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/base_admin.html.twig' %}
 
 {% block title %}Product Details{% endblock %}
 
-{% block body %}
-    
-
-    <div class="container">
-        <div class="header">📋 Product Details</div>
-        <div class="details">
-            {% if product.image %}
-                <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="{{ product.name }}">
-            {% endif %}
-
-            <table>
-                <tr>
-                    <th>Id</th>
-                    <td>{{ product.id }}</td>
-                </tr>
-                <tr>
-                    <th>Name</th>
-                    <td>{{ product.name }}</td>
-                </tr>
-                <tr>
-                    <th>Category</th>
-                    <td>{{ product.category }}</td>
-                </tr>
-                <tr>
-                    <th>Price</th>
-                    <td>{{ product.price }}</td>
-                </tr>
-                <tr>
-                    <th>Quantity</th>
-                    <td>{{ product.quantity }}</td>
-                </tr>
-                <tr>
-                    <th>Description</th>
-                    <td>{{ product.description }}</td>
-                </tr>
-                <tr>
-                    <th>Date</th>
-                    <td>{{ product.date ? product.date|date('Y-m-d') : '' }}</td>
-                </tr>
-            </table>
-        </div>
-
-        <div class="actions">
-            <a href="{{ path('app_product_index') }}" class="btn btn-back">⬅ Back</a>
-            <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn-edit">✏ Edit</a>
-            <a href="#" class="btn btn-delete">🗑 Delete</a>
-        </div>
+{% block admin_content %}
+<div class="product-show">
+  <div class="product-card">
+    <div class="product-header">
+      <h1>{{ product.name }}</h1>
+      <div class="product-meta">
+        <span class="badge badge-category">{{ product.category }}</span>
+        <span class="badge badge-date">{{ product.date ? product.date|date('M d, Y') : '—' }}</span>
+        <span class="badge badge-id">#{{ product.id }}</span>
+      </div>
     </div>
+
+    <div class="product-layout">
+      <div>
+        <div class="product-image">
+          {% if product.image %}
+            <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="{{ product.name }}">
+          {% else %}
+            <div class="no-image-placeholder">No image available</div>
+          {% endif %}
+        </div>
+
+        <div class="highlight-row">
+          <div class="price-chip">₱{{ product.price|number_format(2, '.', ',') }}</div>
+          <div class="stock-chip">Qty: {{ product.quantity }}</div>
+        </div>
+      </div>
+
+      <div>
+        <table class="product-details">
+      <tr>
+        <th>ID</th>
+        <td>{{ product.id }}</td>
+      </tr>
+      <tr>
+        <th>Category</th>
+        <td>{{ product.category }}</td>
+      </tr>
+      <tr>
+        <th>Price</th>
+        <td>₱{{ product.price|number_format(2, '.', ',') }}</td>
+      </tr>
+      <tr>
+        <th>Quantity</th>
+        <td>{{ product.quantity }}</td>
+      </tr>
+      <tr>
+        <th>Description</th>
+        <td>{{ product.description }}</td>
+      </tr>
+      <tr>
+        <th>Date Added</th>
+        <td>{{ product.date ? product.date|date('Y-m-d') : '' }}</td>
+      </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="show-actions">
+      <a href="{{ path('app_product_index') }}" class="btn btn-back">⬅ Back</a>
+      <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn-edit">✏ Edit</a>
+
+      <form method="post" action="{{ path('app_product_delete', {'id': product.id}) }}" onsubmit="return confirm('Are you sure you want to delete this product?');" style="display:inline;">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
+        <button class="btn btn-delete">🗑 Delete</button>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}

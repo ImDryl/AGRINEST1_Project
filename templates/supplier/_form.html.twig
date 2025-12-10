@@ -1,0 +1,18 @@
+<div class="form-container">
+  <h2>{{ title|default('Supplier Form') }}</h2>
+  {{ form_start(form) }}
+
+  <div class="form-grid">
+    {{ form_row(form.name) }}
+    {{ form_row(form.email) }}
+    {{ form_row(form.phone) }}
+    {{ form_row(form.address) }}
+  </div>
+
+  <div class="form-actions">
+    <button class="btn btn-success">{{ button_label|default('Save') }}</button>
+    <a href="{{ path('app_supplier_index') }}" class="btn btn-secondary">↩ Back to list</a>
+  </div>
+
+  {{ form_end(form) }}
+</div>

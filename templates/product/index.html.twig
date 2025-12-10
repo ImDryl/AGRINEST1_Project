@@ -1,51 +1,88 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/base_admin.html.twig' %}
 
-{% block title %}Product index{% endblock %}
+{% block title %}Product List{% endblock %}
 
-{% block body %}
-
-    <h1>🧺Product</h1>
-<div class="table-container">
-    <table class="product-table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Description</th>
-                <th>Image</th>
-                <th>Date</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for product in products %}
-            <tr>
-                <td>{{ product.id }}</td>
-                <td>{{ product.name }}</td>
-                <td>{{ product.category ? product.category.name : 'No category' }}</td>
-                <td>{{ product.price }}</td>
-                <td>{{ product.quantity }}</td>
-                <td>{{ product.description }}</td>
-                <td>
-                     {{ product.image ? product.image : 'No image' }}
-                </td>
-                
-                <td>{{ product.date ? product.date|date('Y-m-d') : '' }}</td>
-                <td class="actions">
-                    <a href="{{ path('app_product_show', {'id': product.id}) }}" class="btn-show">Show</a>
-                    <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn-edit">Edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8">No records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
-    <a href="{{ path('app_product_new') }}" class="create-btn">+ Create New</a>
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="stylesheet" href="{{ asset('css/product-table.css') }}?v=1">
 {% endblock %}
+
+{% block admin_content %}
+  <div class="page-header">
+      <h1>🛒 Product List</h1>
+      <a href="{{ path('app_product_new') }}" class="btn btn-add">➕ Create New Product</a>
+  </div>
+
+  <div class="card">
+      <div class="table-controls">
+          <div class="control-group">
+              <label for="pageLength" style="font-weight:600;">Show</label>
+              <select id="pageLength">
+                  <option value="5">5</option>
+                  <option value="10" selected>10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+              </select>
+              <span>entries</span>
+          </div>
+          <div class="control-group">
+              <label for="tableSearch" style="font-weight:600;">Search:</label>
+              <input id="tableSearch" type="text" placeholder="Type to filter..." style="min-width:220px;">
+          </div>
+      </div>
+      <table id="productsTable" class="styled-table">
+          <thead>
+              <tr>
+                  <th>ID</th>
+                  <th>Image</th>
+                  <th>Name</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Actions</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for product in products %}
+                  <tr>
+                      <td>{{ product.id }}</td>
+                      <td>
+                          {% if product.image %}
+                              <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="{{ product.name }}" class="table-img">
+                          {% else %}
+                              <span class="no-img">No Image</span>
+                          {% endif %}
+                      </td>
+                      <td>{{ product.name }}</td>
+                      <td>{{ product.category }}</td>
+                      <td>₱{{ product.price }}</td>
+                      <td>{{ product.quantity }}</td>
+                      <td>
+                          <a href="{{ path('app_product_show', {'id': product.id}) }}" class="btn btn-view">👁 View</a>
+                          <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn btn-edit">✏ Edit</a>
+                         <form method="post" action="{{ path('app_product_delete', {'id': product.id}) }}" style="display:inline-block;" onsubmit="return confirm('Are you sure?');">
+                              <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
+                              <button class="btn btn-delete">🗑</button>
+                          </form>
+                      </td>
+                  </tr>
+              {% else %}
+                  <tr>
+                      <td colspan="7" class="no-data">No products found.</td>
+                  </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+      <div class="table-footer">
+        <div id="pageInfo" class="page-info"></div>
+        <div id="pagination"></div>
+      </div>
+  </div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script src="{{ asset('js/product-table.js') }}?v=1"></script>
+{% endblock %}
+

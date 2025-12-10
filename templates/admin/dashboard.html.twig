@@ -1,0 +1,25 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block admin_content %}
+  <h1>📊 Admin Dashboard</h1>
+
+  <div class="card">
+    <h2>Products</h2>
+    <a href="{{ path('app_product_index') }}" class="btn btn-add">Go to Products</a>
+  </div>
+
+  <div class="card">
+    <h2>Categories</h2>
+    <a href="{{ path('app_category_index') }}" class="btn btn-add">Go to Categories</a>
+  </div>
+
+  <div class="card">
+    <h2>Supplier</h2>
+    <a href="{{ path('app_supplier_index') }}" class="btn btn-add">Go to Supplier</a>
+  </div>
+
+
+
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Create New Supplier{% endblock %}
+
+{% block admin_content %}
+  <div class="form-container">
+    <h1>➕ Create New Supplier</h1>
+
+    {{ form_start(form, {'attr': {'class': 'supplier-form'}}) }}
+      <div class="form-fields">
+        {{ form_widget(form) }}
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" class="btn btn-save">💾 Save</button>
+        <a href="{{ path('app_supplier_index') }}" class="btn btn-back">← Back to List</a>
+      </div>
+    {{ form_end(form) }}
+  </div>
+{% endblock %}

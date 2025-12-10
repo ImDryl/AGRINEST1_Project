@@ -4,19 +4,17 @@
     <meta charset="UTF-8">
     <title>{% block title %}Welcome!{% endblock %}</title>
 
-    {#  Your global CSS file #}
-   <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-
-
-    {#  Optional Symfony Encore entry points (for JS/CSS bundling) #}
+    {# Global + Page-specific stylesheets #}
     {% block stylesheets %}
-      {{ encore_entry_link_tags('app') }}
+      <link rel="stylesheet" href="{{ asset('css/base.css') }}">
+      <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+      <link rel="stylesheet" href="{{ asset('css/form.css') }}">
+      <link rel="stylesheet" href="{{ asset('css/product.css') }}">
     {% endblock %}
 
-    {% block javascripts %}
-      {{ encore_entry_script_tags('app') }}
-    {% endblock %}
+    {% block javascripts %}{% endblock %}
   </head>
+
   <body>
     {% block body %}{% endblock %}
   </body>

@@ -1,0 +1,14 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Edit Supplier{% endblock %}
+
+{% block admin_content %}
+  {{ include('supplier/_form.html.twig', {
+      'button_label': 'Update',
+      'title': 'Edit Supplier'
+  }) }}
+
+  <div style="max-width:700px;margin:10px auto 0;">
+    {{ include('supplier/_delete_form.html.twig') }}
+  </div>
+{% endblock %}

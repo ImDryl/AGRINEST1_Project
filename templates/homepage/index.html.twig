@@ -2,129 +2,17 @@
 
 {% block title %}AgriNest - Quality Eggs & Poultry Products{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+{% endblock %}
+
 {% block body %}
-<style>
-
-
-body {
-            background: #78553c; 
-            font-family: Arial, sans-serif;
-
-        }
-        
-.navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: #616161ff;   
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem 2rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    height: 50px;
-    z-index: 1000;        
-}
-
-.navbar .logo img {
-    height: 150px;
-    width: 150px;
-    
-}
-
-.nav-links {
-    list-style: none;
-    display: flex;
-    gap: 1.5rem;
-    margin: 0;
-}
-
-.nav-links li a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.2s;
-}
-
-.nav-links li a:hover {
-    color: #000000ff; 
-}
-
-
-body {
-    margin-top: 80px;
-}
-
-
-
-.hero {
-    position: relative; 
-    text-align: center;
-    padding: 3rem;
-    background: #f9f9f9;
-    border-radius: 10px;
-    background-image: url('{{ asset('images/Poultry-farming-2.webp') }}');
-    background-size: cover;
-    background-position: center 35%;
-    background-repeat: no-repeat;
-
-}
-
-.hero::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.45);
-    border-radius: 10px;
-    z-index: 1;
-}
-
-.hero h1,
-.hero p {
-    position: relative;
-    z-index: 2;
-    color: #fff; 
-    text-shadow: 0 2px 8px rgba(0,0,0,0.7); 
-}
-
-
-
-.hero h1 {
-    font-size: 2.5rem;
-    color: #fffffff5;
-}
-.hero p {
-    font-size: 1.2rem;
-    margin-top: 0.5rem;
-}
-.products {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.5rem;
-    margin-top: 2rem;
-}
-.card {
-    padding: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    text-align: center;
-    background: #fff;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
-.card h3 {
-    margin: 0.5rem 0;
-}
-    
-</style>
-
 <nav class="navbar">
     <div class="logo">
-        <img src="{{ asset('images/3.png') }}" alt="AgriNest Logo" height="50">
+        <img src="{{ asset('images/mainlogo.png') }}" alt="AgriNest Logo">
     </div>
     <ul class="nav-links">
-        <li><a href="{{ path('app_homepage') }}">Home</a></li>
+        <li><a href="{{ path('app_homepage') }}" class="active">Home</a></li>
         <li><a href="#about">About Us</a></li>
         <li><a href="#shop">Shop</a></li>
         <li><a href="#contact">Contact</a></li>
@@ -132,14 +20,15 @@ body {
     </ul>
 </nav>
 
+<section class="hero">
+    <div class="hero-content">
+        <h1>Welcome to AgriNest</h1>
+        <p>Your trusted source for fresh eggs, healthy chicks, and poultry products</p>
+        <a href="#shop" class="btn-primary">Shop Now</a>
+    </div>
+</section>
 
-<div class="hero">
-    <h1> Welcome to AgriNest</h1>
-    <p>Your trusted source for fresh eggs, healthy chicks, and poultry products</p>
-</div>
-
-<div class="products">
-
+<section class="products">
     <div class="card">
         <h3>🥚 Native Eggs</h3>
         <p>Fresh and nutritious native chicken eggs.</p>
@@ -160,5 +49,9 @@ body {
         <h3>🍗 Fresh Meat</h3>
         <p>Farm-raised chicken meat for your table.</p>
     </div>
-</div>
+</section>
+
+<footer class="footer">
+    <p>© 2025 AgriNest. Fresh from the Nest 🐓</p>
+</footer>
 {% endblock %}

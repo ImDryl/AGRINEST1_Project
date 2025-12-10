@@ -1,0 +1,99 @@
+document.addEventListener("DOMContentLoaded", function () {
+    const table = document.getElementById("categoryTable");
+    if (!table) return;
+
+    const tbody = table.querySelector("tbody");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+
+    const searchInput = document.getElementById("categoryTableSearch");
+    const lengthSelect = document.getElementById("categoryPageLength");
+    const pagination = document.getElementById("categoryPagination");
+    const pageInfo = document.getElementById("categoryPageInfo");
+
+    let filtered = rows.slice();
+    let currentPage = 1;
+
+    function matches(row, term) {
+        if (!term) return true;
+        const t = term.toLowerCase();
+        return Array.from(row.cells).some((cell, idx) => {
+            // skip Actions column (last)
+            if (idx === row.cells.length - 1) return false;
+            return (cell.textContent || "").toLowerCase().includes(t);
+        });
+    }
+
+    function render() {
+        const pageSize = parseInt(lengthSelect.value, 10) || 10;
+        const total = filtered.length;
+        const totalPages = Math.max(1, Math.ceil(total / pageSize));
+        if (currentPage > totalPages) currentPage = totalPages;
+        const start = (currentPage - 1) * pageSize;
+        const end = start + pageSize;
+
+        rows.forEach((r) => (r.style.display = "none"));
+        filtered.slice(start, end).forEach((r) => (r.style.display = ""));
+
+        pagination.innerHTML = "";
+        if (pageInfo) {
+            const showingStart = total === 0 ? 0 : start + 1;
+            const showingEnd = Math.min(end, total);
+            pageInfo.textContent = `Showing ${showingStart} to ${showingEnd} of ${total} entries`;
+        }
+        const totalPagesVis = Math.max(1, Math.ceil(total / pageSize));
+        if (totalPagesVis > 1) {
+            const mkBtn = (label, page, disabled = false, active = false) => {
+                const b = document.createElement("button");
+                b.textContent = label;
+                b.className = "page-btn" + (active ? " is-active" : "");
+                b.disabled = disabled;
+                if (!disabled) {
+                    b.addEventListener("click", () => {
+                        currentPage = page;
+                        render();
+                    });
+                }
+                return b;
+            };
+            pagination.appendChild(mkBtn("«", 1, currentPage === 1));
+            pagination.appendChild(
+                mkBtn("‹", Math.max(1, currentPage - 1), currentPage === 1)
+            );
+            const maxPages = 7;
+            let startPage = Math.max(1, currentPage - 3);
+            let endPage = Math.min(totalPagesVis, startPage + maxPages - 1);
+            if (endPage - startPage < maxPages - 1)
+                startPage = Math.max(1, endPage - maxPages + 1);
+            for (let p = startPage; p <= endPage; p++) {
+                pagination.appendChild(
+                    mkBtn(String(p), p, false, p === currentPage)
+                );
+            }
+            pagination.appendChild(
+                mkBtn(
+                    "›",
+                    Math.min(totalPagesVis, currentPage + 1),
+                    currentPage === totalPagesVis
+                )
+            );
+            pagination.appendChild(
+                mkBtn("»", totalPagesVis, currentPage === totalPagesVis)
+            );
+        }
+    }
+
+    function applyFilter() {
+        const term = (searchInput.value || "").trim();
+        filtered = rows.filter((r) => matches(r, term));
+        currentPage = 1;
+        render();
+    }
+
+    searchInput.addEventListener("input", applyFilter);
+    lengthSelect.addEventListener("change", () => {
+        currentPage = 1;
+        render();
+    });
+
+    applyFilter();
+});
