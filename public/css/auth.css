@@ -136,7 +136,7 @@ body:has(.auth-page) > nav {
 .form-group input[type="email"],
 .form-group input[type="password"] {
     width: 100%;
-    padding: 14px 16px 14px 48px;
+    padding: 14px 16px;
     border: 2px solid #e0e0e0;
     border-radius: 12px;
     font-size: 15px;
@@ -159,7 +159,7 @@ body:has(.auth-page) > nav {
 /* Symfony Form Styling */
 .form-group .form-control {
     width: 100%;
-    padding: 14px 16px 14px 48px;
+    padding: 14px 16px;
     border: 2px solid #e0e0e0;
     border-radius: 12px;
     font-size: 15px;

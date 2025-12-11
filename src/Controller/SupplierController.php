@@ -122,13 +122,35 @@ final class SupplierController extends AbstractController
 
         $token = $request->request->get('_token');
 
-        if ($this->isCsrfTokenValid('delete' . $supplier->getId(), $token)) {
+        if (!$this->isCsrfTokenValid('delete' . $supplier->getId(), $token)) {
+            $this->addFlash('error', 'Invalid security token. Please try again.');
+            // Redirect to admin route if user is admin/staff
+            if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF')) {
+                return $this->redirectToRoute('app_admin_suppliers_index');
+            }
+            return $this->redirectToRoute('app_supplier_index');
+        }
+
+        try {
+            // Set all products' supplier to NULL before deleting
+            $products = $supplier->getProducts();
+            foreach ($products as $product) {
+                $product->setSupplier(null);
+            }
+            
+            // Flush changes to products first
+            $entityManager->flush();
+            
             $this->activityLogService->logSupplierDelete($supplier);
             
             $entityManager->remove($supplier);
             $entityManager->flush();
             
             $this->addFlash('success', 'Supplier deleted successfully.');
+        } catch (\Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException $e) {
+            $this->addFlash('error', 'Cannot delete supplier: This supplier has related records that prevent deletion.');
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Cannot delete supplier: ' . $e->getMessage());
         }
 
         // Redirect to admin route if user is admin/staff

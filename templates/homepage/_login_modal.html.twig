@@ -13,6 +13,13 @@
                 <p>Sign in to your AgriNest account</p>
             </div>
 
+            {% for message in app.flashes('success') %}
+                <div class="modal-alert modal-alert-success">
+                    <i class="bi bi-check-circle"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+
             {% if error %}
                 <div class="modal-alert modal-alert-danger">
                     <i class="bi bi-exclamation-triangle"></i>

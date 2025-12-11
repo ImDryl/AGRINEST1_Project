@@ -59,15 +59,30 @@ final class AdminController extends AbstractController
         }
 
         $totalUsers = $this->userRepository->count([]);
+        $totalStaff = $this->userRepository->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->where('u.roles LIKE :role')
+            ->setParameter('role', '%ROLE_STAFF%')
+            ->getQuery()
+            ->getSingleScalarResult();
         $totalProducts = $this->productRepository->count([]);
         $totalCategories = $this->categoryRepository->count([]);
         $totalSuppliers = $this->supplierRepository->count([]);
 
+        // Get recent activity logs (last 10)
+        $recentLogs = $this->activityLogRepository->createQueryBuilder('log')
+            ->orderBy('log.timestamp', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+
         return $this->render('admin/dashboard.html.twig', [
             'totalUsers' => $totalUsers,
+            'totalStaff' => $totalStaff,
             'totalProducts' => $totalProducts,
             'totalCategories' => $totalCategories,
             'totalSuppliers' => $totalSuppliers,
+            'recentLogs' => $recentLogs,
         ]);
     }
 
@@ -214,6 +229,50 @@ final class AdminController extends AbstractController
         ]);
     }
 
+    #[Route('/admin/users/{id}/disable', name: 'app_admin_user_disable', methods: ['POST'])]
+    public function userDisable(Request $request, User $user): Response
+    {
+        // Only admin can disable users
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('error', 'Access denied. Only administrators can disable users.');
+            return $this->redirectToRoute('app_admin_products_index');
+        }
+
+        if ($this->isCsrfTokenValid('disable'.$user->getId(), $request->request->get('_token'))) {
+            $user->setIsActive(false);
+            $this->entityManager->flush();
+            
+            $details = json_encode(['action' => 'Disable', 'username' => $user->getUsername()], JSON_PRETTY_PRINT);
+            $this->activityLogService->log('Disable', 'User', $user->getId(), $details);
+            
+            $this->addFlash('success', 'User disabled successfully.');
+        }
+
+        return $this->redirectToRoute('app_admin_users_index');
+    }
+
+    #[Route('/admin/users/{id}/enable', name: 'app_admin_user_enable', methods: ['POST'])]
+    public function userEnable(Request $request, User $user): Response
+    {
+        // Only admin can enable users
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('error', 'Access denied. Only administrators can enable users.');
+            return $this->redirectToRoute('app_admin_products_index');
+        }
+
+        if ($this->isCsrfTokenValid('enable'.$user->getId(), $request->request->get('_token'))) {
+            $user->setIsActive(true);
+            $this->entityManager->flush();
+            
+            $details = json_encode(['action' => 'Enable', 'username' => $user->getUsername()], JSON_PRETTY_PRINT);
+            $this->activityLogService->log('Enable', 'User', $user->getId(), $details);
+            
+            $this->addFlash('success', 'User enabled successfully.');
+        }
+
+        return $this->redirectToRoute('app_admin_users_index');
+    }
+
     #[Route('/admin/users/{id}', name: 'app_admin_user_delete', methods: ['POST'])]
     public function userDelete(Request $request, User $user): Response
     {
@@ -223,12 +282,48 @@ final class AdminController extends AbstractController
             return $this->redirectToRoute('app_admin_products_index');
         }
 
-        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
+        $token = $request->request->get('_token');
+        
+        if (!$this->isCsrfTokenValid('delete'.$user->getId(), $token)) {
+            $this->addFlash('error', 'Invalid security token. Please try again.');
+            return $this->redirectToRoute('app_admin_users_index');
+        }
+
+        try {
+            // Prevent deleting yourself
+            if ($user->getId() === $this->getUser()?->getId()) {
+                $this->addFlash('error', 'You cannot delete your own account.');
+                return $this->redirectToRoute('app_admin_users_index');
+            }
+
+            // Set createdBy to NULL for all related records before deleting
+            $products = $this->productRepository->findBy(['createdBy' => $user]);
+            foreach ($products as $product) {
+                $product->setCreatedBy(null);
+            }
+            
+            $categories = $this->categoryRepository->findBy(['createdBy' => $user]);
+            foreach ($categories as $category) {
+                $category->setCreatedBy(null);
+            }
+            
+            $suppliers = $this->supplierRepository->findBy(['createdBy' => $user]);
+            foreach ($suppliers as $supplier) {
+                $supplier->setCreatedBy(null);
+            }
+            
+            // Flush changes to related records first
+            $this->entityManager->flush();
+            
             $this->activityLogService->logUserDelete($user);
             
             $this->entityManager->remove($user);
             $this->entityManager->flush();
             $this->addFlash('success', 'User deleted successfully.');
+        } catch (\Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException $e) {
+            $this->addFlash('error', 'Cannot delete user: This user has related records that prevent deletion. Please contact support.');
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Cannot delete user: ' . $e->getMessage());
         }
 
         return $this->redirectToRoute('app_admin_users_index');
@@ -282,20 +377,11 @@ final class AdminController extends AbstractController
             ->getQuery()
             ->getResult();
 
-        $allActions = ['Create', 'Update', 'Delete', 'Login', 'Logout'];
+        $allActions = ['Create', 'Update', 'Delete', 'Login', 'Logout', 'Enable', 'Disable'];
 
-        // Pagination
-        $page = max(1, (int) $request->query->get('page', 1));
-        $limit = 50;
-        $offset = ($page - 1) * $limit;
-
-        $totalLogs = count($qb->getQuery()->getResult());
-        $logs = $qb->setMaxResults($limit)
-            ->setFirstResult($offset)
-            ->getQuery()
-            ->getResult();
-
-        $totalPages = ceil($totalLogs / $limit);
+        // Get all filtered logs (client-side pagination will handle display)
+        $logs = $qb->getQuery()->getResult();
+        $totalLogs = count($logs);
 
         return $this->render('admin/logs/index.html.twig', [
             'logs' => $logs,
@@ -305,8 +391,6 @@ final class AdminController extends AbstractController
             'dateTo' => $dateTo,
             'allUsernames' => array_column($allUsernames, 'username'),
             'allActions' => $allActions,
-            'page' => $page,
-            'totalPages' => $totalPages,
             'totalLogs' => $totalLogs,
         ]);
     }

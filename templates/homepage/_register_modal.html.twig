@@ -13,7 +13,7 @@
                 <p>Join AgriNest and start managing your products</p>
             </div>
 
-            {{ form_start(registrationForm, {'attr': {'class': 'modal-form', 'action': path('app_homepage')}}) }}
+            {{ form_start(registrationForm, {'action': path('app_homepage'), 'attr': {'class': 'modal-form'}}) }}
                 
                 <div class="form-group">
                     <label for="{{ registrationForm.username.vars.id }}">

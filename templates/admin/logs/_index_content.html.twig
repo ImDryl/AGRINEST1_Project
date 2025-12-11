@@ -51,8 +51,22 @@
         </form>
     </div>
 
+    <div class="table-controls">
+        <div class="control-group">
+            <label for="logsPageLength" style="font-weight:600;">Show</label>
+            <select id="logsPageLength">
+                <option value="5">5</option>
+                <option value="10" selected>10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+            <span>entries</span>
+        </div>
+    </div>
+
     <div class="table-container">
-        <table class="styled-table logs-table">
+        <table id="logsTable" class="styled-table logs-table">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -137,36 +151,10 @@
         </table>
     </div>
 
-    {% if totalPages > 1 %}
     <div class="table-footer">
-        <div class="page-info">
-            Showing page {{ page }} of {{ totalPages }} ({{ totalLogs }} total logs)
-        </div>
-        <div class="pagination">
-            {% if page > 1 %}
-                <a href="{{ path('app_admin_logs_index', app.request.query.all|merge({page: page - 1})) }}" class="btn btn-sm">
-                    <i class="bi bi-chevron-left"></i> Previous
-                </a>
-            {% endif %}
-            
-            {% for p in 1..totalPages %}
-                {% if p == page %}
-                    <span class="btn btn-sm btn-active">{{ p }}</span>
-                {% elseif p <= 3 or p > totalPages - 3 or (p >= page - 1 and p <= page + 1) %}
-                    <a href="{{ path('app_admin_logs_index', app.request.query.all|merge({page: p})) }}" class="btn btn-sm">{{ p }}</a>
-                {% elseif p == 4 or p == totalPages - 3 %}
-                    <span class="btn btn-sm disabled">...</span>
-                {% endif %}
-            {% endfor %}
-            
-            {% if page < totalPages %}
-                <a href="{{ path('app_admin_logs_index', app.request.query.all|merge({page: page + 1})) }}" class="btn btn-sm">
-                    Next <i class="bi bi-chevron-right"></i>
-                </a>
-            {% endif %}
-        </div>
+        <div id="logsPageInfo" class="page-info"></div>
+        <div id="logsPagination"></div>
     </div>
-    {% endif %}
 </div>
 
 <script>

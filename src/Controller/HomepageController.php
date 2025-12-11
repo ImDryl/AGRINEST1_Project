@@ -51,7 +51,10 @@ final class HomepageController extends AbstractController
             if (in_array('ROLE_STAFF', $roles, true)) {
                 return $this->redirectToRoute('app_admin_products_index');
             }
-            return $this->redirectToRoute('app_homepage');
+            
+            // For regular users, redirect to homepage with login modal auto-opened
+            $this->addFlash('success', 'Registration successful! Please log in to continue.');
+            return $this->redirectToRoute('app_homepage', ['modal' => 'login']);
         }
 
         return $this->render('homepage/index.html.twig', [

@@ -32,16 +32,21 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
             $this->activityLogService->logLogin($user);
         }
         
-        $roles = $token->getRoleNames();
+        // Get roles from both token and user to ensure we have the correct roles
+        $tokenRoles = $token->getRoleNames();
+        $userRoles = $user instanceof \App\Entity\User ? $user->getRoles() : [];
 
-        if (in_array('ROLE_ADMIN', $roles, true)) {
+        // Check for admin role first (check both token and user roles)
+        if (in_array('ROLE_ADMIN', $tokenRoles, true) || in_array('ROLE_ADMIN', $userRoles, true)) {
             return new RedirectResponse($this->router->generate('app_admin_dashboard'));
         }
 
-        if (in_array('ROLE_STAFF', $roles, true)) {
+        // Check for staff role (check both token and user roles)
+        if (in_array('ROLE_STAFF', $tokenRoles, true) || in_array('ROLE_STAFF', $userRoles, true)) {
             return new RedirectResponse($this->router->generate('app_admin_products_index'));
         }
 
+        // Default redirect for regular users
         return new RedirectResponse($this->router->generate('app_homepage'));
     }
 }

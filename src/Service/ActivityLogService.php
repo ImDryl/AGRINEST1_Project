@@ -167,5 +167,15 @@ class ActivityLogService
     {
         $this->log('Logout', null, null, json_encode(['username' => $user->getUsername()], JSON_PRETTY_PRINT));
     }
+
+    public function logPasswordChange($user): void
+    {
+        $details = json_encode([
+            'username' => $user->getUsername(),
+            'action' => 'Password Changed',
+        ], JSON_PRETTY_PRINT);
+        
+        $this->log('Update', 'User', $user->getId(), $details);
+    }
 }
 

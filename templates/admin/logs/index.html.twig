@@ -8,6 +8,11 @@
   <link rel="stylesheet" href="{{ asset('css/logs.css') }}">
 {% endblock %}
 
+{% block javascripts %}
+  {{ parent() }}
+  <script src="{{ asset('js/logs-table.js') }}"></script>
+{% endblock %}
+
 {% block admin_content %}
     {% embed 'admin/logs/_index_content.html.twig' %}{% endembed %}
 {% endblock %}

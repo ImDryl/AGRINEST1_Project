@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Service\ActivityLogService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,6 +19,10 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 #[Route('/profile')]
 final class ProfileController extends AbstractController
 {
+    public function __construct(
+        private ActivityLogService $activityLogService
+    ) {
+    }
     #[Route('', name: 'app_profile')]
     public function index(): Response
     {
@@ -38,9 +43,16 @@ final class ProfileController extends AbstractController
         UserPasswordHasherInterface $userPasswordHasher,
         EntityManagerInterface $entityManager
     ): Response {
-        $user = $this->getUser();
+        $currentUser = $this->getUser();
         
+        if (!$currentUser instanceof User) {
+            return $this->redirectToRoute('app_login');
+        }
+        
+        // Get the managed entity from database - this is critical for updates to work
+        $user = $entityManager->getRepository(User::class)->find($currentUser->getId());
         if (!$user) {
+            $this->addFlash('error', 'User not found.');
             return $this->redirectToRoute('app_login');
         }
 
@@ -73,31 +85,31 @@ final class ProfileController extends AbstractController
                     ]),
                 ],
             ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Change Password',
-                'attr' => ['class' => 'btn btn-primary']
-            ])
             ->getForm();
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $currentPassword = $form->get('currentPassword')->getData();
+            $newPassword = $form->get('plainPassword')->getData();
             
-            // Verify current password
-            if (!$userPasswordHasher->isPasswordValid($user, $currentPassword)) {
+            // Verify current password using the original user from security token
+            if (!$userPasswordHasher->isPasswordValid($currentUser, $currentPassword)) {
                 $this->addFlash('error', 'Current password is incorrect.');
                 return $this->render('profile/change_password.html.twig', [
                     'form' => $form->createView(),
                 ]);
             }
 
-            // Hash and set new password
-            $newPassword = $form->get('plainPassword')->getData();
+            // Hash and set new password on the managed entity
             $hashedPassword = $userPasswordHasher->hashPassword($user, $newPassword);
             $user->setPassword($hashedPassword);
             
+            // The user entity is already managed, just flush
             $entityManager->flush();
+
+            // Log the password change
+            $this->activityLogService->logPasswordChange($user);
 
             $this->addFlash('success', 'Your password has been changed successfully.');
             return $this->redirectToRoute('app_profile');

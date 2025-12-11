@@ -5,6 +5,7 @@
 {% block stylesheets %}
   {{ parent() }}
   <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}?v=2">
+  <link rel="stylesheet" href="{{ asset('css/logs.css') }}">
 {% endblock %}
 
 {% block admin_content %}
@@ -21,6 +22,19 @@
       <div class="stat-content">
         <h3>Total Users</h3>
         <div class="stat-number">{{ totalUsers }}</div>
+        <a href="{{ path('app_admin_users_index') }}" class="stat-link">
+          <i class="bi bi-arrow-right-circle"></i> View All Users
+        </a>
+      </div>
+    </div>
+
+    <div class="stat-card stat-card-staff">
+      <div class="stat-icon">
+        <i class="bi bi-person-badge-fill"></i>
+      </div>
+      <div class="stat-content">
+        <h3>Total Staff</h3>
+        <div class="stat-number">{{ totalStaff }}</div>
         <a href="{{ path('app_admin_users_index') }}" class="stat-link">
           <i class="bi bi-arrow-right-circle"></i> View All Users
         </a>
@@ -64,6 +78,90 @@
           <i class="bi bi-arrow-right-circle"></i> View All Suppliers
         </a>
       </div>
+    </div>
+  </div>
+
+  <div class="dashboard-section">
+    <div class="section-header">
+      <div class="section-title-wrapper">
+        <h2><i class="bi bi-journal-text"></i> Recent Activity Logs</h2>
+        <span class="section-badge">{{ recentLogs|length }} recent</span>
+      </div>
+      <a href="{{ path('app_admin_logs_index') }}" class="view-all-link">
+        View All <i class="bi bi-arrow-right"></i>
+      </a>
+    </div>
+    
+    <div class="logs-card">
+      {% if recentLogs|length > 0 %}
+        <div class="logs-timeline">
+          {% for log in recentLogs %}
+            <div class="timeline-item">
+              <div class="timeline-marker">
+                {% if log.action == 'Create' %}
+                  <div class="marker-icon marker-create">
+                    <i class="bi bi-plus-circle"></i>
+                  </div>
+                {% elseif log.action == 'Update' %}
+                  <div class="marker-icon marker-update">
+                    <i class="bi bi-pencil"></i>
+                  </div>
+                {% elseif log.action == 'Delete' %}
+                  <div class="marker-icon marker-delete">
+                    <i class="bi bi-trash"></i>
+                  </div>
+                {% elseif log.action == 'Login' %}
+                  <div class="marker-icon marker-login">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                  </div>
+                {% elseif log.action == 'Logout' %}
+                  <div class="marker-icon marker-logout">
+                    <i class="bi bi-box-arrow-right"></i>
+                  </div>
+                {% else %}
+                  <div class="marker-icon">
+                    <i class="bi bi-circle"></i>
+                  </div>
+                {% endif %}
+              </div>
+              <div class="timeline-content">
+                <div class="log-main-info">
+                  <div class="log-user-info">
+                    <span class="log-username">{{ log.username }}</span>
+                    {% if log.role == 'Admin' %}
+                      <span class="badge badge-admin">{{ log.role }}</span>
+                    {% elseif log.role == 'Staff' %}
+                      <span class="badge badge-staff">{{ log.role }}</span>
+                    {% else %}
+                      <span class="badge badge-user">{{ log.role }}</span>
+                    {% endif %}
+                  </div>
+                  <div class="log-action-info">
+                    <span class="log-action-badge log-action-{{ log.action|lower }}">{{ log.action }}</span>
+                    {% if log.entityType %}
+                      <span class="log-entity">{{ log.entityType }}{% if log.entityId %} #{{ log.entityId }}{% endif %}</span>
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="log-time">
+                  <i class="bi bi-clock"></i> 
+                  <span>{{ log.timestamp|date('M d, Y') }}</span>
+                  <span class="time-separator">•</span>
+                  <span>{{ log.timestamp|date('H:i:s') }}</span>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="no-logs">
+          <div class="no-logs-icon">
+            <i class="bi bi-inbox"></i>
+          </div>
+          <p>No activity logs yet.</p>
+          <span class="no-logs-subtitle">Activity will appear here as users interact with the system.</span>
+        </div>
+      {% endif %}
     </div>
   </div>
 {% endblock %}
