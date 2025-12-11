@@ -49,7 +49,7 @@ final class ProfileController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
         
-        // Get the managed entity from database - this is critical for updates to work
+        // Get the managed entity from database -    for updates to work
         $user = $entityManager->getRepository(User::class)->find($currentUser->getId());
         if (!$user) {
             $this->addFlash('error', 'User not found.');

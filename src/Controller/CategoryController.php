@@ -11,21 +11,23 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Repository\ProductRepository;
 
 #[Route('/category')]
 final class CategoryController extends AbstractController
 {
     public function __construct(
-        private ActivityLogService $activityLogService
+        private ActivityLogService $activityLogService,
+        private CategoryRepository $categoryRepository
     ) {
     }
     #[Route(name: 'app_category_index', methods: ['GET'])]
-    public function index(CategoryRepository $categoryRepository): Response
+    public function index(): Response
     {
         $isAdmin = $this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF');
         
         return $this->render('category/index.html.twig', [
-            'categories' => $categoryRepository->findAll(),
+            'categories' => $this->categoryRepository->findAll(),
             'isAdmin' => $isAdmin,
         ]);
     }
@@ -118,13 +120,73 @@ final class CategoryController extends AbstractController
             return $this->redirectToRoute('app_category_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        if ($this->isCsrfTokenValid('delete'.$category->getId(), $request->getPayload()->getString('_token'))) {
+        if (!$this->isCsrfTokenValid('delete'.$category->getId(), $request->getPayload()->getString('_token'))) {
+            $this->addFlash('error', 'Invalid security token. Please try again.');
+            // Redirect to admin route if user is admin/staff
+            if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF')) {
+                return $this->redirectToRoute('app_admin_categories_index', [], Response::HTTP_SEE_OTHER);
+            }
+            return $this->redirectToRoute('app_category_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        // Check if category has products
+        $products = $category->getProducts();
+        $productCount = $products->count();
+        
+        if ($productCount > 0) {
+            // If admin, reassign products to another category
+            if ($this->isGranted('ROLE_ADMIN')) {
+                // Find another category to reassign products to
+                $allCategories = $this->categoryRepository->findAll();
+                $otherCategory = null;
+                
+                foreach ($allCategories as $cat) {
+                    if ($cat->getId() !== $category->getId()) {
+                        $otherCategory = $cat;
+                        break;
+                    }
+                }
+                
+                if ($otherCategory === null) {
+                    $this->addFlash('error', 'Cannot delete category: This is the only category and it has ' . $productCount . ' product(s). Please create another category first or delete the products.');
+                    // Redirect to admin route if user is admin/staff
+                    if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF')) {
+                        return $this->redirectToRoute('app_admin_categories_index', [], Response::HTTP_SEE_OTHER);
+                    }
+                    return $this->redirectToRoute('app_category_index', [], Response::HTTP_SEE_OTHER);
+                }
+                
+                // Reassign all products to the other category
+                foreach ($products as $product) {
+                    $product->setCategory($otherCategory);
+                }
+                $entityManager->flush();
+            } else {
+                // Staff cannot delete categories with products
+                $this->addFlash('error', 'Cannot delete category: This category has ' . $productCount . ' product(s) associated with it. Please reassign or delete the products first.');
+                // Redirect to admin route if user is admin/staff
+                if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF')) {
+                    return $this->redirectToRoute('app_admin_categories_index', [], Response::HTTP_SEE_OTHER);
+                }
+                return $this->redirectToRoute('app_category_index', [], Response::HTTP_SEE_OTHER);
+            }
+        }
+
+        try {
             $this->activityLogService->logCategoryDelete($category);
             
             $entityManager->remove($category);
             $entityManager->flush();
             
-            $this->addFlash('success', 'Category deleted successfully.');
+            if ($productCount > 0 && $this->isGranted('ROLE_ADMIN')) {
+                $this->addFlash('success', 'Category deleted successfully. ' . $productCount . ' product(s) have been reassigned to another category.');
+            } else {
+                $this->addFlash('success', 'Category deleted successfully.');
+            }
+        } catch (\Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException $e) {
+            $this->addFlash('error', 'Cannot delete category: This category has related records that prevent deletion.');
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Cannot delete category: ' . $e->getMessage());
         }
 
         // Redirect to admin route if user is admin/staff
