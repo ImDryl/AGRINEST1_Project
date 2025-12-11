@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SupplierRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -34,6 +36,18 @@ class Supplier
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: 'Address is required.')]
     private ?string $address = null;
+
+    #[ORM\OneToMany(mappedBy: 'supplier', targetEntity: Product::class)]
+    private Collection $products;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?\App\Entity\User $createdBy = null;
+
+    public function __construct()
+    {
+        $this->products = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -84,6 +98,48 @@ class Supplier
     public function setAddress(string $address): static
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Product>
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    public function addProduct(Product $product): static
+    {
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
+            $product->setSupplier($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Product $product): static
+    {
+        if ($this->products->removeElement($product)) {
+            // set the owning side to null (unless already changed)
+            if ($product->getSupplier() === $this) {
+                $product->setSupplier(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCreatedBy(): ?\App\Entity\User
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?\App\Entity\User $createdBy): static
+    {
+        $this->createdBy = $createdBy;
 
         return $this;
     }

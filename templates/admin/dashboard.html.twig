@@ -2,24 +2,68 @@
 
 {% block title %}Admin Dashboard{% endblock %}
 
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}?v=2">
+{% endblock %}
+
 {% block admin_content %}
-  <h1>📊 Admin Dashboard</h1>
-
-  <div class="card">
-    <h2>Products</h2>
-    <a href="{{ path('app_product_index') }}" class="btn btn-add">Go to Products</a>
+  <div class="dashboard-header">
+    <h1><i class="bi bi-speedometer2"></i> Admin Dashboard</h1>
+    <p class="dashboard-subtitle">Welcome back! Here's an overview of your system.</p>
   </div>
 
-  <div class="card">
-    <h2>Categories</h2>
-    <a href="{{ path('app_category_index') }}" class="btn btn-add">Go to Categories</a>
+  <div class="stats-grid">
+    <div class="stat-card stat-card-users">
+      <div class="stat-icon">
+        <i class="bi bi-people-fill"></i>
+      </div>
+      <div class="stat-content">
+        <h3>Total Users</h3>
+        <div class="stat-number">{{ totalUsers }}</div>
+        <a href="{{ path('app_admin_users_index') }}" class="stat-link">
+          <i class="bi bi-arrow-right-circle"></i> View All Users
+        </a>
+      </div>
+    </div>
+
+    <div class="stat-card stat-card-products">
+      <div class="stat-icon">
+        <i class="bi bi-cart-fill"></i>
+      </div>
+      <div class="stat-content">
+        <h3>Total Products</h3>
+        <div class="stat-number">{{ totalProducts }}</div>
+        <a href="{{ path('app_admin_products_index') }}" class="stat-link">
+          <i class="bi bi-arrow-right-circle"></i> View All Products
+        </a>
+      </div>
+    </div>
+
+    <div class="stat-card stat-card-categories">
+      <div class="stat-icon">
+        <i class="bi bi-folder-fill"></i>
+      </div>
+      <div class="stat-content">
+        <h3>Total Categories</h3>
+        <div class="stat-number">{{ totalCategories }}</div>
+        <a href="{{ path('app_admin_categories_index') }}" class="stat-link">
+          <i class="bi bi-arrow-right-circle"></i> View All Categories
+        </a>
+      </div>
+    </div>
+
+    <div class="stat-card stat-card-suppliers">
+      <div class="stat-icon">
+        <i class="bi bi-truck"></i>
+      </div>
+      <div class="stat-content">
+        <h3>Total Suppliers</h3>
+        <div class="stat-number">{{ totalSuppliers }}</div>
+        <a href="{{ path('app_admin_suppliers_index') }}" class="stat-link">
+          <i class="bi bi-arrow-right-circle"></i> View All Suppliers
+        </a>
+      </div>
+    </div>
   </div>
-
-  <div class="card">
-    <h2>Supplier</h2>
-    <a href="{{ path('app_supplier_index') }}" class="btn btn-add">Go to Supplier</a>
-  </div>
-
-
-
 {% endblock %}

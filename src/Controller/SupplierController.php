@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Supplier;
 use App\Form\SupplierType;
 use App\Repository\SupplierRepository;
+use App\Service\ActivityLogService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,11 +15,18 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/supplier')]
 final class SupplierController extends AbstractController
 {
+    public function __construct(
+        private ActivityLogService $activityLogService
+    ) {
+    }
     #[Route(name: 'app_supplier_index', methods: ['GET'])]
     public function index(SupplierRepository $supplierRepository): Response
     {
+        $isAdmin = $this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF');
+        
         return $this->render('supplier/index.html.twig', [
             'suppliers' => $supplierRepository->findAll(),
+            'isAdmin' => $isAdmin,
         ]);
     }
 
@@ -30,8 +38,20 @@ final class SupplierController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Set the creator if user is logged in
+            if ($this->getUser()) {
+                $supplier->setCreatedBy($this->getUser());
+            }
+
             $entityManager->persist($supplier);
             $entityManager->flush();
+
+            $this->activityLogService->logSupplierCreate($supplier);
+
+            // Redirect to admin route if user is admin/staff
+            if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF')) {
+                return $this->redirectToRoute('app_admin_suppliers_index');
+            }
 
             return $this->redirectToRoute('app_supplier_index');
         }
@@ -54,11 +74,28 @@ final class SupplierController extends AbstractController
     #[Route('/{id}/edit', name: 'app_supplier_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Supplier $supplier, EntityManagerInterface $entityManager): Response
     {
+        // Check if user can edit this supplier (admin or creator)
+        if (!$this->isGranted('ROLE_ADMIN') && $supplier->getCreatedBy() !== $this->getUser()) {
+            $this->addFlash('error', 'You can only edit suppliers you created.');
+            // Redirect to admin route if user is admin/staff
+            if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF')) {
+                return $this->redirectToRoute('app_admin_suppliers_index');
+            }
+            return $this->redirectToRoute('app_supplier_index');
+        }
+
         $form = $this->createForm(SupplierType::class, $supplier);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
+
+            $this->activityLogService->logSupplierUpdate($supplier);
+
+            // Redirect to admin route if user is admin/staff
+            if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF')) {
+                return $this->redirectToRoute('app_admin_suppliers_index');
+            }
 
             return $this->redirectToRoute('app_supplier_index');
         }
@@ -73,12 +110,30 @@ final class SupplierController extends AbstractController
     #[Route('/{id}', name: 'app_supplier_delete', methods: ['POST'])]
     public function delete(Request $request, Supplier $supplier, EntityManagerInterface $entityManager): Response
     {
-       
+        // Check if user can delete this supplier (admin or creator)
+        if (!$this->isGranted('ROLE_ADMIN') && $supplier->getCreatedBy() !== $this->getUser()) {
+            $this->addFlash('error', 'You can only delete suppliers you created.');
+            // Redirect to admin route if user is admin/staff
+            if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF')) {
+                return $this->redirectToRoute('app_admin_suppliers_index');
+            }
+            return $this->redirectToRoute('app_supplier_index');
+        }
+
         $token = $request->request->get('_token');
 
         if ($this->isCsrfTokenValid('delete' . $supplier->getId(), $token)) {
+            $this->activityLogService->logSupplierDelete($supplier);
+            
             $entityManager->remove($supplier);
             $entityManager->flush();
+            
+            $this->addFlash('success', 'Supplier deleted successfully.');
+        }
+
+        // Redirect to admin route if user is admin/staff
+        if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF')) {
+            return $this->redirectToRoute('app_admin_suppliers_index');
         }
 
         return $this->redirectToRoute('app_supplier_index');

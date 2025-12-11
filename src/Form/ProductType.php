@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Product;
 use App\Entity\Category;
+use App\Entity\Supplier;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -11,7 +12,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 
-class Product1Type extends AbstractType
+class ProductType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -22,6 +23,12 @@ class Product1Type extends AbstractType
                 'choice_label' => 'name',   
                 'label' => 'Category',
                 'placeholder' => 'Select a category',
+            ])
+            ->add('supplier', EntityType::class, [
+                'class' => Supplier::class,
+                'choice_label' => 'name',   
+                'label' => 'Supplier',
+                'placeholder' => 'Select a supplier',
             ])
             ->add('price')
             ->add('quantity')

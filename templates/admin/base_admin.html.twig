@@ -2,10 +2,6 @@
 
 {% block stylesheets %}
   {{ parent() }}
-  <link rel="stylesheet" href="{{ asset('css/base.css') }}?v=4">
-  <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}?v=4">
-  <link rel="stylesheet" href="{{ asset('css/form.css') }}?v=4">
-  <link rel="stylesheet" href="{{ asset('css/product.css') }}?v=4">
   <link rel="stylesheet" href="{{ asset('css/supplier.css') }}?v=4">
 {% endblock %}
 
@@ -14,16 +10,32 @@
   <aside class="sidebar">
     <div class="logo-container">
       <img src="{{ asset('images/logo6.png') }}" alt="Logo" class="logo">
-      <h2>Admin Panel</h2>
+      <h2>
+        {% if is_granted('ROLE_STAFF') and not is_granted('ROLE_ADMIN') %}
+          Staff Panel
+        {% else %}
+          Admin Panel
+        {% endif %}
+      </h2>
     </div>
     <nav>
       <ul>
-        <li><a href="{{ path('admin_dashboard') }}">Dashboard</a></li>
-        <li><a href="{{ path('app_product_index') }}">Products</a></li>
-        <li><a href="{{ path('app_category_index') }}">Category</a></li>
-        <li><a href="{{ path('app_supplier_index') }}">Suppliers</a></li>
-      </ul>
+        {% if is_granted('ROLE_ADMIN') %}
+          <li><a href="{{ path('app_admin_dashboard') }}"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+          <li><a href="{{ path('app_admin_users_index') }}"><i class="bi bi-people"></i> Users</a></li>
+          <li><a href="{{ path('app_admin_logs_index') }}"><i class="bi bi-journal-text"></i> Activity Logs</a></li>
+        {% endif %}
+        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_STAFF') %}
+          <li><a href="{{ path('app_admin_products_index') }}"><i class="bi bi-box"></i> Products</a></li>
+          <li><a href="{{ path('app_admin_categories_index') }}"><i class="bi bi-tags"></i> Category</a></li>
+          <li><a href="{{ path('app_admin_suppliers_index') }}"><i class="bi bi-truck"></i> Suppliers</a></li>
+          <li><a href="{{ path('app_profile') }}"><i class="bi bi-person"></i> Profile</a></li>
+        {% endif %}
+      </ul> 
     </nav>
+    <div class="logout-button">
+      <a href="{{ path('app_logout') }}"><i class="bi bi-box-arrow-right"></i> Logout</a>
+    </div>
   </aside>
 
   <main class="dashboard-main">

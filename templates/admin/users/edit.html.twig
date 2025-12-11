@@ -1,0 +1,112 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Edit User{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="stylesheet" href="{{ asset('css/form.css') }}">
+{% endblock %}
+
+{% block admin_content %}
+<div class="form-container">
+    <h2><i class="bi bi-person-gear"></i> Edit User</h2>
+    {{ form_start(userForm, {'attr': {'class': 'product-form'}}) }}
+
+    <div class="form-grid">
+        <div class="form-group">
+            <label for="{{ userForm.username.vars.id }}">
+                <i class="bi bi-person"></i> Username
+            </label>
+            <div class="input-wrapper">
+                {{ form_widget(userForm.username, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Enter username'
+                    }
+                }) }}
+            </div>
+            {{ form_errors(userForm.username) }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ userForm.email.vars.id }}">
+                <i class="bi bi-envelope"></i> Email
+            </label>
+            <div class="input-wrapper">
+                {{ form_widget(userForm.email, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Enter email address'
+                    }
+                }) }}
+            </div>
+            {{ form_errors(userForm.email) }}
+        </div>
+
+        {% if isAdmin and userForm.roles is defined %}
+        <div class="form-group roles-group">
+            <label><i class="bi bi-shield-check"></i> User Role</label>
+            <div class="role-options">
+                {% for role in userForm.roles %}
+                    <div class="role-option">
+                        {% if role.vars.value == 'ROLE_ADMIN' %}
+                            {{ form_widget(role, {'attr': {'class': 'role-checkbox'}}) }}
+                            <label for="{{ role.vars.id }}" class="role-label">
+                                <i class="bi bi-shield-fill-check"></i> Admin
+                            </label>
+                        {% else %}
+                            {{ form_widget(role, {'attr': {'class': 'role-checkbox'}}) }}
+                            <label for="{{ role.vars.id }}" class="role-label">
+                                <i class="bi bi-person-badge"></i> Staff
+                            </label>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            {{ form_errors(userForm.roles) }}
+        </div>
+        {% endif %}
+
+        <div class="form-group">
+            <label for="{{ userForm.plainPassword.first.vars.id }}">
+                <i class="bi bi-key"></i> New Password (Optional)
+            </label>
+            <div class="input-wrapper">
+                {{ form_widget(userForm.plainPassword.first, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Leave blank to keep current password'
+                    }
+                }) }}
+            </div>
+            {{ form_errors(userForm.plainPassword.first) }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ userForm.plainPassword.second.vars.id }}">
+                <i class="bi bi-key-fill"></i> Confirm New Password
+            </label>
+            <div class="input-wrapper">
+                {{ form_widget(userForm.plainPassword.second, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Confirm new password'
+                    }
+                }) }}
+            </div>
+            {{ form_errors(userForm.plainPassword.second) }}
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check-circle"></i> Update User
+        </button>
+        <a href="{{ path('app_admin_users_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+
+    {{ form_end(userForm) }}
+</div>
+{% endblock %}

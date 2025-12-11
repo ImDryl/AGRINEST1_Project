@@ -1,0 +1,98 @@
+document.addEventListener("DOMContentLoaded", function () {
+    const table = document.getElementById("usersTable");
+    if (!table) return;
+
+    const tbody = table.querySelector("tbody");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+
+    const searchInput = document.getElementById("tableSearch");
+    const lengthSelect = document.getElementById("pageLength");
+    const pagination = document.getElementById("pagination");
+    const pageInfo = document.getElementById("pageInfo");
+
+    let filteredRows = rows.slice();
+    let currentPage = 1;
+
+    function rowMatchesTerm(row, term) {
+        if (!term) return true;
+        const t = term.toLowerCase();
+        return Array.from(row.cells).some((cell, idx) => {
+            // Skip actions column (last)
+            if (idx === row.cells.length - 1) return false;
+            return (cell.textContent || "").toLowerCase().includes(t);
+        });
+    }
+
+    function makeButton(label, page, disabled, active) {
+        const btn = document.createElement("button");
+        btn.textContent = label;
+        btn.className = "page-btn" + (active ? " is-active" : "");
+        btn.disabled = !!disabled;
+        if (!disabled) {
+            btn.addEventListener("click", () => {
+                currentPage = page;
+                render();
+            });
+        }
+        return btn;
+    }
+
+    function render() {
+        const pageSize = parseInt(lengthSelect.value, 10) || 10;
+        const total = filteredRows.length;
+        const totalPages = Math.max(1, Math.ceil(total / pageSize));
+        if (currentPage > totalPages) currentPage = totalPages;
+        const start = (currentPage - 1) * pageSize;
+        const end = start + pageSize;
+
+        rows.forEach((r) => (r.style.display = "none"));
+        filteredRows.slice(start, end).forEach((r) => (r.style.display = ""));
+
+        pagination.innerHTML = "";
+        pagination.appendChild(
+            makeButton("Previous", currentPage - 1, currentPage === 1, false)
+        );
+        for (let i = 1; i <= totalPages; i++) {
+            if (
+                i === 1 ||
+                i === totalPages ||
+                (i >= currentPage - 1 && i <= currentPage + 1)
+            ) {
+                pagination.appendChild(
+                    makeButton(i, i, false, i === currentPage)
+                );
+            } else if (
+                i === currentPage - 2 ||
+                i === currentPage + 2
+            ) {
+                const ellipsis = document.createElement("span");
+                ellipsis.textContent = "...";
+                ellipsis.style.padding = "6px 10px";
+                ellipsis.style.color = "#666";
+                pagination.appendChild(ellipsis);
+            }
+        }
+        pagination.appendChild(
+            makeButton("Next", currentPage + 1, currentPage === totalPages, false)
+        );
+
+        const showingStart = total === 0 ? 0 : start + 1;
+        const showingEnd = Math.min(end, total);
+        pageInfo.textContent = `Showing ${showingStart} to ${showingEnd} of ${total} entries`;
+    }
+
+    searchInput.addEventListener("input", () => {
+        const term = searchInput.value.trim();
+        filteredRows = rows.filter((r) => rowMatchesTerm(r, term));
+        currentPage = 1;
+        render();
+    });
+
+    lengthSelect.addEventListener("change", () => {
+        currentPage = 1;
+        render();
+    });
+
+    render();
+});
+

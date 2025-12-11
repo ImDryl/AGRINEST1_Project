@@ -1,12 +1,15 @@
-{% extends 'admin/base_admin.html.twig' %}
-
-{# {% block title %}New Product{% endblock %} #}
+{% extends isAdmin|default(false) ? 'admin/base_admin.html.twig' : 'base.html.twig' %}
 
 {% block title %}Create New Product{% endblock %}
 
 {% block admin_content %}
-  <div class="form-container">
-    <h2>🛒 Create New Product</h2>
-    {{ include('product/_form.html.twig') }}
-  </div>
+    {{ include('product/_new_content.html.twig') }}
+{% endblock %}
+
+{% block body %}
+    {% if isAdmin|default(false) %}
+        {{ parent() }}
+    {% else %}
+        {{ include('product/_new_content.html.twig') }}
+    {% endif %}
 {% endblock %}

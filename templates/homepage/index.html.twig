@@ -1,9 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}AgriNest - Quality Eggs & Poultry Products{% endblock %}
+{% block title %}AgriNest{% endblock %}
 
 {% block stylesheets %}
+    {{ parent() }}
     <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/modal.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/modal.js') }}"></script>
 {% endblock %}
 
 {% block body %}
@@ -17,6 +24,12 @@
         <li><a href="#shop">Shop</a></li>
         <li><a href="#contact">Contact</a></li>
         <li><a href="#sell">Sell</a></li>
+        {% if app.user %}
+            <li><a href="{{ path('app_logout') }}">Logout</a></li>
+        {% else %}
+            <li><a href="#" data-modal="login"><i class="bi bi-box-arrow-in-right"></i> Login</a></li>
+            <li><a href="#" data-modal="register" class="nav-cta">Sign Up</a></li>
+        {% endif %}
     </ul>
 </nav>
 
@@ -30,28 +43,57 @@
 
 <section class="products">
     <div class="card">
-        <h3>🥚 Native Eggs</h3>
+        <h3><i class="bi bi-egg-fried"></i> Native Eggs</h3>
         <p>Fresh and nutritious native chicken eggs.</p>
     </div>
     <div class="card">
-        <h3>🐣 Fertilized Eggs</h3>
+        <h3><i class="bi bi-egg"></i> Fertilized Eggs</h3>
         <p>High-quality fertilized eggs for breeding.</p>
     </div>
     <div class="card">
-        <h3>🍳 Table Eggs</h3>
+        <h3><i class="bi bi-egg-fried"></i> Table Eggs</h3>
         <p>Clean and farm-fresh table eggs for your family.</p>
     </div>
     <div class="card">
-        <h3>🐥 Chicks & Livestock</h3>
+        <h3><i class="bi bi-egg"></i> Chicks & Livestock</h3>
         <p>Strong, healthy chicks and poultry livestock.</p>
     </div>
     <div class="card">
-        <h3>🍗 Fresh Meat</h3>
+        <h3><i class="bi bi-cup-hot"></i> Fresh Meat</h3>
         <p>Farm-raised chicken meat for your table.</p>
     </div>
 </section>
 
 <footer class="footer">
-    <p>© 2025 AgriNest. Fresh from the Nest 🐓</p>
+    <p>© 2025 AgriNest. Fresh from the Nest <i class="bi bi-heart-fill"></i></p>
 </footer>
+
+{# Include Modals #}
+{% if not app.user %}
+    {{ include('homepage/_login_modal.html.twig') }}
+    {{ include('homepage/_register_modal.html.twig') }}
+    
+    {# Auto-open modal if there are form errors or login error #}
+    {% if error %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const loginModal = document.getElementById('loginModal');
+                if (loginModal) {
+                    loginModal.classList.add('active');
+                    document.body.classList.add('modal-open');
+                }
+            });
+        </script>
+    {% elseif registrationForm.vars.submitted and not registrationForm.vars.valid %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const registerModal = document.getElementById('registerModal');
+                if (registerModal) {
+                    registerModal.classList.add('active');
+                    document.body.classList.add('modal-open');
+                }
+            });
+        </script>
+    {% endif %}
+{% endif %}
 {% endblock %}

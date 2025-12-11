@@ -1,65 +1,17 @@
-{% extends 'admin/base_admin.html.twig' %}
+{% extends isAdmin|default(false) ? 'admin/base_admin.html.twig' : 'base.html.twig' %}
 
 {% block title %}Category List{% endblock %}
 
 {% block admin_content %}
-  <div class="page-header">
-      <h1>🗂️ Category List</h1>
-      <a href="{{ path('app_category_new') }}" class="btn btn-add">➕ Create New Category</a>
-  </div>
+    {% embed 'category/_index_content.html.twig' %}{% endembed %}
+{% endblock %}
 
-  <div class="card">
-      <div class="table-controls">
-          <div class="control-group">
-              <label for="categoryPageLength" style="font-weight:600;">Show</label>
-              <select id="categoryPageLength">
-                  <option value="5">5</option>
-                  <option value="10" selected>10</option>
-                  <option value="25">25</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
-              </select>
-              <span>entries</span>
-          </div>
-          <div class="control-group">
-              <label for="categoryTableSearch" style="font-weight:600;">Search:</label>
-              <input id="categoryTableSearch" type="text" placeholder="Type to filter..." style="min-width:220px;">
-          </div>
-      </div>
-      <table id="categoryTable" class="styled-table">
-          <thead>
-              <tr>
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th>Actions</th>
-              </tr>
-          </thead>
-          <tbody>
-              {% for category in categories %}
-                  <tr>
-                      <td>{{ category.id }}</td>
-                      <td>{{ category.name }}</td>
-                      <td>
-                          {# <a href="{{ path('app_category_show', {'id': category.id}) }}" class="btn btn-view">👁 View</a> #}
-                          <a href="{{ path('app_category_edit', {'id': category.id}) }}" class="btn btn-edit">✏ Edit</a>
-                          <form method="post" action="{{ path('app_category_delete', {'id': category.id}) }}" style="display:inline-block;" onsubmit="return confirm('Are you sure?');">
-                              <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
-                              <button class="btn btn-delete">🗑</button>
-                          </form>
-                      </td>
-                  </tr>
-              {% else %}
-                  <tr>
-                      <td colspan="3" class="no-data">No categories found.</td>
-                  </tr>
-              {% endfor %}
-          </tbody>
-      </table>
-      <div class="table-footer">
-        <div id="categoryPageInfo" class="page-info"></div>
-        <div id="categoryPagination"></div>
-      </div>
-  </div>
+{% block body %}
+    {% if isAdmin|default(false) %}
+        {{ parent() }}
+    {% else %}
+        {% embed 'category/_index_content.html.twig' %}{% endembed %}
+    {% endif %}
 {% endblock %}
 
 {% block stylesheets %}

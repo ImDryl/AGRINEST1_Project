@@ -1,0 +1,124 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register - AgriNest{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-header">
+            <div class="logo-icon">
+                <i class="bi bi-person-plus"></i>
+            </div>
+            <h1>Create Account</h1>
+            <p>Join AgriNest and start managing your products</p>
+        </div>
+
+        {{ form_start(registrationForm, {'attr': {'class': 'auth-form'}}) }}
+            
+            <div class="form-group">
+                <label for="{{ registrationForm.username.vars.id }}">
+                    <i class="bi bi-person"></i> Username
+                </label>
+                <div class="input-wrapper">
+                    <i class="bi bi-person"></i>
+                    {{ form_widget(registrationForm.username, {
+                        'attr': {
+                            'class': 'form-control',
+                            'placeholder': 'Choose a username',
+                            'autocomplete': 'username'
+                        }
+                    }) }}
+                </div>
+                {{ form_errors(registrationForm.username) }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ registrationForm.email.vars.id }}">
+                    <i class="bi bi-envelope"></i> Email
+                </label>
+                <div class="input-wrapper">
+                    <i class="bi bi-envelope"></i>
+                    {{ form_widget(registrationForm.email, {
+                        'attr': {
+                            'class': 'form-control',
+                            'placeholder': 'Enter your email address',
+                            'autocomplete': 'email'
+                        }
+                    }) }}
+                </div>
+                {{ form_errors(registrationForm.email) }}
+            </div>
+
+            <div class="form-group roles-group">
+                <label><i class="bi bi-shield-check"></i> Select Your Role</label>
+                <div class="role-options">
+                    {% for role in registrationForm.roles %}
+                        <div class="role-option">
+                            {% if role.vars.value == 'ROLE_ADMIN' %}
+                                {{ form_widget(role, {'attr': {'class': 'role-checkbox'}}) }}
+                                <label for="{{ role.vars.id }}" class="role-label">
+                                    <i class="bi bi-shield-fill-check"></i> Admin
+                                </label>
+                            {% else %}
+                                {{ form_widget(role, {'attr': {'class': 'role-checkbox'}}) }}
+                                <label for="{{ role.vars.id }}" class="role-label">
+                                    <i class="bi bi-person-badge"></i> Staff
+                                </label>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+                {{ form_errors(registrationForm.roles) }}
+            </div>
+
+            <div class="form-group password-group">
+                <label for="{{ registrationForm.plainPassword.first.vars.id }}">
+                    <i class="bi bi-lock"></i> Password
+                </label>
+                <div class="input-wrapper">
+                    <i class="bi bi-lock"></i>
+                    {{ form_widget(registrationForm.plainPassword.first, {
+                        'attr': {
+                            'class': 'form-control',
+                            'placeholder': 'Create a password (min. 6 characters)',
+                            'autocomplete': 'new-password'
+                        }
+                    }) }}
+                </div>
+                {{ form_errors(registrationForm.plainPassword.first) }}
+            </div>
+
+            <div class="form-group password-group">
+                <label for="{{ registrationForm.plainPassword.second.vars.id }}">
+                    <i class="bi bi-lock-fill"></i> Confirm Password
+                </label>
+                <div class="input-wrapper">
+                    <i class="bi bi-lock-fill"></i>
+                    {{ form_widget(registrationForm.plainPassword.second, {
+                        'attr': {
+                            'class': 'form-control',
+                            'placeholder': 'Confirm your password',
+                            'autocomplete': 'new-password'
+                        }
+                    }) }}
+                </div>
+                {{ form_errors(registrationForm.plainPassword.second) }}
+            </div>
+
+            <button type="submit" class="auth-submit-btn">
+                <i class="bi bi-person-plus"></i>
+                Create Account
+            </button>
+        {{ form_end(registrationForm) }}
+
+        <div class="auth-links">
+            <p>Already have an account? <a href="{{ path('app_login') }}">Sign in here</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

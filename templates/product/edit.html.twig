@@ -1,11 +1,23 @@
-{% extends 'admin/base_admin.html.twig' %}
+{% extends isAdmin|default(false) ? 'admin/base_admin.html.twig' : 'base.html.twig' %}
 
 {% block title %}Edit Product{% endblock %}
 
 {% block admin_content %}
-  <h1>🛠️ Edit Product</h1>
+  <h1><i class="bi bi-pencil"></i> Edit Product</h1>
   <div class="form-container">
     {{ include('product/_form.html.twig', {'button_label': 'Update'}) }}
     {{ include('product/_delete_form.html.twig') }}
   </div>
+{% endblock %}
+
+{% block body %}
+    {% if isAdmin|default(false) %}
+        {{ parent() }}
+    {% else %}
+        <h1><i class="bi bi-pencil"></i> Edit Product</h1>
+        <div class="form-container">
+            {{ include('product/_form.html.twig', {'button_label': 'Update'}) }}
+            {{ include('product/_delete_form.html.twig') }}
+        </div>
+    {% endif %}
 {% endblock %}

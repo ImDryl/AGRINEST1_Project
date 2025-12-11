@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Access Denied - 403{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .error-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .error-code {
+            font-size: 120px;
+            font-weight: 700;
+            color: #ff6f61;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .error-message {
+            font-size: 24px;
+            color: #754c24;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        .error-description {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+        .error-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .btn-home {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(247, 151, 30, 0.4);
+        }
+        .icon-lock {
+            font-size: 80px;
+            color: #ff6f61;
+            margin-bottom: 20px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="error-container">
+    <i class="bi bi-shield-x icon-lock"></i>
+    <div class="error-code">403</div>
+    <div class="error-message">Access Denied</div>
+    <div class="error-description">
+        You don't have permission to access this resource. 
+        This page is restricted to administrators only.
+    </div>
+    <div class="error-actions">
+        <a href="{{ path('app_homepage') }}" class="btn-home">
+            <i class="bi bi-house"></i> Go to Homepage
+        </a>
+        {% if app.user %}
+            <a href="{{ path('app_admin_products_index') }}" class="btn-home">
+                <i class="bi bi-box"></i> Go to Products
+            </a>
+        {% else %}
+            <a href="{{ path('app_login') }}" class="btn-home">
+                <i class="bi bi-box-arrow-in-right"></i> Login
+            </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

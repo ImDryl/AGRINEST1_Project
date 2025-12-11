@@ -63,3 +63,65 @@
     color: #666;
     font-size: 14px;
 }
+
+/* === Badge Styles for Roles === */
+.badge-admin,
+.badge-staff,
+.badge-user {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-admin {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.badge-staff {
+    background: linear-gradient(135deg, #f9d423 0%, #ff4e50 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(255, 78, 80, 0.3);
+}
+
+.badge-user {
+    background: linear-gradient(135deg, #e0e0e0 0%, #bdbdbd 100%);
+    color: #666;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* === Disabled Button Styles === */
+.btn-disabled {
+    opacity: 0.6;
+    cursor: not-allowed !important;
+    pointer-events: none;
+    background: #b0b0b0 !important;
+    background-color: #b0b0b0 !important;
+    color: #666 !important;
+    border: none !important;
+    box-shadow: none !important;
+    text-decoration: none;
+    display: inline-block;
+    position: relative;
+}
+
+.btn-disabled:hover,
+.btn-disabled:focus,
+.btn-disabled:active {
+    opacity: 0.6 !important;
+    background: #b0b0b0 !important;
+    background-color: #b0b0b0 !important;
+    color: #666 !important;
+    transform: none !important;
+    box-shadow: none !important;
+    cursor: not-allowed !important;
+}
+
+.btn-disabled i {
+    color: #666 !important;
+}

@@ -25,6 +25,10 @@ class Category
     #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'category')]
     private Collection $products;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?\App\Entity\User $createdBy = null;
+
     public function __construct()
     {
         $this->products = new ArrayCollection();
@@ -79,6 +83,18 @@ class Category
                 $product->setCategory(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreatedBy(): ?\App\Entity\User
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?\App\Entity\User $createdBy): static
+    {
+        $this->createdBy = $createdBy;
 
         return $this;
     }

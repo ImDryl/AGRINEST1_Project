@@ -1,0 +1,393 @@
+/* === Modal Overlay === */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    overflow-y: auto;
+}
+
+.modal-overlay.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    padding: 20px;
+}
+
+/* Blur homepage content when modal is open */
+body.modal-open {
+    overflow: hidden;
+}
+
+body.modal-open .hero,
+body.modal-open .products,
+body.modal-open .footer {
+    filter: blur(5px);
+    pointer-events: none;
+}
+
+/* === Modal Container === */
+.modal-container {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    padding: 0;
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    z-index: 10000;
+    animation: modalSlideUp 0.4s ease-out;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal-container {
+    transform: scale(1);
+}
+
+@keyframes modalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* === Modal Close Button === */
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 36px;
+    height: 36px;
+    background: rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 50%;
+    color: #666;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10001;
+}
+
+.modal-close:hover {
+    background: rgba(255, 78, 80, 0.2);
+    color: #ff4e50;
+    transform: rotate(90deg);
+}
+
+/* === Modal Content === */
+.modal-content {
+    padding: 50px 45px 45px;
+}
+
+/* === Modal Header === */
+.modal-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.modal-header .logo-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #f9d423 0%, #ff4e50 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    box-shadow: 0 10px 30px rgba(255, 78, 80, 0.4);
+}
+
+.modal-header .logo-icon i {
+    font-size: 32px;
+    color: white;
+}
+
+.modal-header h1 {
+    color: #333;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    letter-spacing: -0.5px;
+}
+
+.modal-header p {
+    color: #666;
+    font-size: 14px;
+    margin: 0;
+}
+
+/* === Modal Form === */
+.modal-form {
+    width: 100%;
+}
+
+.modal-form .form-group {
+    margin-bottom: 22px;
+    position: relative;
+}
+
+.modal-form .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+}
+
+.modal-form .input-wrapper {
+    position: relative;
+}
+
+.modal-form input[type="text"],
+.modal-form input[type="email"],
+.modal-form input[type="password"] {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: "Poppins", sans-serif;
+    transition: all 0.3s ease;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+.modal-form input:focus {
+    outline: none;
+    border-color: #ff4e50;
+    box-shadow: 0 0 0 4px rgba(255, 78, 80, 0.1);
+}
+
+.modal-form input::placeholder {
+    color: #bbb;
+}
+
+.modal-form .form-control {
+    width: 100%;
+    padding: 14px 16px 14px 48px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: "Poppins", sans-serif;
+    transition: all 0.3s ease;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+.modal-form .form-control:focus {
+    outline: none;
+    border-color: #ff4e50;
+    box-shadow: 0 0 0 4px rgba(255, 78, 80, 0.1);
+}
+
+/* === Role Selection in Modal === */
+.modal-form .roles-group {
+    margin-bottom: 25px;
+}
+
+.modal-form .roles-group > label {
+    display: block;
+    margin-bottom: 15px;
+    color: #333;
+    font-weight: 600;
+    font-size: 14px;
+    text-align: center;
+}
+
+.modal-form .role-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    max-width: 100%;
+}
+
+.modal-form .role-option {
+    position: relative;
+    width: 100%;
+}
+
+.modal-form .role-option input[type="checkbox"] {
+    display: none;
+}
+
+.modal-form .role-option .role-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 13px;
+    margin: 0;
+    width: 100%;
+    gap: 6px;
+    min-height: 40px;
+}
+
+.modal-form .role-option .role-label i {
+    font-size: 16px;
+}
+
+.modal-form .role-option input[type="checkbox"]:checked + .role-label {
+    background: linear-gradient(135deg, #f9d423 0%, #ff4e50 100%);
+    color: white;
+    border-color: #ff4e50;
+    box-shadow: 0 4px 15px rgba(255, 78, 80, 0.3);
+}
+
+.modal-form .role-option .role-label:hover {
+    border-color: #ff4e50;
+    transform: translateY(-2px);
+}
+
+/* === Modal Submit Button === */
+.modal-submit-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #f9d423 0%, #ff4e50 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 78, 80, 0.4);
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.modal-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 78, 80, 0.5);
+}
+
+/* === Modal Links === */
+.modal-links {
+    text-align: center;
+    margin-top: 25px;
+    padding-top: 25px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.modal-links p {
+    color: #666;
+    font-size: 14px;
+    margin: 0 0 10px 0;
+}
+
+.modal-links a {
+    color: #ff4e50;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+    cursor: pointer;
+}
+
+.modal-links a:hover {
+    color: #f9d423;
+    text-decoration: underline;
+}
+
+/* === Modal Alerts === */
+.modal-alert {
+    padding: 14px 18px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-alert-danger {
+    background: #fee;
+    color: #c33;
+    border: 1px solid #fcc;
+}
+
+.modal-alert-success {
+    background: #efe;
+    color: #3c3;
+    border: 1px solid #cfc;
+}
+
+.modal-alert i {
+    font-size: 18px;
+}
+
+/* === Form Errors in Modal === */
+.modal-form .form-error {
+    color: #c33;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+}
+
+/* === Responsive === */
+@media (max-width: 576px) {
+    .modal-container {
+        max-width: 100%;
+        margin: 10px;
+    }
+    
+    .modal-content {
+        padding: 35px 25px;
+    }
+    
+    .modal-header h1 {
+        font-size: 24px;
+    }
+    
+    .modal-form .role-options {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* === Custom Scrollbar for Modal === */
+.modal-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+}
+
+.modal-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 78, 80, 0.3);
+    border-radius: 10px;
+}
+
+.modal-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 78, 80, 0.5);
+}
+

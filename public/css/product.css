@@ -212,6 +212,37 @@
     transform: translateY(0);
 }
 
+/* === Disabled Button Styles === */
+.btn-disabled {
+    opacity: 0.6;
+    cursor: not-allowed !important;
+    pointer-events: none;
+    background: #b0b0b0 !important;
+    background-color: #b0b0b0 !important;
+    color: #666 !important;
+    border: none !important;
+    box-shadow: none !important;
+    text-decoration: none;
+    display: inline-block;
+    position: relative;
+}
+
+.btn-disabled:hover,
+.btn-disabled:focus,
+.btn-disabled:active {
+    opacity: 0.6 !important;
+    background: #b0b0b0 !important;
+    background-color: #b0b0b0 !important;
+    color: #666 !important;
+    transform: none !important;
+    box-shadow: none !important;
+    cursor: not-allowed !important;
+}
+
+.btn-disabled i {
+    color: #666 !important;
+}
+
 /* === Product Show Page === */
 .product-show {
     display: flex;

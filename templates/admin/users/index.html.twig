@@ -1,0 +1,17 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}User List{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="stylesheet" href="{{ asset('css/product-table.css') }}?v=1">
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script src="{{ asset('js/user-table.js') }}?v=1"></script>
+{% endblock %}
+
+{% block admin_content %}
+    {% embed 'admin/users/_index_content.html.twig' %}{% endembed %}
+{% endblock %}

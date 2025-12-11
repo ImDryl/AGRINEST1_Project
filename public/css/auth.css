@@ -1,0 +1,486 @@
+/* === Authentication Pages (Login & Registration) === */
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f9d423 0%, #ff4e50 100%);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Hide nav on auth pages */
+.auth-page ~ nav,
+body:has(.auth-page) > nav {
+    display: none;
+}
+
+.auth-page::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+        circle,
+        rgba(255, 255, 255, 0.1) 0%,
+        transparent 70%
+    );
+    animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.auth-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    padding: 50px 45px;
+    width: 100%;
+    max-width: 480px;
+    position: relative;
+    z-index: 1;
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.auth-header .logo-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #f9d423 0%, #ff4e50 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    box-shadow: 0 10px 30px rgba(255, 78, 80, 0.4);
+}
+
+.auth-header .logo-icon i {
+    font-size: 32px;
+    color: white;
+}
+
+.auth-header h1 {
+    color: #333;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    letter-spacing: -0.5px;
+}
+
+.auth-header p {
+    color: #666;
+    font-size: 14px;
+    margin: 0;
+}
+
+.auth-form {
+    width: 100%;
+}
+
+.form-group {
+    margin-bottom: 22px;
+    position: relative;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+}
+
+.form-group .input-wrapper {
+    position: relative;
+}
+
+.form-group .input-wrapper i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 18px;
+    z-index: 1;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 14px 16px 14px 48px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: "Poppins", sans-serif;
+    transition: all 0.3s ease;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #ff4e50;
+    box-shadow: 0 0 0 4px rgba(255, 78, 80, 0.1);
+}
+
+.form-group input::placeholder {
+    color: #bbb;
+}
+
+/* Symfony Form Styling */
+.form-group .form-control {
+    width: 100%;
+    padding: 14px 16px 14px 48px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: "Poppins", sans-serif;
+    transition: all 0.3s ease;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+.form-group .form-control:focus {
+    outline: none;
+    border-color: #ff4e50;
+    box-shadow: 0 0 0 4px rgba(255, 78, 80, 0.1);
+}
+
+/* Role Selection */
+.roles-group {
+    margin-bottom: 25px;
+}
+
+.roles-group > label {
+    display: block;
+    margin-bottom: 15px;
+    color: #333;
+    font-weight: 600;
+    font-size: 14px;
+    text-align: center;
+}
+
+.role-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    max-width: 100%;
+}
+
+.role-option {
+    position: relative;
+    width: 100%;
+}
+
+.role-option input[type="checkbox"] {
+    display: none;
+}
+
+.role-option > label,
+.role-option label:not([for]),
+.role-option .role-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 13px;
+    margin: 0;
+    width: 100%;
+    gap: 6px;
+    min-height: 40px;
+}
+
+.role-option label i,
+.role-option .role-label i {
+    font-size: 16px;
+}
+
+.role-option input[type="checkbox"]:checked + .role-label {
+    background: linear-gradient(135deg, #f9d423 0%, #ff4e50 100%);
+    color: white;
+    border-color: #ff4e50;
+    box-shadow: 0 4px 15px rgba(255, 78, 80, 0.3);
+}
+
+.role-option label:hover {
+    border-color: #ff4e50;
+    transform: translateY(-2px);
+}
+
+/* Symfony form checkbox styling */
+.auth-container .form-check {
+    padding: 0;
+    margin: 0;
+}
+
+.auth-container .form-check input[type="checkbox"] {
+    display: none;
+}
+
+.auth-container .form-check label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 13px;
+    margin: 0;
+    width: 100%;
+    min-height: 40px;
+    gap: 6px;
+}
+
+.auth-container .form-check label i {
+    font-size: 16px;
+}
+
+.auth-container .form-check input[type="checkbox"]:checked + label {
+    background: linear-gradient(135deg, #f9d423 0%, #ff4e50 100%);
+    color: white;
+    border-color: #ff4e50;
+    box-shadow: 0 4px 15px rgba(255, 78, 80, 0.3);
+}
+
+.auth-container .form-check label:hover {
+    border-color: #ff4e50;
+    transform: translateY(-2px);
+}
+
+/* Password Fields */
+.password-group {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0;
+    z-index: 2;
+}
+
+.password-toggle:hover {
+    color: #ff4e50;
+}
+
+/* Alert Messages */
+.alert {
+    padding: 14px 18px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.alert-danger {
+    background: #fee;
+    color: #c33;
+    border: 1px solid #fcc;
+}
+
+.alert-success {
+    background: #efe;
+    color: #3c3;
+    border: 1px solid #cfc;
+}
+
+.alert i {
+    font-size: 18px;
+}
+
+/* Submit Button */
+.auth-submit-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #f9d423 0%, #ff4e50 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 78, 80, 0.4);
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.auth-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 78, 80, 0.5);
+}
+
+.auth-submit-btn:active {
+    transform: translateY(0);
+}
+
+/* Links */
+.auth-links {
+    text-align: center;
+    margin-top: 25px;
+    padding-top: 25px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.auth-links p {
+    color: #666;
+    font-size: 14px;
+    margin: 0 0 10px 0;
+}
+
+.auth-links a {
+    color: #ff4e50;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.auth-links a:hover {
+    color: #f9d423;
+    text-decoration: underline;
+}
+
+/* Already logged in message */
+.logged-in-message {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #856404;
+}
+
+.logged-in-message a {
+    color: #ff4e50;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.logged-in-message a:hover {
+    text-decoration: underline;
+}
+
+/* Form Errors */
+.form-error {
+    color: #c33;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .auth-container {
+        padding: 35px 25px;
+    }
+
+    .auth-header h1 {
+        font-size: 24px;
+    }
+
+    .role-options {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Hide default Symfony form row styling on auth pages */
+.auth-container .form-row {
+    margin-bottom: 22px;
+}
+
+.auth-container .form-row label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.auth-container .form-row .form-control {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: "Poppins", sans-serif;
+    transition: all 0.3s ease;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+.auth-container .form-row .form-control:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+/* Checkbox styling for roles */
+.auth-container input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+.auth-container .form-check {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.auth-container .form-check-label {
+    margin: 0;
+    cursor: pointer;
+}

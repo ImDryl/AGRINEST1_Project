@@ -1,0 +1,46 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block admin_content %}
+<div class="profile-wrapper">
+  <div class="profile-header-simple">
+    <h1><i class="bi bi-person-circle"></i> My Profile</h1>
+  </div>
+
+  <div class="profile-card-simple">
+    <div class="profile-info-simple">
+      <div class="info-row">
+        <span class="info-label"><i class="bi bi-person"></i> Username</span>
+        <span class="info-value">{{ user.username }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label"><i class="bi bi-envelope"></i> Email</span>
+        <span class="info-value">{{ user.email }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label"><i class="bi bi-shield-check"></i> Role</span>
+        <span class="info-value">
+          {% if 'ROLE_ADMIN' in user.roles %}
+            <span class="badge badge-admin">Admin</span>
+          {% elseif 'ROLE_STAFF' in user.roles %}
+            <span class="badge badge-staff">Staff</span>
+          {% else %}
+            <span class="badge badge-user">User</span>
+          {% endif %}
+        </span>
+      </div>
+    </div>
+
+    <div class="profile-actions-simple">
+      <a href="{{ path('app_profile_change_password') }}" class="btn btn-primary">
+        <i class="bi bi-key"></i> Change Password
+      </a>
+      <a href="{{ path('app_product_index') }}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Products
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
