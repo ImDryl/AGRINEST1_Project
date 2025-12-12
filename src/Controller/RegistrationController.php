@@ -25,18 +25,14 @@ class RegistrationController extends AbstractController
 
 
         $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form = $this->createForm(RegistrationFormType::class, $user, [
+            'show_roles' => false, // Hide roles field on registration page
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Security: Prevent non-admin users from assigning admin/staff roles
-            if (!$this->isGranted('ROLE_ADMIN')) {
-                // Remove any admin/staff roles if somehow selected
-                $selectedRoles = $form->get('roles')->getData();
-                if (!empty($selectedRoles)) {
-                    $user->setRoles([]); // Set to empty array, will default to ROLE_USER
-                }
-            }
+            // Force ROLE_USER for registration page (security)
+            $user->setRoles([]); // Empty array will default to ROLE_USER
 
             // encode the plain password
             $user->setPassword(
@@ -48,17 +44,6 @@ class RegistrationController extends AbstractController
 
             $entityManager->persist($user);
             $entityManager->flush();
-
-            // do anything else you need here, like send an email
-            $roles = $user->getRoles();
-
-            if (in_array('ROLE_ADMIN', $roles, true)) {
-                return $this->redirectToRoute('app_admin_dashboard');
-            }
-    
-            if (in_array('ROLE_STAFF', $roles, true)) {
-                return $this->redirectToRoute('app_admin_products_index');
-            }
     
             // For regular users, redirect to homepage with login modal auto-opened
             $this->addFlash('success', 'Registration successful! Please log in to continue.');

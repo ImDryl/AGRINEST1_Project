@@ -25,13 +25,18 @@ final class HomepageController extends AbstractController
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        // Create registration form
+        // Create registration form (without roles field for homepage)
         $user = new User();
-        $registrationForm = $this->createForm(RegistrationFormType::class, $user);
+        $registrationForm = $this->createForm(RegistrationFormType::class, $user, [
+            'show_roles' => false, // Hide roles field on homepage
+        ]);
         $registrationForm->handleRequest($request);
 
         // Handle registration form submission
         if ($registrationForm->isSubmitted() && $registrationForm->isValid()) {
+            // Force ROLE_USER for homepage registrations (security)
+            $user->setRoles([]); // Empty array will default to ROLE_USER
+            
             // Encode the plain password
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
@@ -42,15 +47,6 @@ final class HomepageController extends AbstractController
 
             $entityManager->persist($user);
             $entityManager->flush();
-
-            // Redirect based on role
-            $roles = $user->getRoles();
-            if (in_array('ROLE_ADMIN', $roles, true)) {
-                return $this->redirectToRoute('app_admin_dashboard');
-            }
-            if (in_array('ROLE_STAFF', $roles, true)) {
-                return $this->redirectToRoute('app_admin_products_index');
-            }
             
             // For regular users, redirect to homepage with login modal auto-opened
             $this->addFlash('success', 'Registration successful! Please log in to continue.');

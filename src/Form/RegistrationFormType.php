@@ -33,14 +33,6 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('roles', ChoiceType::class, [
-                'choices' => [
-                    'Admin' => 'ROLE_ADMIN',
-                    'Staff' => 'ROLE_STAFF',
-                ],
-                'multiple' => true,
-                'expanded' => true,
-            ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'first_options' => ['label' => 'Password'],
@@ -60,12 +52,25 @@ class RegistrationFormType extends AbstractType
                 ],
             ])
         ;
+
+        // Only add roles field if show_roles option is true (for admin dashboard)
+        if ($options['show_roles'] ?? false) {
+            $builder->add('roles', ChoiceType::class, [
+                'choices' => [
+                    'Admin' => 'ROLE_ADMIN',
+                    'Staff' => 'ROLE_STAFF',
+                ],
+                'multiple' => true,
+                'expanded' => true,
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'show_roles' => false, // Default to false - only show in admin dashboard
         ]);
     }
 }

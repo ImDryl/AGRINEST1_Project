@@ -47,27 +47,30 @@
                     {{ form_errors(registrationForm.email) }}
                 </div>
 
-                <div class="form-group roles-group">
-                    <label><i class="bi bi-shield-check"></i> Select Your Role</label>
-                    <div class="role-options">
-                        {% for role in registrationForm.roles %}
-                            <div class="role-option">
-                                {% if role.vars.value == 'ROLE_ADMIN' %}
-                                    {{ form_widget(role, {'attr': {'class': 'role-checkbox'}}) }}
-                                    <label for="{{ role.vars.id }}" class="role-label">
-                                        <i class="bi bi-shield-fill-check"></i> Admin
-                                    </label>
-                                {% else %}
-                                    {{ form_widget(role, {'attr': {'class': 'role-checkbox'}}) }}
-                                    <label for="{{ role.vars.id }}" class="role-label">
-                                        <i class="bi bi-person-badge"></i> Staff
-                                    </label>
-                                {% endif %}
-                            </div>
-                        {% endfor %}
+                {# Roles field only shown in admin dashboard, not on homepage #}
+                {% if registrationForm.roles is defined %}
+                    <div class="form-group roles-group">
+                        <label><i class="bi bi-shield-check"></i> Select Your Role</label>
+                        <div class="role-options">
+                            {% for role in registrationForm.roles %}
+                                <div class="role-option">
+                                    {% if role.vars.value == 'ROLE_ADMIN' %}
+                                        {{ form_widget(role, {'attr': {'class': 'role-checkbox'}}) }}
+                                        <label for="{{ role.vars.id }}" class="role-label">
+                                            <i class="bi bi-shield-fill-check"></i> Admin
+                                        </label>
+                                    {% else %}
+                                        {{ form_widget(role, {'attr': {'class': 'role-checkbox'}}) }}
+                                        <label for="{{ role.vars.id }}" class="role-label">
+                                            <i class="bi bi-person-badge"></i> Staff
+                                        </label>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {{ form_errors(registrationForm.roles) }}
                     </div>
-                    {{ form_errors(registrationForm.roles) }}
-                </div>
+                {% endif %}
 
                 <div class="form-group password-group">
                     <label for="{{ registrationForm.plainPassword.first.vars.id }}">
