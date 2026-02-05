@@ -73,32 +73,64 @@ public function new(Request $request, EntityManagerInterface $entityManager, Slu
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Product $product, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(Product1Type::class, $product);
-        $form->handleRequest($request);
+   #[Route('/{id}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
+public function edit(Request $request, Product $product, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+{
+    $form = $this->createForm(Product1Type::class, $product);
+    $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+    if ($form->isSubmitted() && $form->isValid()) {
+        $imageFile = $form->get('image')->getData();
 
-            return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
+        if ($imageFile) {
+            // Generate new filename
+            $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $slugger->slug($originalFilename);
+            $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+
+            try {
+                $imageFile->move(
+                    $this->getParameter('uploads_directory') . '/images',
+                    $newFilename
+                );
+            } catch (FileException $e) {
+                // handle upload error
+            }
+
+            // Optionally delete old image (if exists)
+            if ($product->getImage()) {
+                $oldImagePath = $this->getParameter('uploads_directory') . '/images/' . $product->getImage();
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+            }
+
+            // Set new image name
+            $product->setImage($newFilename);
         }
 
-        return $this->render('product/edit.html.twig', [
-            'product' => $product,
-            'form' => $form,
-        ]);
-    }
-
-    #[Route('/{id}', name: 'app_product_delete', methods: ['POST'])]
-    public function delete(Request $request, Product $product, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($product);
-            $entityManager->flush();
-        }
+        $entityManager->flush();
 
         return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    return $this->render('product/edit.html.twig', [
+        'product' => $product,
+        'form' => $form,
+    ]);
+}
+
+
+ #[Route('/{id}/delete', name: 'app_product_delete', methods: ['POST'])]
+public function delete(Request $request, Product $product, EntityManagerInterface $entityManager): Response
+{
+    if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->getPayload()->getString('_token'))) {
+        $entityManager->remove($product);
+        $entityManager->flush();
+    }
+
+    return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
+} 
+
+
 }

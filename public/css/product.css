@@ -1,0 +1,656 @@
+/* === Page Header === */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid rgba(255, 206, 84, 0.2);
+}
+
+.page-header h1 {
+    font-size: 28px;
+    color: #754c24;
+    font-weight: 700;
+    margin: 0;
+    position: relative;
+    padding-left: 15px;
+}
+
+.page-header h1::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 70%;
+    background: linear-gradient(180deg, #ffce54, #ff6f61);
+    border-radius: 3px;
+}
+
+.btn-add {
+    background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    box-shadow: 0 4px 12px rgba(247, 151, 30, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-add:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, #ffb347 0%, #ffcc33 100%);
+    box-shadow: 0 6px 18px rgba(247, 151, 30, 0.4);
+}
+
+.btn-add:active {
+    transform: translateY(0);
+}
+
+/* === Product Table Styling === */
+.table-wrapper {
+    background: #fff;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 8px 24px rgba(255, 180, 71, 0.15);
+    overflow: hidden;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 0;
+    background: #fff;
+    overflow: hidden;
+}
+
+.styled-table thead {
+    position: relative;
+}
+
+.styled-table th {
+    background: linear-gradient(135deg, #ffce54 0%, #ff8e53 100%);
+    color: white;
+    text-align: left;
+    padding: 16px 18px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    position: relative;
+    border: none;
+}
+
+.styled-table th:first-child {
+    border-radius: 12px 0 0 0;
+}
+
+.styled-table th:last-child {
+    border-radius: 0 12px 0 0;
+}
+
+.styled-table td {
+    padding: 16px 18px;
+    border-bottom: 1px solid #f9f9f9;
+    color: #444;
+    background: #fff;
+    vertical-align: middle;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.styled-table tbody tr {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.styled-table tbody tr:hover {
+    background-color: #fff8e6;
+    transform: scale(1.01);
+    box-shadow: 0 4px 12px rgba(255, 206, 84, 0.15);
+}
+
+.styled-table tbody tr:hover td {
+    background-color: transparent;
+}
+
+.styled-table tbody tr:last-child td:first-child {
+    border-radius: 0 0 0 12px;
+}
+
+.styled-table tbody tr:last-child td:last-child {
+    border-radius: 0 0 12px 0;
+}
+
+/* === Table Image === */
+.table-img {
+    width: 65px;
+    height: 65px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 3px solid #ffd98e;
+    box-shadow: 0 4px 8px rgba(255, 206, 84, 0.2);
+    transition: all 0.3s ease;
+}
+
+.table-img:hover {
+    transform: scale(1.15);
+    box-shadow: 0 6px 16px rgba(255, 206, 84, 0.4);
+}
+
+.no-img {
+    color: #aaa;
+    font-style: italic;
+    font-size: 13px;
+}
+
+.no-data {
+    text-align: center;
+    color: #999;
+    font-weight: 500;
+    padding: 40px 20px;
+    font-size: 15px;
+}
+
+/* === Action Buttons === */
+.btn-view,
+.btn-edit,
+.btn-delete {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    display: inline-block;
+    margin-right: 6px;
+    font-size: 13px;
+}
+
+.btn-view {
+    background: linear-gradient(135deg, #ffaf40 0%, #ff8e53 100%);
+    box-shadow: 0 3px 8px rgba(255, 175, 64, 0.3);
+}
+
+.btn-edit {
+    background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+    box-shadow: 0 3px 8px rgba(76, 175, 80, 0.3);
+}
+
+.btn-delete {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ff4e50 100%);
+    box-shadow: 0 3px 8px rgba(255, 78, 80, 0.3);
+}
+
+.btn-view:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(255, 175, 64, 0.4);
+}
+
+.btn-edit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(76, 175, 80, 0.4);
+}
+
+.btn-delete:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(255, 78, 80, 0.4);
+}
+
+.btn-view:active,
+.btn-edit:active,
+.btn-delete:active {
+    transform: translateY(0);
+}
+
+/* === Product Show Page === */
+.product-show {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px;
+    min-height: calc(100vh - 80px);
+}
+
+.product-card {
+    background: linear-gradient(135deg, #fffdf9 0%, #fff8f0 100%);
+    border: 1px solid rgba(255, 211, 114, 0.4);
+    border-radius: 20px;
+    box-shadow: 0 10px 35px rgba(255, 180, 71, 0.2);
+    padding: 28px; /* was 40px */
+    max-width: 780px; /* was 900px */
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.product-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #ffce54, #ff6f61);
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 45px rgba(255, 180, 71, 0.25);
+}
+
+.product-card h1 {
+    text-align: center;
+    color: #754c24;
+    font-size: 24px; /* was 32px */
+    margin-bottom: 22px; /* was 35px */
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 10px; /* was 15px */
+}
+
+.product-card h1::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #ffb347, #ff6f61);
+    border-radius: 2px;
+}
+
+/* === Header meta/badges === */
+.product-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.product-meta {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.badge {
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    background: #fff7e6;
+    color: #7a5a2e;
+    border: 1px solid rgba(255, 193, 7, 0.4);
+}
+
+.badge-category {
+    background: #fff2cc;
+}
+.badge-date {
+    background: #fbe4d6;
+}
+.badge-id {
+    background: #e6f7ff;
+    color: #2e5a7a;
+}
+
+/* === Two column layout === */
+.product-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 24px;
+    align-items: start;
+    margin-top: 10px;
+}
+
+@media (max-width: 860px) {
+    .product-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* === Highlight chips === */
+.highlight-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.price-chip,
+.stock-chip {
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.price-chip {
+    background: linear-gradient(135deg, #ffce54 0%, #ff8e53 100%);
+    color: #402b0b;
+}
+
+.stock-chip {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+/* === Product Image === */
+.product-image {
+    text-align: center;
+    margin-bottom: 35px;
+    position: relative;
+}
+
+.product-image img {
+    width: 100%;
+    max-width: 320px; /* was 400px */
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 14px; /* was 16px */
+    border: 3px solid #ffd98e; /* was 4px */
+    box-shadow: 0 6px 18px rgba(255, 206, 84, 0.22); /* slightly lighter */
+    transition: all 0.3s ease;
+}
+
+.product-image img:hover {
+    transform: scale(1.03);
+    box-shadow: 0 12px 32px rgba(255, 206, 84, 0.35);
+}
+
+.product-image .no-image-placeholder {
+    width: 100%;
+    max-width: 320px; /* was 400px */
+    height: 320px; /* was 400px */
+    background: linear-gradient(135deg, #f9f9f9 0%, #f0f0f0 100%);
+    border-radius: 14px; /* was 16px */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #aaa;
+    font-size: 14px; /* was 18px */
+    font-weight: 600;
+    border: 2px dashed #ddd; /* was 3px */
+}
+
+/* === Product Details Table === */
+.product-details {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px; /* was 10px */
+    margin-bottom: 24px; /* was 35px */
+}
+
+.product-details tr {
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(255, 180, 71, 0.08);
+    transition: all 0.3s ease;
+}
+
+.product-details tr:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(255, 180, 71, 0.15);
+}
+
+.product-details th,
+.product-details td {
+    padding: 12px 14px; /* was 16px 20px */
+    text-align: left;
+    font-size: 14px; /* was 15px */
+    border: none;
+}
+
+.product-details th {
+    background: linear-gradient(135deg, #ffb347 0%, #ffcc33 100%);
+    color: #333;
+    font-weight: 700;
+    border-radius: 10px 0 0 10px;
+    width: 30%; 
+}
+
+.product-details td {
+    background: #fff;
+    color: #555;
+    font-weight: 500;
+    border-radius: 0 10px 10px 0;
+}
+
+/* === Show Page Action Buttons === */
+.show-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    padding-top: 25px;
+    border-top: 2px solid rgba(255, 211, 114, 0.2);
+}
+
+.show-actions .btn {
+    padding: 10px 18px; 
+    border-radius: 8px; 
+    font-weight: 600;
+    font-size: 14px; 
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px; 
+    min-width: 120px; 
+    justify-content: center;
+}
+
+.btn-back {
+    background: linear-gradient(135deg, #ffce54 0%, #ffb347 100%);
+    color: #333;
+    box-shadow: 0 4px 12px rgba(255, 206, 84, 0.3);
+}
+
+.btn-back:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(255, 206, 84, 0.4);
+}
+
+.show-actions .btn-edit {
+    background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.show-actions .btn-edit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(76, 175, 80, 0.4);
+}
+
+.show-actions .btn-delete {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ff4e50 100%);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(255, 78, 80, 0.3);
+}
+
+.show-actions .btn-delete:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(255, 78, 80, 0.4);
+}
+
+.show-actions .btn:active {
+    transform: translateY(0);
+}
+
+/* === Responsive Design === */
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .table-wrapper {
+        padding: 15px;
+        overflow-x: auto;
+    }
+
+    .styled-table {
+        font-size: 13px;
+    }
+
+    .styled-table th,
+    .styled-table td {
+        padding: 12px 10px;
+    }
+
+    .table-img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .product-card {
+        padding: 25px;
+        margin: 10px;
+    }
+
+    .product-card h1 {
+        font-size: 24px;
+    }
+
+    .product-image img {
+        max-width: 100%;
+    }
+
+    .product-details th {
+        width: 40%;
+        font-size: 14px;
+    }
+
+    .product-details td {
+        font-size: 14px;
+    }
+
+    .show-actions {
+        flex-direction: column;
+    }
+
+    .show-actions .btn {
+        width: 100%;
+    }
+}
+
+/* === Loading Skeleton === */
+.table-skeleton {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+.main-content {
+    padding: 20px;
+    margin-left: 230px; /* adjust for sidebar */
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.page-header h1 {
+    font-size: 24px;
+    color: #333;
+}
+
+.btn-add {
+    background: linear-gradient(90deg, #ff7a18, #ffb347);
+    color: white;
+    padding: 8px 14px;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: 0.3s;
+}
+
+.btn-add:hover {
+    opacity: 0.8;
+}
+
+/* Styled Table */
+.table-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.styled-table thead tr {
+    background: linear-gradient(90deg, #ff7a18, #ffb347);
+    color: white;
+    text-align: left;
+    font-weight: bold;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #ffb347;
+}
+
+/* Buttons inside table */
+.btn-view,
+.btn-edit {
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.btn-view {
+    background: #007bff;
+}
+
+.btn-edit {
+    background: #ff9800;
+}
+
+.btn-view:hover,
+.btn-edit:hover {
+    opacity: 0.8;
+}

@@ -1,11 +1,17 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/base_admin.html.twig' %}
 
-{% block title %}New Category{% endblock %}
+{% block title %}Create New Category{% endblock %}
 
-{% block body %}
-    <h1>Create new Category</h1>
+{% block admin_content %}
+  <div class="form-container">
+      <h1>➕ Create New Category</h1>
 
-    {{ include('category/_form.html.twig') }}
-
-    <a href="{{ path('app_category_index') }}">back to list</a>
+      {{ form_start(form) }}
+          {{ form_widget(form) }}
+          <div class="form-actions">
+              <button class="btn btn-success btn-sm">Save</button>
+              <a href="{{ path('app_category_index') }}" class="btn btn-secondary btn-sm">↩ Back to list</a>
+          </div>
+      {{ form_end(form) }}
+  </div>
 {% endblock %}

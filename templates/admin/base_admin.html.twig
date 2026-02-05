@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="stylesheet" href="{{ asset('css/base.css') }}?v=4">
+  <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}?v=4">
+  <link rel="stylesheet" href="{{ asset('css/form.css') }}?v=4">
+  <link rel="stylesheet" href="{{ asset('css/product.css') }}?v=4">
+  <link rel="stylesheet" href="{{ asset('css/supplier.css') }}?v=4">
+{% endblock %}
+
+{% block body %}
+<div class="dashboard-container">
+  <aside class="sidebar">
+    <div class="logo-container">
+      <img src="{{ asset('images/logo6.png') }}" alt="Logo" class="logo">
+      <h2>Admin Panel</h2>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="{{ path('admin_dashboard') }}">Dashboard</a></li>
+        <li><a href="{{ path('app_product_index') }}">Products</a></li>
+        <li><a href="{{ path('app_category_index') }}">Category</a></li>
+        <li><a href="{{ path('app_supplier_index') }}">Suppliers</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="dashboard-main">
+    {% block admin_content %}{% endblock %}
+  </main>
+</div>
+{% endblock %}

@@ -1,0 +1,81 @@
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.btn-add {
+    background: linear-gradient(90deg, #ffb347, #ffcc33);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-add:hover {
+    background: linear-gradient(90deg, #ff9900, #ffcc00);
+}
+
+.table-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    padding: 10px;
+}
+
+/* Reuse the styled table aesthetic from product.css */
+.styled-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.styled-table thead tr {
+    background: linear-gradient(135deg, #ffce54 0%, #ff8e53 100%);
+    color: #fff;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.styled-table tbody tr:hover {
+    background-color: #fff8e6;
+}
+
+.btn-action,
+.styled-table a.btn-action {
+    background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    margin-right: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    box-shadow: 0 3px 8px rgba(76, 175, 80, 0.25);
+    transition: all 0.3s ease;
+}
+
+.btn-action:hover {
+    transform: translateY(-2px);
+}
+.btn-action:active {
+    transform: translateY(0);
+}
+
+.no-data {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+}
+
+
+.form-container h2 {
+    margin-top: 0;
+}

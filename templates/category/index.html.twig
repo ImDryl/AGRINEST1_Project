@@ -1,35 +1,73 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/base_admin.html.twig' %}
 
-{% block title %}Category index{% endblock %}
+{% block title %}Category List{% endblock %}
 
-{% block body %}
-    <h1>Category index</h1>
+{% block admin_content %}
+  <div class="page-header">
+      <h1>🗂️ Category List</h1>
+      <a href="{{ path('app_category_new') }}" class="btn btn-add">➕ Create New Category</a>
+  </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for category in categories %}
-            <tr>
-                <td>{{ category.id }}</td>
-                <td>{{ category.name }}</td>
-                <td>
-                    <a href="{{ path('app_category_show', {'id': category.id}) }}">show</a>
-                    <a href="{{ path('app_category_edit', {'id': category.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+  <div class="card">
+      <div class="table-controls">
+          <div class="control-group">
+              <label for="categoryPageLength" style="font-weight:600;">Show</label>
+              <select id="categoryPageLength">
+                  <option value="5">5</option>
+                  <option value="10" selected>10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+              </select>
+              <span>entries</span>
+          </div>
+          <div class="control-group">
+              <label for="categoryTableSearch" style="font-weight:600;">Search:</label>
+              <input id="categoryTableSearch" type="text" placeholder="Type to filter..." style="min-width:220px;">
+          </div>
+      </div>
+      <table id="categoryTable" class="styled-table">
+          <thead>
+              <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Actions</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for category in categories %}
+                  <tr>
+                      <td>{{ category.id }}</td>
+                      <td>{{ category.name }}</td>
+                      <td>
+                          {# <a href="{{ path('app_category_show', {'id': category.id}) }}" class="btn btn-view">👁 View</a> #}
+                          <a href="{{ path('app_category_edit', {'id': category.id}) }}" class="btn btn-edit">✏ Edit</a>
+                          <form method="post" action="{{ path('app_category_delete', {'id': category.id}) }}" style="display:inline-block;" onsubmit="return confirm('Are you sure?');">
+                              <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
+                              <button class="btn btn-delete">🗑</button>
+                          </form>
+                      </td>
+                  </tr>
+              {% else %}
+                  <tr>
+                      <td colspan="3" class="no-data">No categories found.</td>
+                  </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+      <div class="table-footer">
+        <div id="categoryPageInfo" class="page-info"></div>
+        <div id="categoryPagination"></div>
+      </div>
+  </div>
+{% endblock %}
 
-    <a href="{{ path('app_category_new') }}">Create new</a>
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="stylesheet" href="{{ asset('css/product-table.css') }}?v=1">
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script src="{{ asset('js/category-table.js') }}?v=1"></script>
 {% endblock %}

@@ -1,21 +1,44 @@
-{% extends 'base.html.twig' %}
+<div class="form-container">
+    <h2>{{ title|default('Product Form') }}</h2>
+    {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
 
-{% block title %}Create new Product{% endblock %}
+    <div class="form-grid">
+        {{ form_row(form.name) }}
+        {{ form_row(form.category) }}
 
-{% block body %}
-      
-
-    <div class="form-container">
-        {{ form_start(form) }}
-            {{ form_widget(form) }}
-            <div class="form-actions">
-                <button class="btn btn-success btn-sm">
-                    Save
-                </button>
-                <a href="{{ path('app_product_index') }}" class="btn btn-secondary btn-sm">
-                    ↩ Back to list
-                </a>
+        <div class="inline-fields">
+            <div class="field-half form-item">
+                {{ form_label(form.price) }}
+                {{ form_widget(form.price) }}
+                {{ form_errors(form.price) }}
             </div>
-        {{ form_end(form) }}
+            <div class="field-half form-item">
+                {{ form_label(form.quantity) }}
+                {{ form_widget(form.quantity) }}
+                {{ form_errors(form.quantity) }}
+            </div>
+        </div>
+
+        {{ form_row(form.description) }}
+
+        <div class="inline-fields">
+            <div class="field-half form-item">
+                {{ form_label(form.date) }}
+                {{ form_widget(form.date) }}
+                {{ form_errors(form.date) }}
+            </div>
+            <div class="field-half form-item">
+                {{ form_label(form.image) }}
+                {{ form_widget(form.image) }}
+                {{ form_errors(form.image) }}
+            </div>
+        </div>
     </div>
-{% endblock %}
+
+    <div class="form-actions">
+        <button class="btn btn-success btn-sm">{{ button_label|default('Save') }}</button>
+        <a href="{{ path('app_product_index') }}" class="btn btn-secondary btn-sm">↩ Back to list</a>
+    </div>
+
+    {{ form_end(form) }}
+</div>

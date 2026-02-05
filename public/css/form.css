@@ -1,0 +1,473 @@
+/* === Form Styling (Create/Edit) === */
+.form-container {
+    background: linear-gradient(135deg, #fffdf9 0%, #fff8f0 100%);
+    border-radius: 16px;
+    padding: 40px 45px;
+    max-width: 700px;
+    margin: 40px auto;
+    border: 1px solid rgba(255, 211, 114, 0.4);
+    box-shadow: 0 8px 30px rgba(255, 170, 51, 0.15);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.form-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #ffce54, #ff6f61);
+}
+
+.form-container::after {
+    content: "";
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(
+        circle,
+        rgba(255, 206, 84, 0.08) 0%,
+        transparent 70%
+    );
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.form-container:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(255, 170, 51, 0.25);
+}
+
+.form-container h2 {
+    text-align: center;
+    color: #754c24;
+    margin-bottom: 35px;
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: 0.5px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.form-container h2::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #ffb347, #ff6f61);
+    border-radius: 2px;
+}
+
+/* === Grid layout for product form === */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+}
+
+.inline-fields {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+}
+
+.field-half {
+    width: 100%;
+    min-width: 0;
+}
+
+/* Normalize spacing inside manual rows */
+.form-item label {
+    margin-bottom: 8px;
+    display: block;
+}
+.form-item input,
+.form-item select,
+.form-item textarea {
+    margin-bottom: 0;
+}
+
+/* Force stacked content inside each inline column */
+.inline-fields .form-item {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Stack two-column rows earlier to avoid cramped layout */
+@media (max-width: 1024px) {
+    .inline-fields {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Tame long native file inputs */
+form input[type="file"] {
+    max-width: 100%;
+    display: block;
+    overflow: hidden;
+}
+
+/* Slightly reduce tall native date inputs */
+form input[type="date"] {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+/* Reduce spacing below last inline row before actions */
+.inline-fields + .form-actions {
+    margin-top: 20px;
+}
+
+/* Ensure long widgets (file/date) don't overflow */
+.inline-fields input,
+.inline-fields select,
+.inline-fields textarea {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* === Label Styling === */
+form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #7b4a00;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    transition: color 0.3s ease;
+}
+
+/* === Inputs, Selects, Textareas === */
+form input[type="text"],
+form input[type="number"],
+form input[type="email"],
+form input[type="password"],
+form input[type="date"],
+form input[type="file"],
+form select,
+form textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #ffd98e;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    font-size: 15px;
+    font-family: "Poppins", sans-serif;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-sizing: border-box;
+}
+
+form input:focus,
+form select:focus,
+form textarea:focus {
+    border-color: #ffb347;
+    box-shadow: 0 0 0 4px rgba(255, 180, 71, 0.15);
+    background-color: #fffaf0;
+    outline: none;
+    transform: translateY(-1px);
+}
+
+form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* === File Input Beautify === */
+form input[type="file"] {
+    background-color: #fff;
+    padding: 12px 14px;
+    border: 2px dashed #ffd372;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+form input[type="file"]:hover {
+    background-color: #fffaf0;
+    border-color: #ffb347;
+}
+
+form input[type="file"]::file-selector-button {
+    background: linear-gradient(135deg, #ffb347 0%, #ff8e53 100%);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 12px;
+    transition: all 0.3s ease;
+}
+
+form input[type="file"]::file-selector-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 180, 71, 0.3);
+}
+
+form input[type="file"]:focus {
+    border-style: solid;
+    border-color: #ffb347;
+}
+
+/* === Form Actions/Buttons === */
+.form-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 2px solid rgba(255, 211, 114, 0.2);
+}
+
+.form-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 15px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    gap: 8px;
+    min-width: 130px;
+}
+
+/* Save button (primary) */
+.btn-success {
+    background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(247, 151, 30, 0.3);
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, #ffb347 0%, #ffcc33 100%);
+    box-shadow: 0 6px 18px rgba(247, 151, 30, 0.4);
+}
+
+.btn-success:active {
+    transform: translateY(0);
+}
+
+/* Secondary button (back/list) */
+.btn-secondary {
+    background: #fff;
+    color: #754c24;
+    border: 2px solid #e0e0e0;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: #fff4d9;
+    border-color: #ffd372;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 180, 71, 0.2);
+}
+
+.btn-secondary:active {
+    transform: translateY(0);
+}
+
+/* === Form Group Spacing === */
+.form-group {
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.form-group:last-of-type {
+    margin-bottom: 0;
+}
+
+/* === Required Field Indicator === */
+form label.required::after {
+    content: " *";
+    color: #ff6f61;
+    font-weight: 700;
+}
+
+/* === Form Error States === */
+form input.error,
+form select.error,
+form textarea.error {
+    border-color: #ff6b6b;
+    background-color: #fff5f5;
+}
+
+form .error-message {
+    color: #ff6f61;
+    font-size: 13px;
+    margin-top: -15px;
+    margin-bottom: 15px;
+    display: block;
+    font-weight: 500;
+}
+
+/* === Select Dropdown Enhancement === */
+form select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237b4a00' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+    cursor: pointer;
+}
+
+/* === Input Icons/Prefix === */
+.input-group {
+    position: relative;
+}
+
+.input-group input {
+    padding-left: 40px;
+}
+
+.input-group::before {
+    content: "";
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    z-index: 1;
+}
+
+/* === Checkbox & Radio Styling === */
+form input[type="checkbox"],
+form input[type="radio"] {
+    width: auto;
+    margin-right: 8px;
+    cursor: pointer;
+    accent-color: #ffb347;
+}
+
+/* === Helper Text === */
+.form-helper {
+    font-size: 13px;
+    color: #999;
+    margin-top: -12px;
+    margin-bottom: 16px;
+    font-style: italic;
+}
+
+/* === Success Message === */
+.form-success {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    color: #155724;
+    padding: 14px 18px;
+    border-radius: 10px;
+    border-left: 4px solid #28a745;
+    margin-bottom: 25px;
+    font-weight: 500;
+}
+
+/* === Responsive Form === */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 30px 25px;
+        margin: 20px;
+    }
+
+    .form-container h2 {
+        font-size: 22px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .form-actions .btn {
+        width: 100%;
+    }
+
+    form input[type="text"],
+    form input[type="number"],
+    form input[type="email"],
+    form input[type="password"],
+    form input[type="date"],
+    form select,
+    form textarea {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+}
+
+/* === Loading State === */
+.btn.loading {
+    position: relative;
+    pointer-events: none;
+    color: transparent;
+}
+
+.btn.loading::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spinner 0.6s linear infinite;
+}
+
+@keyframes spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.supplier-form {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 25px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-fields > div {
+    margin-bottom: 15px;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.btn-save {
+    background-color: #f7951d;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-save:hover {
+    background-color: #d77d12;
+}

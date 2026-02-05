@@ -1,0 +1,65 @@
+.table-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.table-controls .control-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.table-controls select,
+.table-controls input[type="text"] {
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+#pagination {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.page-btn {
+    padding: 6px 10px;
+    border: 1px solid #ffd98e;
+    background: #fff;
+    color: #754c24;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.page-btn:hover {
+    background: #fff8e6;
+}
+.page-btn.is-active {
+    background: #fff4d9;
+    font-weight: 700;
+}
+.page-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+/* Footer with info + pagination */
+.table-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.page-info {
+    color: #666;
+    font-size: 14px;
+}

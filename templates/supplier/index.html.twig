@@ -1,0 +1,75 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Supplier {% endblock %}
+
+{% block admin_content %}
+    <div class="page-header">
+      <h1>Supplier </h1>
+      <a href="{{ path('app_supplier_new') }}" class="btn-add">+ Create new</a>
+    </div>
+
+    <div class="table-card">
+    <div class="table-controls">
+      <div class="control-group">
+        <label for="supplierPageLength" style="font-weight:600;">Show</label>
+        <select id="supplierPageLength">
+          <option value="5">5</option>
+          <option value="10" selected>10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+        <span>entries</span>
+      </div>
+      <div class="control-group">
+        <label for="supplierTableSearch" style="font-weight:600;">Search:</label>
+        <input id="supplierTableSearch" type="text" placeholder="Type to filter..." style="min-width:220px;">
+      </div>
+    </div>
+
+    <table id="supplierTable" class="styled-table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for supplier in suppliers %}
+            <tr>
+                <td>{{ supplier.id }}</td>
+                <td>{{ supplier.name }}</td>
+                <td>{{ supplier.email }}</td>
+                <td>{{ supplier.phone }}</td>
+                <td>{{ supplier.address }}</td>
+                <td>
+                    <a href="{{ path('app_supplier_edit', {'id': supplier.id}) }}" class="btn-action">Edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6" class="no-data">No records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="table-footer">
+      <div id="supplierPageInfo" class="page-info"></div>
+      <div id="supplierPagination"></div>
+    </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="stylesheet" href="{{ asset('css/product-table.css') }}?v=1">
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script src="{{ asset('js/supplier-table.js') }}?v=1"></script>
+{% endblock %}
