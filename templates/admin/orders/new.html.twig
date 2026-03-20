@@ -1,0 +1,404 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Create New Order{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="stylesheet" href="{{ asset('css/form.css') }}">
+  <style>
+    .order-page {
+      background: #f8fafc;
+      padding: 10px;
+      border-radius: 10px;
+    }
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .page-header h2 {
+      margin: 0;
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-box {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 18px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      margin-bottom: 16px;
+    }
+    .section-title {
+      margin: 0 0 12px;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #111827;
+    }
+    .order-items-container {
+      margin-top: 10px;
+      background: #ffffff;
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      padding: 16px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .order-items-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      gap: 12px;
+    }
+    .order-items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .order-item-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr auto;
+      gap: 12px;
+      padding: 12px;
+      background: #f9fafb;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      align-items: end;
+    }
+    .order-item-row .form-group {
+      margin: 0;
+    }
+    .order-item-row .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #374151;
+      font-size: 0.9rem;
+    }
+    .btn-primary {
+      background: #2563eb;
+      color: #fff;
+      border: 1px solid #2563eb;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-secondary {
+      background: #eef2ff;
+      color: #4338ca;
+      border: 1px solid #c7d2fe;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+    .btn-secondary:hover { background: #e0e7ff; }
+    .add-item-btn {
+      background: #10b981;
+      color: #fff;
+      border: 1px solid #10b981;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .add-item-btn:hover { background: #0ea371; }
+    .remove-item-btn {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      height: fit-content;
+    }
+    .remove-item-btn:hover:not(:disabled) { background: #fee2e2; }
+    .remove-item-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 14px;
+    }
+    @media (max-width: 768px) {
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .form-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .order-item-row {
+        grid-template-columns: 1fr;
+      }
+      .order-items-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .form-actions {
+        flex-wrap: wrap;
+      }
+      .btn-primary,
+      .btn-secondary {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block admin_content %}
+<div class="order-page">
+  <div class="page-header">
+    <h2><i class="bi bi-receipt"></i> Create New Order</h2>
+  </div>
+
+  <div class="card-box">
+    {{ form_start(form, {'attr': {'class': 'product-form'}}) }}
+
+    <p class="section-title"><i class="bi bi-person-vcard"></i> Customer Info</p>
+    <div class="form-grid">
+        <div class="form-group">
+            <label for="{{ form.customerName.vars.id }}">
+                <i class="bi bi-person"></i> Customer Name
+            </label>
+            <div class="input-wrapper">
+                {{ form_widget(form.customerName, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Enter customer name'
+                    }
+                }) }}
+            </div>
+            {{ form_errors(form.customerName) }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.customerEmail.vars.id }}">
+                <i class="bi bi-envelope"></i> Customer Email
+            </label>
+            <div class="input-wrapper">
+                {{ form_widget(form.customerEmail, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Enter customer email'
+                    }
+                }) }}
+            </div>
+            {{ form_errors(form.customerEmail) }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.customerPhone.vars.id }}">
+                <i class="bi bi-phone"></i> Customer Phone
+            </label>
+            <div class="input-wrapper">
+                {{ form_widget(form.customerPhone, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Enter customer phone'
+                    }
+                }) }}
+            </div>
+            {{ form_errors(form.customerPhone) }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.orderDate.vars.id }}">
+                <i class="bi bi-calendar"></i> Order Date
+            </label>
+            <div class="input-wrapper">
+                {{ form_widget(form.orderDate, {
+                    'attr': {
+                        'class': 'form-control'
+                    }
+                }) }}
+            </div>
+            {{ form_errors(form.orderDate) }}
+        </div>
+    </div>
+
+    <div class="order-items-container">
+        <div class="order-items-header">
+            <h3 style="margin:0; display:flex; align-items:center; gap:8px;"><i class="bi bi-list-ul"></i> Order Items</h3>
+            <button type="button" class="add-item-btn" onclick="addOrderItem()">
+                <i class="bi bi-plus-circle"></i> Add Product
+            </button>
+        </div>
+        <div id="order-items-list" class="order-items-list" data-prototype="{{ form_widget(form.orderItems.vars.prototype)|e('html_attr') }}" data-index="{{ form.orderItems|length }}">
+            {% for item in form.orderItems %}
+                <div class="order-item-row" data-item-index="{{ loop.index0 }}">
+                    <div class="form-group">
+                        <label>{{ item.product.vars.label }}</label>
+                        {{ form_widget(item.product, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(item.product) }}
+                    </div>
+                    <div class="form-group">
+                        <label>{{ item.quantity.vars.label }}</label>
+                        {{ form_widget(item.quantity, {'attr': {'class': 'form-control', 'min': 1}}) }}
+                        {{ form_errors(item.quantity) }}
+                    </div>
+                    <div>
+                        {% if form.orderItems|length > 1 %}
+                            <button type="button" class="remove-item-btn" onclick="removeOrderItem(this)">
+                                <i class="bi bi-trash"></i> Remove
+                            </button>
+                        {% else %}
+                            <button type="button" class="remove-item-btn" disabled title="At least one item is required">
+                                <i class="bi bi-trash"></i> Remove
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn-primary">
+            <i class="bi bi-check-circle"></i> Create Order
+        </button>
+        <a href="{{ path('app_admin_orders_index') }}" class="btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+
+    {{ form_end(form) }}
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    updateRemoveButtons();
+});
+
+function addOrderItem() {
+    const collectionHolder = document.getElementById('order-items-list');
+    const prototype = collectionHolder.dataset.prototype;
+    const index = parseInt(collectionHolder.dataset.index);
+    
+    // Create new form element
+    const newForm = prototype.replace(/__name__/g, index);
+    const newFormElement = document.createElement('div');
+    newFormElement.className = 'order-item-row';
+    newFormElement.setAttribute('data-item-index', index);
+    
+    // Parse the HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = newForm;
+    
+    // Extract form fields
+    const productField = tempDiv.querySelector('select[name*="product"]');
+    const quantityField = tempDiv.querySelector('input[name*="quantity"]');
+    
+    // Create form groups with proper structure
+    const productGroup = document.createElement('div');
+    productGroup.className = 'form-group';
+    const productLabel = document.createElement('label');
+    productLabel.textContent = 'Product';
+    productGroup.appendChild(productLabel);
+    if (productField) {
+        productField.className = 'form-control';
+        productField.style.width = '100%';
+        productGroup.appendChild(productField);
+    }
+    
+    const quantityGroup = document.createElement('div');
+    quantityGroup.className = 'form-group';
+    const quantityLabel = document.createElement('label');
+    quantityLabel.textContent = 'Quantity';
+    quantityGroup.appendChild(quantityLabel);
+    if (quantityField) {
+        quantityField.className = 'form-control';
+        quantityField.setAttribute('min', '1');
+        quantityField.style.width = '100%';
+        quantityGroup.appendChild(quantityField);
+    }
+    
+    // Create button container
+    const buttonContainer = document.createElement('div');
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'remove-item-btn';
+    removeBtn.onclick = function() { removeOrderItem(this); };
+    removeBtn.innerHTML = '<i class="bi bi-trash"></i> Remove';
+    buttonContainer.appendChild(removeBtn);
+    
+    // Append all elements
+    newFormElement.appendChild(productGroup);
+    newFormElement.appendChild(quantityGroup);
+    newFormElement.appendChild(buttonContainer);
+    
+    collectionHolder.appendChild(newFormElement);
+    collectionHolder.dataset.index = index + 1;
+    
+    updateRemoveButtons();
+}
+
+function removeOrderItem(button) {
+    const row = button.closest('.order-item-row');
+    if (row) {
+        const collectionHolder = document.getElementById('order-items-list');
+        const rows = collectionHolder.querySelectorAll('.order-item-row');
+        if (rows.length > 1) {
+            row.remove();
+            updateRemoveButtons();
+        } else {
+            alert('At least one order item is required.');
+        }
+    }
+}
+
+function updateRemoveButtons() {
+    const collectionHolder = document.getElementById('order-items-list');
+    const rows = collectionHolder.querySelectorAll('.order-item-row');
+    rows.forEach((row, index) => {
+        const removeBtn = row.querySelector('.remove-item-btn');
+        if (removeBtn) {
+            if (rows.length > 1) {
+                removeBtn.disabled = false;
+                removeBtn.style.opacity = '1';
+                removeBtn.style.cursor = 'pointer';
+                removeBtn.title = '';
+            } else {
+                removeBtn.disabled = true;
+                removeBtn.style.opacity = '0.5';
+                removeBtn.style.cursor = 'not-allowed';
+                removeBtn.title = 'At least one item is required';
+            }
+        }
+    });
+}
+</script>
+{% endblock %}
+

@@ -79,6 +79,19 @@
         </a>
       </div>
     </div>
+
+    <div class="stat-card stat-card-orders">
+      <div class="stat-icon">
+        <i class="bi bi-receipt-cutoff"></i>
+      </div>
+      <div class="stat-content">
+        <h3>Total Orders</h3>
+        <div class="stat-number">{{ totalOrders }}</div>
+        <a href="{{ path('app_admin_orders_index') }}" class="stat-link">
+          <i class="bi bi-arrow-right-circle"></i> View All Orders
+        </a>
+      </div>
+    </div>
   </div>
 
   <div class="dashboard-section">

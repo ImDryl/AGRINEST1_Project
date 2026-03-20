@@ -1,0 +1,219 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Order Details{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="stylesheet" href="{{ asset('css/form.css') }}">
+  <style>
+    .order-page {
+      background: #f8fafc;
+      padding: 10px;
+      border-radius: 10px;
+    }
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .page-header h2 {
+      margin: 0;
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-box {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 18px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      margin-bottom: 16px;
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+    }
+    .detail-field label {
+      display: block;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+    .detail-field .value {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: #111827;
+    }
+    .items-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-top: 10px;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .items-table th, .items-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #e5e7eb;
+      font-size: 0.95rem;
+    }
+    .items-table thead th {
+      background: #f8fafc;
+      font-weight: 700;
+      color: #111827;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .items-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    .items-table tfoot td {
+      font-weight: 700;
+      background: #f9fafb;
+    }
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 14px;
+    }
+    .btn-primary {
+      background: #2563eb;
+      color: #fff;
+      border: 1px solid #2563eb;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-secondary {
+      background: #eef2ff;
+      color: #4338ca;
+      border: 1px solid #c7d2fe;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+    .btn-secondary:hover { background: #e0e7ff; }
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+    }
+    @media (max-width: 768px) {
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+      .form-actions {
+        flex-wrap: wrap;
+      }
+      .btn-primary,
+      .btn-secondary {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block admin_content %}
+<div class="order-page">
+  <div class="page-header">
+    <h2><i class="bi bi-receipt"></i> Order Details</h2>
+  </div>
+
+  <div class="card-box">
+    <div class="detail-grid">
+        <div class="detail-field">
+            <label><i class="bi bi-hash"></i> Order Number</label>
+            <div class="value">{{ order.orderNumber }}</div>
+        </div>
+        <div class="detail-field">
+            <label><i class="bi bi-person"></i> Customer Name</label>
+            <div class="value">{{ order.customerName }}</div>
+        </div>
+        <div class="detail-field">
+            <label><i class="bi bi-envelope"></i> Customer Email</label>
+            <div class="value">{{ order.customerEmail }}</div>
+        </div>
+        <div class="detail-field">
+            <label><i class="bi bi-phone"></i> Customer Phone</label>
+            <div class="value">{{ order.customerPhone }}</div>
+        </div>
+        <div class="detail-field">
+            <label><i class="bi bi-calendar"></i> Order Date</label>
+            <div class="value">{{ order.orderDate|date('Y-m-d H:i:s') }}</div>
+        </div>
+        <div class="detail-field">
+            <label><i class="bi bi-person-badge"></i> Created By</label>
+            <div class="value">{{ order.createdBy ? order.createdBy.username : 'N/A' }}</div>
+        </div>
+    </div>
+  </div>
+
+  <div class="card-box">
+    <p class="section-title" style="margin-bottom:8px;"><i class="bi bi-list-ul"></i> Order Items</p>
+    <div class="table-responsive">
+      <table class="items-table">
+          <thead>
+              <tr>
+                  <th>Product</th>
+                  <th>Quantity</th>
+                  <th>Price</th>
+                  <th>Subtotal</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for item in order.orderItems %}
+                  <tr>
+                      <td>{{ item.product.name }}</td>
+                      <td>{{ item.quantity }}</td>
+                      <td>₱{{ item.price }}</td>
+                      <td>₱{{ item.getSubtotal()|number_format(2, '.', ',') }}</td>
+                  </tr>
+              {% endfor %}
+          </tbody>
+          <tfoot>
+              <tr>
+                  <td colspan="3" style="text-align: right;">Total:</td>
+                  <td>₱{{ order.total }}</td>
+              </tr>
+          </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <div class="form-actions">
+      <a href="{{ path('app_admin_order_edit', {'id': order.id}) }}" class="btn-primary">
+          <i class="bi bi-pencil"></i> Edit Order
+      </a>
+      <a href="{{ path('app_admin_orders_index') }}" class="btn-secondary">
+          <i class="bi bi-arrow-left"></i> Back to List
+      </a>
+  </div>
+</div>
+{% endblock %}
+

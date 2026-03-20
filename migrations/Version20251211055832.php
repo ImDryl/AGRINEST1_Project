@@ -19,7 +19,8 @@ final class Version20251211055832 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        // Column already exists from previous attempt, just add constraint and index
+        // Ensure column exists before adding constraint and index
+        $this->addSql('ALTER TABLE product ADD COLUMN IF NOT EXISTS created_by_id INT DEFAULT NULL');
         $this->addSql('ALTER TABLE product ADD CONSTRAINT FK_D34A04ADB03A8386 FOREIGN KEY (created_by_id) REFERENCES user (id) ON DELETE SET NULL');
         $this->addSql('CREATE INDEX IDX_D34A04ADB03A8386 ON product (created_by_id)');
     }

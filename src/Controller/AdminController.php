@@ -7,6 +7,7 @@ use App\Form\RegistrationFormType;
 use App\Form\UserEditFormType;
 use App\Repository\ActivityLogRepository;
 use App\Repository\CategoryRepository;
+use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
 use App\Repository\SupplierRepository;
 use App\Repository\UserRepository;
@@ -24,6 +25,7 @@ final class AdminController extends AbstractController
     private $productRepository;
     private $categoryRepository;
     private $supplierRepository;
+    private $orderRepository;
     private $activityLogRepository;
     private $entityManager;
     private $userPasswordHasher;
@@ -34,6 +36,7 @@ final class AdminController extends AbstractController
         ProductRepository $productRepository,
         CategoryRepository $categoryRepository,
         SupplierRepository $supplierRepository,
+        OrderRepository $orderRepository,
         ActivityLogRepository $activityLogRepository,
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $userPasswordHasher,
@@ -43,6 +46,7 @@ final class AdminController extends AbstractController
         $this->productRepository = $productRepository;
         $this->categoryRepository = $categoryRepository;
         $this->supplierRepository = $supplierRepository;
+        $this->orderRepository = $orderRepository;
         $this->activityLogRepository = $activityLogRepository;
         $this->entityManager = $entityManager;
         $this->userPasswordHasher = $userPasswordHasher;
@@ -68,6 +72,17 @@ final class AdminController extends AbstractController
         $totalProducts = $this->productRepository->count([]);
         $totalCategories = $this->categoryRepository->count([]);
         $totalSuppliers = $this->supplierRepository->count([]);
+        
+        // Orders statistics
+        $orders = $this->orderRepository->findAll();
+        $totalOrders = count($orders);
+        $totalRevenue = 0.0;
+        $customers = [];
+        foreach ($orders as $order) {
+            $totalRevenue += (float)$order->getTotal();
+            $customers[] = strtolower(trim((string)$order->getCustomerEmail()));
+        }
+        $uniqueCustomers = count(array_unique(array_filter($customers)));
 
         // Get recent activity logs (last 10)
         $recentLogs = $this->activityLogRepository->createQueryBuilder('log')
@@ -82,7 +97,47 @@ final class AdminController extends AbstractController
             'totalProducts' => $totalProducts,
             'totalCategories' => $totalCategories,
             'totalSuppliers' => $totalSuppliers,
+            'totalOrders' => $totalOrders,
+            'totalRevenue' => number_format($totalRevenue, 2, '.', ''),
+            'uniqueCustomers' => $uniqueCustomers,
             'recentLogs' => $recentLogs,
+        ]);
+    }
+
+    #[Route('/staff/dashboard', name: 'app_staff_dashboard')]
+    public function staffDashboard(): Response
+    {
+        // Only staff can access staff dashboard
+        if (!$this->isGranted('ROLE_STAFF')) {
+            $this->addFlash('error', 'Access denied. Only staff can access the staff dashboard.');
+            if ($this->isGranted('ROLE_ADMIN')) {
+                return $this->redirectToRoute('app_admin_dashboard');
+            }
+            return $this->redirectToRoute('app_homepage');
+        }
+
+        $totalProducts = $this->productRepository->count([]);
+        $totalCategories = $this->categoryRepository->count([]);
+        $totalSuppliers = $this->supplierRepository->count([]);
+
+        // Orders statistics for staff view (no logs)
+        $orders = $this->orderRepository->findAll();
+        $totalOrders = count($orders);
+        $totalRevenue = 0.0;
+        $customers = [];
+        foreach ($orders as $order) {
+            $totalRevenue += (float) $order->getTotal();
+            $customers[] = strtolower(trim((string) $order->getCustomerEmail()));
+        }
+        $uniqueCustomers = count(array_unique(array_filter($customers)));
+
+        return $this->render('admin/staff_dashboard.html.twig', [
+            'totalProducts' => $totalProducts,
+            'totalCategories' => $totalCategories,
+            'totalSuppliers' => $totalSuppliers,
+            'totalOrders' => $totalOrders,
+            'totalRevenue' => number_format($totalRevenue, 2, '.', ''),
+            'uniqueCustomers' => $uniqueCustomers,
         ]);
     }
 

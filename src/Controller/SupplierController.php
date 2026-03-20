@@ -74,8 +74,9 @@ final class SupplierController extends AbstractController
     #[Route('/{id}/edit', name: 'app_supplier_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Supplier $supplier, EntityManagerInterface $entityManager): Response
     {
-        // Check if user can edit this supplier (admin or creator)
-        if (!$this->isGranted('ROLE_ADMIN') && $supplier->getCreatedBy() !== $this->getUser()) {
+        // Check if user can edit this supplier (admin, staff, or creator)
+        // Staff can edit any supplier, but regular users can only edit their own
+        if (!$this->isGranted('ROLE_ADMIN') && !$this->isGranted('ROLE_STAFF') && $supplier->getCreatedBy() !== $this->getUser()) {
             $this->addFlash('error', 'You can only edit suppliers you created.');
             // Redirect to admin route if user is admin/staff
             if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF')) {
@@ -110,8 +111,9 @@ final class SupplierController extends AbstractController
     #[Route('/{id}', name: 'app_supplier_delete', methods: ['POST'])]
     public function delete(Request $request, Supplier $supplier, EntityManagerInterface $entityManager): Response
     {
-        // Check if user can delete this supplier (admin or creator)
-        if (!$this->isGranted('ROLE_ADMIN') && $supplier->getCreatedBy() !== $this->getUser()) {
+        // Check if user can delete this supplier (admin, staff, or creator)
+        // Staff can delete any supplier, but regular users can only delete their own
+        if (!$this->isGranted('ROLE_ADMIN') && !$this->isGranted('ROLE_STAFF') && $supplier->getCreatedBy() !== $this->getUser()) {
             $this->addFlash('error', 'You can only delete suppliers you created.');
             // Redirect to admin route if user is admin/staff
             if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF')) {

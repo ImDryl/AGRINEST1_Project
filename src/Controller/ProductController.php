@@ -103,8 +103,9 @@ public function new(Request $request, EntityManagerInterface $entityManager, Slu
    #[Route('/{id}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
 public function edit(Request $request, Product $product, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
 {
-    // Check if user can edit this product (admin or creator)
-    if (!$this->isGranted('ROLE_ADMIN') && $product->getCreatedBy() !== $this->getUser()) {
+    // Check if user can edit this product (admin, staff, or creator)
+    // Staff can edit any product, but regular users can only edit their own
+    if (!$this->isGranted('ROLE_ADMIN') && !$this->isGranted('ROLE_STAFF') && $product->getCreatedBy() !== $this->getUser()) {
         $this->addFlash('error', 'You can only edit products you created.');
         // Redirect to admin route if user is admin/staff
         if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF')) {
@@ -172,8 +173,9 @@ public function edit(Request $request, Product $product, EntityManagerInterface 
  #[Route('/{id}/delete', name: 'app_product_delete', methods: ['POST'])]
 public function delete(Request $request, Product $product, EntityManagerInterface $entityManager): Response
 {
-    // Check if user can delete this product (admin or creator)
-    if (!$this->isGranted('ROLE_ADMIN') && $product->getCreatedBy() !== $this->getUser()) {
+    // Check if user can delete this product (admin, staff, or creator)
+    // Staff can delete any product, but regular users can only delete their own
+    if (!$this->isGranted('ROLE_ADMIN') && !$this->isGranted('ROLE_STAFF') && $product->getCreatedBy() !== $this->getUser()) {
         $this->addFlash('error', 'You can only delete products you created.');
         // Redirect to admin route if user is admin/staff
         if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF')) {

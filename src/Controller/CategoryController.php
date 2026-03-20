@@ -75,8 +75,9 @@ final class CategoryController extends AbstractController
     #[Route('/{id}/edit', name: 'app_category_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Category $category, EntityManagerInterface $entityManager): Response
     {
-        // Check if user can edit this category (admin or creator)
-        if (!$this->isGranted('ROLE_ADMIN') && $category->getCreatedBy() !== $this->getUser()) {
+        // Check if user can edit this category (admin, staff, or creator)
+        // Staff can edit any category, but regular users can only edit their own
+        if (!$this->isGranted('ROLE_ADMIN') && !$this->isGranted('ROLE_STAFF') && $category->getCreatedBy() !== $this->getUser()) {
             $this->addFlash('error', 'You can only edit categories you created.');
             // Redirect to admin route if user is admin/staff
             if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF')) {
@@ -110,8 +111,9 @@ final class CategoryController extends AbstractController
     #[Route('/{id}', name: 'app_category_delete', methods: ['POST'])]
     public function delete(Request $request, Category $category, EntityManagerInterface $entityManager): Response
     {
-        // Check if user can delete this category (admin or creator)
-        if (!$this->isGranted('ROLE_ADMIN') && $category->getCreatedBy() !== $this->getUser()) {
+        // Check if user can delete this category (admin, staff, or creator)
+        // Staff can delete any category, but regular users can only delete their own
+        if (!$this->isGranted('ROLE_ADMIN') && !$this->isGranted('ROLE_STAFF') && $category->getCreatedBy() !== $this->getUser()) {
             $this->addFlash('error', 'You can only delete categories you created.');
             // Redirect to admin route if user is admin/staff
             if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF')) {

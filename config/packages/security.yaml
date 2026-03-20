@@ -41,9 +41,11 @@ security:
         - { path: ^/admin/logs, roles: ROLE_ADMIN }
         - { path: ^/admin/users, roles: ROLE_ADMIN }
         - { path: ^/admin/dashboard, roles: ROLE_ADMIN }
+        - { path: ^/staff/dashboard, roles: ROLE_STAFF }
         - { path: ^/admin/products, roles: [ROLE_STAFF, ROLE_ADMIN] }
         - { path: ^/admin/categories, roles: [ROLE_STAFF, ROLE_ADMIN] }
         - { path: ^/admin/suppliers, roles: [ROLE_STAFF, ROLE_ADMIN] }
+        - { path: ^/admin/orders, roles: [ROLE_STAFF, ROLE_ADMIN] }
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/product, roles: [ROLE_STAFF, ROLE_ADMIN] }
         - { path: ^/category, roles: [ROLE_STAFF, ROLE_ADMIN] }

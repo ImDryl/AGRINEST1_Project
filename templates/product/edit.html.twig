@@ -2,22 +2,487 @@
 
 {% block title %}Edit Product{% endblock %}
 
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="stylesheet" href="{{ asset('css/form.css') }}">
+  <style>
+    .product-edit-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .form-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+    .form-header h2 {
+      margin: 0;
+      color: #333;
+      font-size: 1.8rem;
+    }
+    .current-image-section {
+      margin-top: 20px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+    }
+    .current-image-section h4 {
+      margin: 0 0 15px 0;
+      color: #495057;
+      font-size: 1rem;
+    }
+    .current-image-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .current-image-wrapper img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid #dee2e6;
+    }
+    .image-info {
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+    .file-input-wrapper {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+    .file-input {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+    .file-input-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: #f8f9fa;
+      border: 2px dashed #dee2e6;
+      border-radius: 6px;
+      color: #6c757d;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-height: 45px;
+    }
+    .file-input-label:hover {
+      background: #e9ecef;
+      border-color: #007bff;
+      color: #007bff;
+    }
+    .form-actions {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      gap: 15px;
+    }
+    .btn-delete-form {
+      margin-left: auto;
+    }
+  </style>
+{% endblock %}
+
 {% block admin_content %}
-  <h1><i class="bi bi-pencil"></i> Edit Product</h1>
-  <div class="form-container">
-    {{ include('product/_form.html.twig', {'button_label': 'Update'}) }}
-    {{ include('product/_delete_form.html.twig') }}
+<div class="product-edit-container">
+  <div class="form-header">
+    <h2><i class="bi bi-pencil"></i> Edit Product</h2>
   </div>
+  
+  <div class="form-container">
+    {{ form_start(form, {'attr': {'enctype': 'multipart/form-data', 'class': 'product-form'}}) }}
+
+    <div class="form-grid">
+        <div class="form-group">
+            <label for="{{ form.name.vars.id }}">
+                <i class="bi bi-tag"></i> Product Name
+            </label>
+            <div class="input-wrapper">
+                {{ form_widget(form.name, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Enter product name'
+                    }
+                }) }}
+            </div>
+            {{ form_errors(form.name) }}
+        </div>
+
+        <div class="inline-fields">
+            <div class="field-half form-group">
+                <label for="{{ form.category.vars.id }}">
+                    <i class="bi bi-folder"></i> Category
+                </label>
+                <div class="input-wrapper">
+                    {{ form_widget(form.category, {
+                        'attr': {
+                            'class': 'form-control'
+                        }
+                    }) }}
+                </div>
+                {{ form_errors(form.category) }}
+            </div>
+            <div class="field-half form-group">
+                <label for="{{ form.supplier.vars.id }}">
+                    <i class="bi bi-truck"></i> Supplier
+                </label>
+                <div class="input-wrapper">
+                    {{ form_widget(form.supplier, {
+                        'attr': {
+                            'class': 'form-control'
+                        }
+                    }) }}
+                </div>
+                {{ form_errors(form.supplier) }}
+            </div>
+        </div>
+
+        <div class="inline-fields">
+            <div class="field-half form-group">
+                <label for="{{ form.price.vars.id }}">
+                    <i class="bi bi-currency-dollar"></i> Price
+                </label>
+                <div class="input-wrapper">
+                    {{ form_widget(form.price, {
+                        'attr': {
+                            'class': 'form-control',
+                            'placeholder': '0.00',
+                            'step': '0.01',
+                            'min': '0'
+                        }
+                    }) }}
+                </div>
+                {{ form_errors(form.price) }}
+            </div>
+            <div class="field-half form-group">
+                <label for="{{ form.quantity.vars.id }}">
+                    <i class="bi bi-box"></i> Quantity
+                </label>
+                <div class="input-wrapper">
+                    {{ form_widget(form.quantity, {
+                        'attr': {
+                            'class': 'form-control',
+                            'placeholder': '0',
+                            'min': '0'
+                        }
+                    }) }}
+                </div>
+                {{ form_errors(form.quantity) }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.description.vars.id }}">
+                <i class="bi bi-file-text"></i> Description
+            </label>
+            <div class="input-wrapper">
+                {{ form_widget(form.description, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Enter product description',
+                        'rows': '4'
+                    }
+                }) }}
+            </div>
+            {{ form_errors(form.description) }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.date.vars.id }}">
+                <i class="bi bi-calendar"></i> Date
+            </label>
+            <div class="input-wrapper">
+                {{ form_widget(form.date, {
+                    'attr': {
+                        'class': 'form-control'
+                    }
+                }) }}
+            </div>
+            {{ form_errors(form.date) }}
+        </div>
+
+        {% if product.image %}
+        <div class="current-image-section">
+            <h4><i class="bi bi-image"></i> Current Image</h4>
+            <div class="current-image-wrapper">
+                <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="{{ product.name }}" id="currentProductImage">
+                <div class="image-info">
+                    <p><strong>Current Image:</strong> {{ product.image }}</p>
+                    <p style="margin-top: 10px; color: #6c757d;">Upload a new image below to replace it.</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="form-group">
+            <label for="{{ form.image.vars.id }}">
+                <i class="bi bi-image"></i> {% if product.image %}Update Product Image{% else %}Product Image{% endif %}
+            </label>
+            <div class="input-wrapper file-input-wrapper">
+                {{ form_widget(form.image, {
+                    'attr': {
+                        'class': 'form-control file-input',
+                        'accept': 'image/*',
+                        'onchange': 'updateFileLabel(this)'
+                    }
+                }) }}
+                <label for="{{ form.image.vars.id }}" class="file-input-label" id="fileLabel">
+                    <i class="bi bi-cloud-upload"></i> <span id="fileLabelText">Choose file...</span>
+                </label>
+            </div>
+            {{ form_errors(form.image) }}
+            {% if product.image %}
+            <small style="color: #6c757d; margin-top: 5px; display: block;">
+                <i class="bi bi-info-circle"></i> Leave empty to keep the current image
+            </small>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary" style="padding: 12px 30px; font-size: 1rem;">
+            <i class="bi bi-check-circle"></i> Update Product
+        </button>
+        {% if isAdmin|default(false) %}
+            <a href="{{ path('app_admin_products_index') }}" class="btn btn-secondary" style="padding: 12px 30px; font-size: 1rem;">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+        {% else %}
+            <a href="{{ path('app_product_index') }}" class="btn btn-secondary" style="padding: 12px 30px; font-size: 1rem;">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+        {% endif %}
+        <div class="btn-delete-form">
+            {{ include('product/_delete_form.html.twig') }}
+        </div>
+    </div>
+
+    {{ form_end(form) }}
+  </div>
+</div>
+
+<script>
+function updateFileLabel(input) {
+    const labelText = document.getElementById('fileLabelText');
+    const label = document.getElementById('fileLabel');
+    if (input.files && input.files.length > 0) {
+        labelText.textContent = input.files[0].name;
+        label.style.color = '#28a745';
+        label.style.borderColor = '#28a745';
+        label.style.background = '#d4edda';
+    } else {
+        labelText.textContent = 'Choose file...';
+        label.style.color = '#6c757d';
+        label.style.borderColor = '#dee2e6';
+        label.style.background = '#f8f9fa';
+    }
+}
+</script>
 {% endblock %}
 
 {% block body %}
     {% if isAdmin|default(false) %}
         {{ parent() }}
     {% else %}
-        <h1><i class="bi bi-pencil"></i> Edit Product</h1>
-        <div class="form-container">
-            {{ include('product/_form.html.twig', {'button_label': 'Update'}) }}
-            {{ include('product/_delete_form.html.twig') }}
+        <div class="product-edit-container">
+          <div class="form-header">
+            <h2><i class="bi bi-pencil"></i> Edit Product</h2>
+          </div>
+          
+          <div class="form-container">
+            {{ form_start(form, {'attr': {'enctype': 'multipart/form-data', 'class': 'product-form'}}) }}
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="{{ form.name.vars.id }}">
+                        <i class="bi bi-tag"></i> Product Name
+                    </label>
+                    <div class="input-wrapper">
+                        {{ form_widget(form.name, {
+                            'attr': {
+                                'class': 'form-control',
+                                'placeholder': 'Enter product name'
+                            }
+                        }) }}
+                    </div>
+                    {{ form_errors(form.name) }}
+                </div>
+
+                <div class="inline-fields">
+                    <div class="field-half form-group">
+                        <label for="{{ form.category.vars.id }}">
+                            <i class="bi bi-folder"></i> Category
+                        </label>
+                        <div class="input-wrapper">
+                            {{ form_widget(form.category, {
+                                'attr': {
+                                    'class': 'form-control'
+                                }
+                            }) }}
+                        </div>
+                        {{ form_errors(form.category) }}
+                    </div>
+                    <div class="field-half form-group">
+                        <label for="{{ form.supplier.vars.id }}">
+                            <i class="bi bi-truck"></i> Supplier
+                        </label>
+                        <div class="input-wrapper">
+                            {{ form_widget(form.supplier, {
+                                'attr': {
+                                    'class': 'form-control'
+                                }
+                            }) }}
+                        </div>
+                        {{ form_errors(form.supplier) }}
+                    </div>
+                </div>
+
+                <div class="inline-fields">
+                    <div class="field-half form-group">
+                        <label for="{{ form.price.vars.id }}">
+                            <i class="bi bi-currency-dollar"></i> Price
+                        </label>
+                        <div class="input-wrapper">
+                            {{ form_widget(form.price, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'placeholder': '0.00',
+                                    'step': '0.01',
+                                    'min': '0'
+                                }
+                            }) }}
+                        </div>
+                        {{ form_errors(form.price) }}
+                    </div>
+                    <div class="field-half form-group">
+                        <label for="{{ form.quantity.vars.id }}">
+                            <i class="bi bi-box"></i> Quantity
+                        </label>
+                        <div class="input-wrapper">
+                            {{ form_widget(form.quantity, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'placeholder': '0',
+                                    'min': '0'
+                                }
+                            }) }}
+                        </div>
+                        {{ form_errors(form.quantity) }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.description.vars.id }}">
+                        <i class="bi bi-file-text"></i> Description
+                    </label>
+                    <div class="input-wrapper">
+                        {{ form_widget(form.description, {
+                            'attr': {
+                                'class': 'form-control',
+                                'placeholder': 'Enter product description',
+                                'rows': '4'
+                            }
+                        }) }}
+                    </div>
+                    {{ form_errors(form.description) }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.date.vars.id }}">
+                        <i class="bi bi-calendar"></i> Date
+                    </label>
+                    <div class="input-wrapper">
+                        {{ form_widget(form.date, {
+                            'attr': {
+                                'class': 'form-control'
+                            }
+                        }) }}
+                    </div>
+                    {{ form_errors(form.date) }}
+                </div>
+
+                {% if product.image %}
+                <div class="current-image-section">
+                    <h4><i class="bi bi-image"></i> Current Image</h4>
+                    <div class="current-image-wrapper">
+                        <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="{{ product.name }}" id="currentProductImage">
+                        <div class="image-info">
+                            <p><strong>Current Image:</strong> {{ product.image }}</p>
+                            <p style="margin-top: 10px; color: #6c757d;">Upload a new image below to replace it.</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label for="{{ form.image.vars.id }}">
+                        <i class="bi bi-image"></i> {% if product.image %}Update Product Image{% else %}Product Image{% endif %}
+                    </label>
+                    <div class="input-wrapper file-input-wrapper">
+                        {{ form_widget(form.image, {
+                            'attr': {
+                                'class': 'form-control file-input',
+                                'accept': 'image/*',
+                                'onchange': 'updateFileLabel(this)'
+                            }
+                        }) }}
+                        <label for="{{ form.image.vars.id }}" class="file-input-label" id="fileLabel">
+                            <i class="bi bi-cloud-upload"></i> <span id="fileLabelText">Choose file...</span>
+                        </label>
+                    </div>
+                    {{ form_errors(form.image) }}
+                    {% if product.image %}
+                    <small style="color: #6c757d; margin-top: 5px; display: block;">
+                        <i class="bi bi-info-circle"></i> Leave empty to keep the current image
+                    </small>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" style="padding: 12px 30px; font-size: 1rem;">
+                    <i class="bi bi-check-circle"></i> Update Product
+                </button>
+                <a href="{{ path('app_product_index') }}" class="btn btn-secondary" style="padding: 12px 30px; font-size: 1rem;">
+                    <i class="bi bi-arrow-left"></i> Back to List
+                </a>
+                <div class="btn-delete-form">
+                    {{ include('product/_delete_form.html.twig') }}
+                </div>
+            </div>
+
+            {{ form_end(form) }}
+          </div>
         </div>
+
+        <script>
+        function updateFileLabel(input) {
+            const labelText = document.getElementById('fileLabelText');
+            const label = document.getElementById('fileLabel');
+            if (input.files && input.files.length > 0) {
+                labelText.textContent = input.files[0].name;
+                label.style.color = '#28a745';
+                label.style.borderColor = '#28a745';
+                label.style.background = '#d4edda';
+            } else {
+                labelText.textContent = 'Choose file...';
+                label.style.color = '#6c757d';
+                label.style.borderColor = '#dee2e6';
+                label.style.background = '#f8f9fa';
+            }
+        }
+        </script>
     {% endif %}
 {% endblock %}

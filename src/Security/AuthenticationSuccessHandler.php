@@ -43,7 +43,7 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
 
         // Check for staff role (check both token and user roles)
         if (in_array('ROLE_STAFF', $tokenRoles, true) || in_array('ROLE_STAFF', $userRoles, true)) {
-            return new RedirectResponse($this->router->generate('app_admin_products_index'));
+            return new RedirectResponse($this->router->generate('app_staff_dashboard'));
         }
 
         // Default redirect for regular users
