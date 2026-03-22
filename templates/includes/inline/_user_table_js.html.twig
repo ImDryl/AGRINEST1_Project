@@ -1,5 +1,8 @@
+{# Users table (was public/js/user-table.js) #}
+<script>
+{% verbatim %}
 document.addEventListener("DOMContentLoaded", function () {
-    const table = document.getElementById("productsTable");
+    const table = document.getElementById("usersTable");
     if (!table) return;
 
     const tbody = table.querySelector("tbody");
@@ -17,8 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!term) return true;
         const t = term.toLowerCase();
         return Array.from(row.cells).some((cell, idx) => {
-            // Skip image column (1) and actions column (last)
-            if (idx === 1 || idx === row.cells.length - 1) return false;
+            if (idx === row.cells.length - 1) return false;
             return (cell.textContent || "").toLowerCase().includes(t);
         });
     }
@@ -49,59 +51,51 @@ document.addEventListener("DOMContentLoaded", function () {
         filteredRows.slice(start, end).forEach((r) => (r.style.display = ""));
 
         pagination.innerHTML = "";
-        if (pageInfo) {
-            const showingStart = total === 0 ? 0 : start + 1;
-            const showingEnd = Math.min(end, total);
-            pageInfo.textContent = `Showing ${showingStart} to ${showingEnd} of ${total} entries`;
+        pagination.appendChild(
+            makeButton("Previous", currentPage - 1, currentPage === 1, false)
+        );
+        for (let i = 1; i <= totalPages; i++) {
+            if (
+                i === 1 ||
+                i === totalPages ||
+                (i >= currentPage - 1 && i <= currentPage + 1)
+            ) {
+                pagination.appendChild(
+                    makeButton(i, i, false, i === currentPage)
+                );
+            } else if (
+                i === currentPage - 2 ||
+                i === currentPage + 2
+            ) {
+                const ellipsis = document.createElement("span");
+                ellipsis.textContent = "...";
+                ellipsis.style.padding = "6px 10px";
+                ellipsis.style.color = "#666";
+                pagination.appendChild(ellipsis);
+            }
         }
-        if (totalPages <= 1) return;
+        pagination.appendChild(
+            makeButton("Next", currentPage + 1, currentPage === totalPages, false)
+        );
 
-        // First / Prev
-        pagination.appendChild(makeButton("«", 1, currentPage === 1, false));
-        pagination.appendChild(
-            makeButton(
-                "‹",
-                Math.max(1, currentPage - 1),
-                currentPage === 1,
-                false
-            )
-        );
-        const maxPages = 7;
-        let startPage = Math.max(1, currentPage - 3);
-        let endPage = Math.min(totalPages, startPage + maxPages - 1);
-        if (endPage - startPage < maxPages - 1)
-            startPage = Math.max(1, endPage - maxPages + 1);
-        for (let p = startPage; p <= endPage; p++) {
-            pagination.appendChild(
-                makeButton(String(p), p, false, p === currentPage)
-            );
-        }
-        // Next / Last
-        pagination.appendChild(
-            makeButton(
-                "›",
-                Math.min(totalPages, currentPage + 1),
-                currentPage === totalPages,
-                false
-            )
-        );
-        pagination.appendChild(
-            makeButton("»", totalPages, currentPage === totalPages, false)
-        );
+        const showingStart = total === 0 ? 0 : start + 1;
+        const showingEnd = Math.min(end, total);
+        pageInfo.textContent = `Showing ${showingStart} to ${showingEnd} of ${total} entries`;
     }
 
-    function applyFilter() {
-        const term = (searchInput.value || "").trim();
+    searchInput.addEventListener("input", () => {
+        const term = searchInput.value.trim();
         filteredRows = rows.filter((r) => rowMatchesTerm(r, term));
         currentPage = 1;
         render();
-    }
+    });
 
-    searchInput.addEventListener("input", applyFilter);
     lengthSelect.addEventListener("change", () => {
         currentPage = 1;
         render();
     });
 
-    applyFilter();
+    render();
 });
+{% endverbatim %}
+</script>

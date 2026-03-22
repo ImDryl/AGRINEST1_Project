@@ -10,7 +10,7 @@
 
 {% block javascripts %}
   {{ parent() }}
-  <script src="{{ asset('js/logs-table.js') }}"></script>
+  {% include 'includes/inline/_logs_table_js.html.twig' %}
 {% endblock %}
 
 {% block admin_content %}

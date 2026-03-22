@@ -1,3 +1,6 @@
+{# Supplier table (was public/js/supplier-table.js) #}
+<script>
+{% verbatim %}
 document.addEventListener("DOMContentLoaded", function () {
     const table = document.getElementById("supplierTable");
     if (!table) return;
@@ -17,7 +20,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!term) return true;
         const t = term.toLowerCase();
         return Array.from(row.cells).some((cell, idx) => {
-            // skip Actions column (last)
             if (idx === row.cells.length - 1) return false;
             return (cell.textContent || "").toLowerCase().includes(t);
         });
@@ -97,3 +99,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
     applyFilter();
 });
+{% endverbatim %}
+</script>

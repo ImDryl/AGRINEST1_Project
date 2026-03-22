@@ -1,4 +1,6 @@
-// Order Table Pagination and Search
+{# Orders table (was public/js/order-table.js) #}
+<script>
+{% verbatim %}
 document.addEventListener('DOMContentLoaded', function() {
     const table = document.getElementById('ordersTable');
     if (!table) return;
@@ -29,19 +31,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const end = start + pageLength;
         const pageRows = filteredRows.slice(start, end);
 
-        // Hide all rows
         rows.forEach(row => row.style.display = 'none');
 
-        // Show page rows
         pageRows.forEach(row => row.style.display = '');
 
-        // Update page info
         const total = filteredRows.length;
         const startNum = total === 0 ? 0 : start + 1;
         const endNum = Math.min(end, total);
         pageInfo.textContent = `Showing ${startNum} to ${endNum} of ${total} entries`;
 
-        // Render pagination
         renderPagination();
     }
 
@@ -51,7 +49,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (totalPages <= 1) return;
 
-        // Previous button
         const prevBtn = document.createElement('button');
         prevBtn.textContent = 'Previous';
         prevBtn.className = 'page-btn';
@@ -64,7 +61,6 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         pagination.appendChild(prevBtn);
 
-        // Page numbers
         for (let i = 1; i <= totalPages; i++) {
             if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
                 const btn = document.createElement('button');
@@ -86,7 +82,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Next button
         const nextBtn = document.createElement('button');
         nextBtn.textContent = 'Next';
         nextBtn.className = 'page-btn';
@@ -100,7 +95,6 @@ document.addEventListener('DOMContentLoaded', function() {
         pagination.appendChild(nextBtn);
     }
 
-    // Event listeners
     pageLengthSelect.addEventListener('change', function() {
         pageLength = parseInt(this.value);
         currentPage = 1;
@@ -109,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     searchInput.addEventListener('input', filterRows);
 
-    // Initial render
     renderTable();
 });
-
+{% endverbatim %}
+</script>

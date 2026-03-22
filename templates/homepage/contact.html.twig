@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact Us - AgriNest{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+{% endblock %}
+
+{% block body %}
+<nav class="navbar">
+    <div class="logo">
+        <img src="{{ asset('images/mainlogo.png') }}" alt="AgriNest Logo">
+    </div>
+    <ul class="nav-links">
+        <li><a href="{{ path('app_homepage') }}">Home</a></li>
+        <li><a href="{{ path('app_about') }}">About Us</a></li>
+        <li><a href="{{ path('app_product_index') }}">Shop</a></li>
+        <li><a href="{{ path('app_contact') }}" class="active">Contact</a></li>
+        <li><a href="{{ path('app_sell') }}">Sell</a></li>
+        {% if app.user %}
+            <li><a href="{{ path('app_logout') }}">Logout</a></li>
+        {% else %}
+            <li><a href="{{ path('app_login') }}"><i class="bi bi-box-arrow-in-right"></i> Login</a></li>
+            <li><a href="{{ path('app_register') }}" class="nav-cta">Sign Up</a></li>
+        {% endif %}
+    </ul>
+</nav>
+
+<section class="section contact-section">
+    <div class="section-title">
+        <h2><i class="bi bi-chat-dots"></i> Contact</h2>
+        <p>
+            For now, reach us using email links. We will reply as soon as we can.
+        </p>
+    </div>
+
+    <div class="contact-grid">
+        <div class="contact-card">
+            <h3><i class="bi bi-envelope"></i> Email</h3>
+            <p>support@agrinest.com</p>
+            <a href="mailto:support@agrinest.com" class="card-btn">
+                <i class="bi bi-send"></i> Email Support
+            </a>
+        </div>  
+
+        <div class="contact-card">
+            <h3><i class="bi bi-telephone"></i> Phone</h3>
+            <p>+63 000 000 0000</p>
+            <a href="tel:+630000000000" class="card-btn">
+                <i class="bi bi-telephone"></i> Call Us
+            </a>
+        </div>
+
+        <div class="contact-card">
+            <h3><i class="bi bi-geo-alt"></i> Location</h3>
+            <p>Your Farm Hub, Philippines</p>
+            <a href="{{ path('app_product_index') }}" class="card-btn">
+                <i class="bi bi-bag"></i> Browse Products
+            </a>
+        </div>
+    </div>
+
+    <div style="max-width: 980px; margin: 26px auto 0; text-align: center;">
+        <p style="color:#666; line-height: 1.8; font-size: 1rem; margin-bottom: 10px;">
+            Tip: When you email us, include what you need (egg type, quantity, or product type) so we can respond faster.
+        </p>
+    </div>
+
+    <div class="section-title" style="margin-top: 44px;">
+        <h2><i class="bi bi-clock"></i> Office Hours</h2>
+        <p>We try to respond quickly during business days.</p>
+    </div>
+
+    <div class="contact-grid" style="padding: 0 4rem 60px;">
+        <div class="contact-card" style="text-align:left;">
+            <h3 style="justify-content:flex-start;"><i class="bi bi-calendar-day"></i> Monday - Friday</h3>
+            <p>9:00 AM - 6:00 PM (local time)</p>
+            <p style="margin-bottom:0;">We reply to emails within 24 hours (test time).</p>
+        </div>
+
+        <div class="contact-card" style="text-align:left;">
+            <h3 style="justify-content:flex-start;"><i class="bi bi-calendar-week"></i> Saturday</h3>
+            <p>10:00 AM - 3:00 PM (local time)</p>
+            <p style="margin-bottom:0;">For urgent stock questions, email first and we will assist.</p>
+        </div>
+
+        <div class="contact-card" style="text-align:left;">
+            <h3 style="justify-content:flex-start;"><i class="bi bi-arrow-right-circle"></i> What happens next?</h3>
+            <p>We confirm availability (or estimate) and help you place the right order.</p>
+            <p style="margin-bottom:0;">If you are a seller, we send next-step instructions.</p>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <p>© 2025 AgriNest. Fresh from the Nest <i class="bi bi-heart-fill"></i></p>
+</footer>
+{% endblock %}
+

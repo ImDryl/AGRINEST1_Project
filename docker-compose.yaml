@@ -1,35 +1,39 @@
+version: "3.8"
+
 services:
     mysql:
         image: mysql:8.0
+        platform: linux/amd64
         restart: unless-stopped
         environment:
-            MYSQL_ROOT_PASSWORD: ${test_demo_root_password}
-            MYSQL_DATABASE: ${test_demo_db}
-            MYSQL_USER: ${test_demo_user}
-            MYSQL_PASSWORD: ${test_demo_password}
+            MYSQL_ROOT_PASSWORD: agrinest_root_password
+            MYSQL_DATABASE: agrinest_db
+            MYSQL_USER: agrinest_user
+            MYSQL_PASSWORD: agrinest_password
         ports:
-            - "3306:3306"
+            - "3313:3306"
         volumes:
-            - mysql_data:/var/lib/mysql
+            - agrinest_mysql_data:/var/lib/mysql
         networks:
-            - test_demo_network
+            - agrinest_network
 
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
+        platform: linux/amd64
         restart: unless-stopped
         environment:
             PMA_HOST: mysql
-            PMA_USER: ${test_demo_user}
-            PMA_PASSWORD: ${test_demo_password}
+            PMA_USER: root
+            PMA_PASSWORD: agrinest_root_password
         ports:
-            - "8080:80"
+            - "8082:80"
         depends_on:
             - mysql
         networks:
-            - test_demo_network
+            - agrinest_network
 
 volumes:
-    mysql_data:
+    agrinest_mysql_data:
 
 networks:
-    test_demo_network:
+    agrinest_network:

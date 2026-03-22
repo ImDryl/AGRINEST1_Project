@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sell with AgriNest - Contact Us{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+{% endblock %}
+
+{% block body %}
+<nav class="navbar">
+    <div class="logo">
+        <img src="{{ asset('images/mainlogo.png') }}" alt="AgriNest Logo">
+    </div>
+    <ul class="nav-links">
+        <li><a href="{{ path('app_homepage') }}">Home</a></li>
+        <li><a href="{{ path('app_about') }}">About Us</a></li>
+        <li><a href="{{ path('app_product_index') }}">Shop</a></li>
+        <li><a href="{{ path('app_contact') }}">Contact</a></li>
+        <li><a href="{{ path('app_sell') }}" class="active">Sell</a></li>
+        {% if app.user %}
+            <li><a href="{{ path('app_logout') }}">Logout</a></li>
+        {% else %}
+            <li><a href="{{ path('app_login') }}"><i class="bi bi-box-arrow-in-right"></i> Login</a></li>
+            <li><a href="{{ path('app_register') }}" class="nav-cta">Sign Up</a></li>
+        {% endif %}
+    </ul>
+</nav>
+
+<section class="section about-section">
+    <div class="section-title">
+        <h2><i class="bi bi-hand-thumbs-up"></i> Sell with AgriNest</h2>
+        <p>
+            Want to supply eggs or poultry products? Send us an email and we’ll guide you on the next steps.
+        </p>
+    </div>
+
+    <div class="contact-grid">
+        <div class="contact-card">
+            <h3><i class="bi bi-person-plus"></i> Become a Seller</h3>
+            <p>Start by letting us know what products you can supply.</p>
+            <a href="mailto:support@agrinest.com" class="card-btn">
+                <i class="bi bi-send"></i> Email for Seller Info
+            </a>
+        </div>
+
+        <div class="contact-card">
+            <h3><i class="bi bi-clipboard-check"></i> What to Include</h3>
+            <p>
+                Your product type, approximate quantities, and your preferred delivery area.
+            </p>
+            <a href="{{ path('app_contact') }}" class="card-btn" style="background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); color: #754c24;">
+                <i class="bi bi-chat-dots"></i> Contact Details
+            </a>
+        </div>
+    </div>
+
+    <div style="max-width: 980px; margin: 26px auto 0; text-align: center;">
+        <p style="color:#666; line-height: 1.8; font-size: 1rem; margin-bottom: 0;">
+            For faster approval, include your product list, approximate quantities, and your delivery area.
+        </p>
+    </div>
+</section>
+
+<footer class="footer">
+    <p>© 2025 AgriNest. Fresh from the Nest <i class="bi bi-heart-fill"></i></p>
+</footer>
+{% endblock %}
+

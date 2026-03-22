@@ -1,0 +1,103 @@
+<div class="collection-page">
+    <div class="collection-hero">
+        <h1><i class="bi bi-shop-window"></i> Shop</h1>
+        <p>Fresh poultry products available in clear categories. View details and stock below.</p>
+    </div>
+
+    <form method="get" action="{{ path('app_product_index') }}" class="collection-controls collection-controls-form">
+        <input type="hidden" name="page" value="1">
+        <div class="control-group">
+            <label for="shop_limit" style="font-weight:600;">Show</label>
+            <select id="shop_limit" name="limit">
+                <option value="6" {{ shopLimit == 6 ? 'selected' : '' }}>6</option>
+                <option value="9" {{ shopLimit == 9 ? 'selected' : '' }}>9</option>
+                <option value="12" {{ shopLimit == 12 ? 'selected' : '' }}>12</option>
+                <option value="18" {{ shopLimit == 18 ? 'selected' : '' }}>18</option>
+            </select>
+            <span>products</span>
+        </div>
+
+        <div class="control-group">
+            <label for="shop_q" style="font-weight:600;">Search:</label>
+            <input id="shop_q" name="q" type="search" value="{{ shopSearch }}" placeholder="Search by name or category…" style="min-width:220px;">
+        </div>
+
+        <div class="control-group">
+            <button type="submit" class="collection-submit-btn"><i class="bi bi-search"></i> Search</button>
+        </div>
+    </form>
+
+    <div class="collection-grid">
+        {% for product in products %}
+            <div class="collection-card">
+                <div class="collection-media">
+                    {% if product.image %}
+                        <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="{{ product.name }}" class="collection-img">
+                    {% else %}
+                        <div class="collection-no-img">No Image</div>
+                    {% endif %}
+                </div>
+
+                <div class="collection-card-body">
+                    <div class="collection-meta">
+                        <span class="collection-badge"><i class="bi bi-tag"></i> {{ product.category }}</span>
+                    </div>
+
+                    <h3 class="collection-title">{{ product.name }}</h3>
+
+                    <div class="collection-price">
+                        ₱{{ product.price|number_format(2, '.', ',') }}
+                    </div>
+
+                    <div class="collection-stock">
+                        <i class="bi bi-box-seam"></i> Qty: {{ product.quantity }}
+                    </div>
+
+                    <div class="collection-actions">
+                        <a href="{{ path('app_product_show', {'id': product.id}) }}" class="collection-btn">
+                            <i class="bi bi-eye"></i> View
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p class="collection-empty">No products found.</p>
+        {% endfor %}
+    </div>
+
+    <div class="collection-footer">
+        <div class="collection-page-info">
+            {% if shopTotal > 0 %}
+                {% set start = (shopPage - 1) * shopLimit + 1 %}
+                {% set end = min(shopPage * shopLimit, shopTotal) %}
+                Showing {{ start }} to {{ end }} of {{ shopTotal }} entries
+            {% else %}
+                Showing 0 to 0 of 0 entries
+            {% endif %}
+        </div>
+
+        {% if shopTotalPages > 1 %}
+            <nav class="collection-pagination" aria-label="Product pages">
+                {% if shopPage > 1 %}
+                    <a class="page-btn" href="{{ path('app_product_index', {q: shopSearch, limit: shopLimit, page: shopPage - 1}) }}">‹</a>
+                {% else %}
+                    <span class="page-btn" aria-disabled="true">‹</span>
+                {% endif %}
+
+                {% for p in 1..shopTotalPages %}
+                    {% if p == shopPage %}
+                        <span class="page-btn is-active">{{ p }}</span>
+                    {% else %}
+                        <a class="page-btn" href="{{ path('app_product_index', {q: shopSearch, limit: shopLimit, page: p}) }}">{{ p }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if shopPage < shopTotalPages %}
+                    <a class="page-btn" href="{{ path('app_product_index', {q: shopSearch, limit: shopLimit, page: shopPage + 1}) }}">›</a>
+                {% else %}
+                    <span class="page-btn" aria-disabled="true">›</span>
+                {% endif %}
+            </nav>
+        {% endif %}
+    </div>
+</div>

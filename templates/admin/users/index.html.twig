@@ -9,7 +9,7 @@
 
 {% block javascripts %}
   {{ parent() }}
-  <script src="{{ asset('js/user-table.js') }}?v=1"></script>
+  {% include 'includes/inline/_user_table_js.html.twig' %}
 {% endblock %}
 
 {% block admin_content %}

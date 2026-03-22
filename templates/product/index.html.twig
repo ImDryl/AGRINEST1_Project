@@ -10,16 +10,22 @@
     {% if isAdmin|default(false) %}
         {{ parent() }}
     {% else %}
-        {% embed 'product/_index_content.html.twig' %}{% endembed %}
+        {% embed 'product/_collection_content.html.twig' %}{% endembed %}
     {% endif %}
 {% endblock %}
 
 {% block stylesheets %}
   {{ parent() }}
-  <link rel="stylesheet" href="{{ asset('css/product-table.css') }}?v=1">
+  {% if isAdmin|default(false) %}
+    <link rel="stylesheet" href="{{ asset('css/product-table.css') }}?v=1">
+  {% else %}
+    <link rel="stylesheet" href="{{ asset('css/product-collection.css') }}?v=1">
+  {% endif %}
 {% endblock %}
 
 {% block javascripts %}
   {{ parent() }}
-  <script src="{{ asset('js/product-table.js') }}?v=1"></script>
+  {% if isAdmin|default(false) %}
+    {% include 'includes/inline/_product_table_js.html.twig' %}
+  {% endif %}
 {% endblock %}

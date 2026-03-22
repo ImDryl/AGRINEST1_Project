@@ -10,7 +10,7 @@
 
 {% block javascripts %}
   {{ parent() }}
-  <script src="{{ asset('js/order-table.js') }}?v=1"></script>
+  {% include 'includes/inline/_order_table_js.html.twig' %}
 {% endblock %}
 
 {% block admin_content %}

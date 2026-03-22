@@ -23,13 +23,38 @@ final class ProductController extends AbstractController
     ) {
     }
     #[Route(name: 'app_product_index', methods: ['GET'])]
-    public function index(ProductRepository $productRepository): Response
+    public function index(Request $request, ProductRepository $productRepository): Response
     {
         $isAdmin = $this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF');
-        
+
+        if ($isAdmin) {
+            return $this->render('product/index.html.twig', [
+                'products' => $productRepository->findAll(),
+                'isAdmin' => true,
+            ]);
+        }
+
+        $search = trim((string) $request->query->get('q', ''));
+        $page = max(1, (int) $request->query->get('page', 1));
+        $limit = (int) $request->query->get('limit', 9);
+        if (!\in_array($limit, [6, 9, 12, 18], true)) {
+            $limit = 9;
+        }
+
+        $total = $productRepository->countShopListing($search !== '' ? $search : null);
+        $totalPages = $total > 0 ? (int) ceil($total / $limit) : 1;
+        $page = min($page, $totalPages);
+
+        $products = $productRepository->findShopListing($search !== '' ? $search : null, $page, $limit);
+
         return $this->render('product/index.html.twig', [
-            'products' => $productRepository->findAll(),
-            'isAdmin' => $isAdmin,
+            'products' => $products,
+            'isAdmin' => false,
+            'shopSearch' => $search,
+            'shopPage' => $page,
+            'shopLimit' => $limit,
+            'shopTotal' => $total,
+            'shopTotalPages' => $totalPages,
         ]);
     }
 

@@ -1,3 +1,6 @@
+{# Activity logs table (was public/js/logs-table.js) #}
+<script>
+{% verbatim %}
 document.addEventListener("DOMContentLoaded", function () {
     const table = document.getElementById("logsTable");
     if (!table) return;
@@ -47,7 +50,6 @@ document.addEventListener("DOMContentLoaded", function () {
             pagination.innerHTML = "";
             if (totalPages <= 1) return;
 
-            // First / Prev
             pagination.appendChild(makeButton("«", 1, currentPage === 1, false));
             pagination.appendChild(
                 makeButton(
@@ -57,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     false
                 )
             );
-            
+
             const maxPages = 7;
             let startPage = Math.max(1, currentPage - 3);
             let endPage = Math.min(totalPages, startPage + maxPages - 1);
@@ -68,8 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     makeButton(String(p), p, false, p === currentPage)
                 );
             }
-            
-            // Next / Last
+
             pagination.appendChild(
                 makeButton(
                     "›",
@@ -91,4 +92,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
     render();
 });
-
+{% endverbatim %}
+</script>
