@@ -51,6 +51,7 @@ security:
         - { path: ^/product, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/category, roles: [ROLE_STAFF, ROLE_ADMIN] }
         - { path: ^/supplier, roles: [ROLE_STAFF, ROLE_ADMIN] }
+        - { path: ^/verify-email, roles: PUBLIC_ACCESS }
 
 when@test:
     security:

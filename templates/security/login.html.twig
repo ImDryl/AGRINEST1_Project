@@ -29,7 +29,8 @@
         {% if error %}
             <div class="alert alert-danger">
                 <i class="bi bi-exclamation-triangle"></i>
-                {{ error.messageKey|trans(error.messageData, 'security') }}
+                {% set msg = error.message is defined and error.message ? error.message : (error.messageKey|trans(error.messageData, 'security')) %}
+                {{ msg }}
             </div>
         {% endif %}
 
