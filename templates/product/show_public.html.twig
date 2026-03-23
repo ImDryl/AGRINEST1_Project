@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ product.name }} — AgriNest{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/product-collection.css') }}?v=7">
+{% endblock %}
+
+{% block body %}
+{% include 'includes/_navbar_public.html.twig' %}
+
+<article class="product-public-page">
+    <header class="product-public-hero">
+        <div class="product-public-container">
+            <nav class="product-public-breadcrumb" aria-label="Breadcrumb">
+                <a href="{{ path('app_homepage') }}"><i class="bi bi-house-door" aria-hidden="true"></i> Home</a>
+                <span class="product-public-breadcrumb__sep" aria-hidden="true">/</span>
+                <a href="{{ path('app_product_index') }}">Shop</a>
+                <span class="product-public-breadcrumb__sep" aria-hidden="true">/</span>
+                <span aria-current="page">{{ product.name }}</span>
+            </nav>
+        </div>
+    </header>
+
+    <div class="product-public-container product-public-grid">
+        <div class="product-public-media">
+            {% if product.image %}
+                <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="{{ product.name }}" class="product-public-img">
+            {% else %}
+                <div class="product-public-noimg"><i class="bi bi-image" aria-hidden="true"></i> No image</div>
+            {% endif %}
+        </div>
+        <div class="product-public-detail">
+            <p class="product-public-eyebrow"><i class="bi bi-tag" aria-hidden="true"></i> {{ product.category }}</p>
+            <h1 class="product-public-title">{{ product.name }}</h1>
+            <div class="product-public-price-row">
+                <span class="product-public-price">₱{{ product.price|number_format(2, '.', ',') }}</span>
+                {% if product.quantity > 0 %}
+                    <span class="product-public-stock product-public-stock--ok"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> {{ product.quantity }} in stock</span>
+                {% else %}
+                    <span class="product-public-stock product-public-stock--out"><i class="bi bi-x-circle" aria-hidden="true"></i> Out of stock</span>
+                {% endif %}
+            </div>
+            <div class="product-public-desc">
+                {{ product.description|nl2br }}
+            </div>
+            <div class="product-public-actions">
+                {% if product.quantity > 0 %}
+                    <a class="product-public-btn product-public-btn--primary" href="{{ path('app_contact') }}?topic=order&amp;product={{ product.id }}">
+                        <i class="bi bi-cart-plus" aria-hidden="true"></i> Buy / inquire
+                    </a>
+                {% else %}
+                    <a class="product-public-btn product-public-btn--muted" href="{{ path('app_contact') }}?topic=stock&amp;product={{ product.id }}">
+                        <i class="bi bi-envelope" aria-hidden="true"></i> Ask about restock
+                    </a>
+                {% endif %}
+                <a class="product-public-btn product-public-btn--ghost" href="{{ path('app_product_index') }}">
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to shop
+                </a>
+            </div>
+            <p class="product-public-note">
+                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                Orders are fulfilled by our team—use <strong>Buy / inquire</strong> to reach us with this product in mind.
+            </p>
+        </div>
+    </div>
+</article>
+
+{{ include('homepage/_footer.html.twig') }}
+{% endblock %}

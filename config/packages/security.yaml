@@ -47,7 +47,8 @@ security:
         - { path: ^/admin/suppliers, roles: [ROLE_STAFF, ROLE_ADMIN] }
         - { path: ^/admin/orders, roles: [ROLE_STAFF, ROLE_ADMIN] }
         - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/product, roles: [ROLE_STAFF, ROLE_ADMIN] }
+        # Shop requires login; guests are sent to /login then redirected back (see AuthenticationSuccessHandler)
+        - { path: ^/product, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/category, roles: [ROLE_STAFF, ROLE_ADMIN] }
         - { path: ^/supplier, roles: [ROLE_STAFF, ROLE_ADMIN] }
 

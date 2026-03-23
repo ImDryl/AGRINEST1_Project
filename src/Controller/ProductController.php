@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 
@@ -58,76 +59,84 @@ final class ProductController extends AbstractController
         ]);
     }
 
+    #[IsGranted('ROLE_USER')]
     #[Route('/new', name: 'app_product_new', methods: ['GET', 'POST'])]
-public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
-{
-    $product = new Product();
-    $form = $this->createForm(ProductType::class, $product);
-    $form->handleRequest($request);
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    {
+        $product = new Product();
+        $form = $this->createForm(ProductType::class, $product);
+        $form->handleRequest($request);
 
-    if ($form->isSubmitted() && $form->isValid()) {
-        $imageFile = $form->get('image')->getData();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('image')->getData();
 
-        if ($imageFile) {
-            $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-            $safeFilename = $slugger->slug($originalFilename);
-            $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
 
-            try {
-                $imageFile->move(
-                    $this->getParameter('uploads_directory') . '/images',
-                    $newFilename
-                );
-            } catch (FileException $e) {
-                // handle exception if something happens during file upload
+                try {
+                    $imageFile->move(
+                        $this->getParameter('uploads_directory') . '/images',
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // handle exception if something happens during file upload
+                }
+
+                // store the file name instead of its contents
+                $product->setImage($newFilename);
             }
 
-            // store the file name instead of its contents
-            $product->setImage($newFilename);
+            // Set the creator if user is logged in
+            if ($this->getUser()) {
+                $product->setCreatedBy($this->getUser());
+            }
+
+            $entityManager->persist($product);
+            $entityManager->flush();
+
+            // Log the action
+            $this->activityLogService->logProductCreate($product);
+
+            // Redirect to admin route if user is admin/staff
+            if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF')) {
+                return $this->redirectToRoute('app_admin_products_index', [], Response::HTTP_SEE_OTHER);
+            }
+
+            return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        // Set the creator if user is logged in
-        if ($this->getUser()) {
-            $product->setCreatedBy($this->getUser());
-        }
+        $isAdmin = $this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF');
 
-        $entityManager->persist($product);
-        $entityManager->flush();
-
-        // Log the action
-        $this->activityLogService->logProductCreate($product);
-
-        // Redirect to admin route if user is admin/staff
-        if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF')) {
-            return $this->redirectToRoute('app_admin_products_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
+        return $this->render('product/new.html.twig', [
+            'product' => $product,
+            'form' => $form,
+            'isAdmin' => $isAdmin,
+        ]);
     }
-
-    $isAdmin = $this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF');
-
-    return $this->render('product/new.html.twig', [
-        'product' => $product,
-        'form' => $form,
-        'isAdmin' => $isAdmin,
-    ]);
-}
 
     #[Route('/{id}', name: 'app_product_show', methods: ['GET'])]
     public function show(Product $product): Response
     {
         $isAdmin = $this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF');
-        
-        return $this->render('product/show.html.twig', [
+
+        if ($isAdmin) {
+            return $this->render('product/show.html.twig', [
+                'product' => $product,
+                'isAdmin' => true,
+            ]);
+        }
+
+        return $this->render('product/show_public.html.twig', [
             'product' => $product,
-            'isAdmin' => $isAdmin,
         ]);
     }
 
-   #[Route('/{id}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
-public function edit(Request $request, Product $product, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
-{
+    #[IsGranted('ROLE_USER')]
+    #[Route('/{id}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Product $product, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    {
     // Check if user can edit this product (admin, staff, or creator)
     // Staff can edit any product, but regular users can only edit their own
     if (!$this->isGranted('ROLE_ADMIN') && !$this->isGranted('ROLE_STAFF') && $product->getCreatedBy() !== $this->getUser()) {
@@ -187,17 +196,17 @@ public function edit(Request $request, Product $product, EntityManagerInterface 
 
     $isAdmin = $this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF');
 
-    return $this->render('product/edit.html.twig', [
-        'product' => $product,
-        'form' => $form,
-        'isAdmin' => $isAdmin,
-    ]);
-}
+        return $this->render('product/edit.html.twig', [
+            'product' => $product,
+            'form' => $form,
+            'isAdmin' => $isAdmin,
+        ]);
+    }
 
-
- #[Route('/{id}/delete', name: 'app_product_delete', methods: ['POST'])]
-public function delete(Request $request, Product $product, EntityManagerInterface $entityManager): Response
-{
+    #[IsGranted('ROLE_USER')]
+    #[Route('/{id}/delete', name: 'app_product_delete', methods: ['POST'])]
+    public function delete(Request $request, Product $product, EntityManagerInterface $entityManager): Response
+    {
     // Check if user can delete this product (admin, staff, or creator)
     // Staff can delete any product, but regular users can only delete their own
     if (!$this->isGranted('ROLE_ADMIN') && !$this->isGranted('ROLE_STAFF') && $product->getCreatedBy() !== $this->getUser()) {

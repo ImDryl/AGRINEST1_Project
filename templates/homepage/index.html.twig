@@ -14,32 +14,19 @@
 {% endblock %}
 
 {% block body %}
-<nav class="navbar">
-    <div class="logo">
-        <img src="{{ asset('images/mainlogo.png') }}" alt="AgriNest Logo">
-    </div>
-    <ul class="nav-links">
-        <li><a href="{{ path('app_homepage') }}" class="active">Home</a></li>
-        <li><a href="#about">About Us</a></li>
-        <li><a href="#shop">Shop</a></li>
-        <li><a href="#contact">Contact</a></li>
-        <li><a href="#sell">Sell</a></li>
-        {% if app.user %}
-            <li><a href="{{ path('app_logout') }}">Logout</a></li>
-        {% else %}
-            <li><a href="#" data-modal="login"><i class="bi bi-box-arrow-in-right"></i> Login</a></li>
-            <li><a href="#" data-modal="register" class="nav-cta">Sign Up</a></li>
-        {% endif %}
-    </ul>
-</nav>
+{% include 'includes/_navbar_public.html.twig' with { modal_auth: true } %}
 
 <section class="hero">
     <div class="hero-content">
         <h1>Welcome to AgriNest</h1>
         <p>Your trusted source for fresh eggs, healthy chicks, and poultry products</p>
         <div class="hero-buttons">
-            <a href="#shop" class="btn-primary"><i class="bi bi-bag"></i> Shop Now</a>
-            <a href="#about" class="btn-secondary"><i class="bi bi-info-circle"></i> About Us</a>
+            {% if app.user %}
+                <a href="{{ path('app_product_index') }}" class="btn-primary"><i class="bi bi-bag"></i> Shop Now</a>
+            {% else %}
+                <a href="#" data-modal="login" data-shop-redirect="{{ path('app_product_index') }}" class="btn-primary"><i class="bi bi-bag"></i> Shop Now</a>
+            {% endif %}
+            <a href="{{ path('app_about') }}" class="btn-primary"><i class="bi bi-info-circle"></i> About Us</a>
         </div>
     </div>
 </section>
@@ -55,7 +42,7 @@
 
     <div class="about-content">
         <div class="about-image">
-            <img src="{{ asset('images/Poultry-farming-2.webp') }}" alt="Poultry farming">
+            <img src="{{ asset('images/chikensSides.jpg') }}" alt="Poultry farming">
         </div>
 
         <div class="about-text">
@@ -94,7 +81,6 @@
     </div>
 
     <div class="products">
-     
         <div class="card">
             <img class="card-image" src="{{ asset('images/FertilizedEggs.png') }}" alt="Fertilized Eggs">
             <div class="card-content">
@@ -114,7 +100,7 @@
         </div>
 
         <div class="card">
-            <img class="card-image" src="{{ asset('images/Chicks.jpg') }}" alt="Chicks & Livestock">
+            <img class="card-image" src="{{ asset('images/Chickss.png') }}" alt="Chicks & Livestock">
             <div class="card-content">
                 <h3><i class="bi bi-egg"></i> Chicks & Livestock</h3>
                 <p>Strong, healthy chicks and poultry livestock.</p>
@@ -149,7 +135,7 @@
         <div class="contact-card">
             <h3><i class="bi bi-chat"></i> Need Help?</h3>
             <p>Questions about partnership or requirements? Reach out to our team.</p>
-            <a href="#contact" class="card-btn"><i class="bi bi-arrow-right"></i> Contact Us</a>
+            <a href="{{ path('app_contact') }}" class="card-btn"><i class="bi bi-arrow-right"></i> Contact Us</a>
         </div>
     </div>
 </section>
@@ -169,21 +155,19 @@
 
         <div class="contact-card">
             <h3><i class="bi bi-telephone"></i> Phone</h3>
-            <p>+63 000 000 0000</p>
-            <a href="tel:+630000000000" class="card-btn"><i class="bi bi-telephone"></i> Call Us</a>
+            <p>+63 981 558 991</p>
+            <a href="tel:+63981558991" class="card-btn"><i class="bi bi-telephone"></i> Call Us</a>
         </div>
 
         <div class="contact-card">
             <h3><i class="bi bi-geo-alt"></i> Location</h3>
             <p>Your Farm Hub, Philippines</p>
-            <a href="#shop" class="card-btn"><i class="bi bi-bag"></i> Browse Products</a>
+            <a href="{{ path('app_product_index') }}" class="card-btn"><i class="bi bi-bag"></i> Browse Products</a>
         </div>
     </div>
 </section>
 
-<footer class="footer">
-    <p>© 2025 AgriNest. Fresh from the Nest <i class="bi bi-heart-fill"></i></p>
-</footer>
+{{ include('homepage/_footer.html.twig') }}
 
 {# Include Modals #}
 {% if not app.user %}

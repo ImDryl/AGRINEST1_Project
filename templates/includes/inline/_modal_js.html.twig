@@ -37,6 +37,26 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('[data-modal="login"]').forEach(trigger => {
         trigger.addEventListener('click', function(e) {
             e.preventDefault();
+            const shopRedirect = this.getAttribute('data-shop-redirect');
+            const loginModal = document.getElementById('loginModal');
+            if (loginModal) {
+                const form = loginModal.querySelector('form');
+                if (form) {
+                    const existing = form.querySelector('input[name="_target_path"]');
+                    if (shopRedirect) {
+                        let input = existing;
+                        if (!input) {
+                            input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = '_target_path';
+                            form.appendChild(input);
+                        }
+                        input.value = shopRedirect;
+                    } else if (existing) {
+                        existing.remove();
+                    }
+                }
+            }
             closeAllModals();
             openModal('loginModal');
         });

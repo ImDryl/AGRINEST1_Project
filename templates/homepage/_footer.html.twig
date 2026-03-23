@@ -1,0 +1,61 @@
+{# Eggcelsior-style footer — links match landing / site routes #}
+<footer class="footer site-footer-egg">
+    {# Layered waves (SVG only — no bitmap image). Tall viewBox + strong curves so waves stay visible on wide screens. #}
+    <div class="site-footer-waves" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 160" preserveAspectRatio="none" class="site-footer-wave-svg" role="presentation">
+            <defs>
+                {# Same diagonal as .site-footer-body so the wave meets the footer block cleanly #}
+                <linearGradient id="site-footer-orange-wave" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1440" y2="160">
+                    <stop offset="0%" stop-color="#f7971e"/>
+                    <stop offset="55%" stop-color="#ff6f61"/>
+                    <stop offset="100%" stop-color="#e85d4c"/>
+                </linearGradient>
+            </defs>
+            {# Back: orange footer — wavy top edge (same rhythm as cream layers) #}
+            <path fill="url(#site-footer-orange-wave)" d="M0,160 L1440,160 L1440,118 C1280,152 1120,48 720,108 C420,155 180,58 0,98 L0,160 Z"/>
+            {# Warm cream band #}
+            <path fill="#ffe8d4" d="M0,98 L0,78 C220,52 460,118 720,82 C1020,38 1250,128 1440,88 L1440,118 C1280,152 1120,48 720,108 C420,155 180,58 0,98 Z"/>
+            {# Light cream #}
+            <path fill="#fff1e3" d="M0,78 L0,62 C240,35 500,98 720,58 C920,22 1180,95 1440,58 L1440,88 C1250,128 1020,38 720,82 C460,118 220,52 0,78 Z"/>
+            {# Front: white page overlap #}
+            <path fill="#ffffff" d="M0,0 L1440,0 L1440,58 C1180,95 920,22 720,58 C500,98 240,35 0,62 L0,0 Z" opacity="0.97"/>
+        </svg>
+    </div>
+
+    <div class="site-footer-body">
+        <div class="site-footer-inner">
+            <div class="site-footer-brand">
+                {# Same asset + treatment as .navbar .logo (full mark, no white badge) #}
+                <a href="{{ path('app_homepage') }}" class="logo site-footer-logo-link">
+                    <img src="{{ asset('images/mainlogo.png') }}" alt="AgriNest Logo">
+                </a>
+            </div>
+
+            <nav class="site-footer-col" aria-label="Footer explore">
+                <h4 class="site-footer-heading">Explore</h4>
+                <ul class="site-footer-links">
+                    <li><a href="{{ path('app_about') }}">About Us</a></li>
+                    <li><a href="{{ path('app_product_index') }}">Shop</a></li>
+                    <li><a href="{{ path('app_contact') }}">Contact</a></li>
+                </ul>
+            </nav>
+
+            <nav class="site-footer-col" aria-label="Footer quick links">
+                <h4 class="site-footer-heading">Quick links</h4>
+                <ul class="site-footer-links">
+                    <li><a href="{{ path('app_homepage') }}">Home</a></li>
+                    <li><a href="{{ path('app_sell') }}">Sell</a></li>
+                    {% if app.user %}
+                        <li><a href="{{ path('app_logout') }}">Logout</a></li>
+                    {% else %}
+                        <li><a href="{{ path('app_register') }}">Sign up</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+
+        <div class="site-footer-legal">
+            <p class="site-footer-copy">© {{ 'now'|date('Y') }} AgriNest. Fresh from the nest <i class="bi bi-heart-fill" aria-hidden="true"></i></p>
+        </div>
+    </div>
+</footer>

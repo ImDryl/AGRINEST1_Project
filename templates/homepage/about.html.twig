@@ -5,125 +5,182 @@
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/product-collection.css') }}?v=5">
 {% endblock %}
 
 {% block body %}
-<nav class="navbar">
-    <div class="logo">
-        <img src="{{ asset('images/mainlogo.png') }}" alt="AgriNest Logo">
-    </div>
-    <ul class="nav-links">
-        <li><a href="{{ path('app_homepage') }}">Home</a></li>
-        <li><a href="{{ path('app_about') }}" class="active">About Us</a></li>
-        <li><a href="{{ path('app_product_index') }}">Shop</a></li>
-        <li><a href="{{ path('app_contact') }}">Contact</a></li>
-        <li><a href="{{ path('app_sell') }}">Sell</a></li>
-        {% if app.user %}
-            <li><a href="{{ path('app_logout') }}">Logout</a></li>
-        {% else %}
-            <li><a href="{{ path('app_login') }}"><i class="bi bi-box-arrow-in-right"></i> Login</a></li>
-            <li><a href="{{ path('app_register') }}" class="nav-cta">Sign Up</a></li>
-        {% endif %}
-    </ul>
-</nav>
+{% include 'includes/_navbar_public.html.twig' %}
 
-<section class="section about-section">
-    <div class="section-title">
-        <h2><i class="bi bi-leaf"></i> About AgriNest</h2>
-        <p>
-            AgriNest is built to make poultry products easy to find and easy to trust. We connect suppliers,
-            help maintain clean handling, and keep our selection simple for your everyday needs.
-        </p>
-    </div>
-
-    <div class="about-content">
-        <div class="about-image">
-            <img src="{{ asset('images/Poultry-farming-2.webp') }}" alt="Poultry farming">
+<main class="about-agrinest" id="main-content">
+    {# Hero: swap images/Poultry-farming-2.webp when available #}
+    <header class="about-agrinest-hero">
+        <div class="about-agrinest-hero__media" aria-hidden="true">
+            <img
+                class="about-agrinest-hero__img"
+                src="{{ asset('images/chikensSides.jpg') }}"
+                alt=""
+                width="1920"
+                height="1080"
+                loading="eager"
+                fetchpriority="high"
+            >
+            <div class="about-agrinest-hero__overlay"></div>
         </div>
-
-        <div class="about-text">
-            <h3>Quality you can see, service you can feel.</h3>
-            <p>
-                Whether you’re buying <b>eggs</b> for meals or <b>fertilized eggs</b> for breeding, we focus on
-                consistent categories, clear product options, and a smooth shopping experience.
+        <div class="about-agrinest-container about-agrinest-hero__content">
+            <p class="about-agrinest-eyebrow"><i class="bi bi-globe2" aria-hidden="true"></i> Marketplace for local poultry</p>
+            <h1 id="about-hero-title">Connecting communities with quality poultry—farm to doorstep.</h1>
+            <p class="about-agrinest-hero__lead">
+                AgriNest is a modern marketplace built for transparency and trust. We help buyers discover fresh eggs,
+                fertilized eggs, chicks, and meat from local farmers—while giving producers a reliable channel to grow.
             </p>
-            <p>
-                Our goal is simple: help your household (and your farm plans) stay supplied—without confusion.
-            </p>
-
-            <div class="about-features">
-                <div class="feature-item">
-                    <div class="feature-icon"><i class="bi bi-check2-circle"></i></div>
-                    <div class="feature-text">Reliable Supply</div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon"><i class="bi bi-droplet"></i></div>
-                    <div class="feature-text">Clean Handling</div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon"><i class="bi bi-layout-text-window-reverse"></i></div>
-                    <div class="feature-text">Clear Product Info</div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon"><i class="bi bi-heart"></i></div>
-                    <div class="feature-text">Customer Support</div>
-                </div>
-            </div>
-
-            <div style="margin-top: 28px; display:flex; gap: 12px; flex-wrap: wrap;">
-                <a href="{{ path('app_product_index') }}" class="card-btn">
-                    <i class="bi bi-bag"></i> Browse Products
+            <div class="about-agrinest-hero__actions">
+                <a class="about-agrinest-btn about-agrinest-btn--accent" href="{{ path('app_product_index') }}">
+                    <i class="bi bi-bag-heart" aria-hidden="true"></i> Explore the shop
                 </a>
-                <a href="{{ path('app_contact') }}" class="card-btn" style="background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); color: #754c24;">
-                    <i class="bi bi-chat-dots"></i> Ask a Question
+                <a class="about-agrinest-btn about-agrinest-btn--ghost" href="{{ path('app_contact') }}">
+                    <i class="bi bi-chat-dots" aria-hidden="true"></i> Talk to us
                 </a>
             </div>
         </div>
-    </div>
+    </header>
 
-    <div class="section-title" style="margin-top: 56px;">
-        <h2><i class="bi bi-lightbulb"></i> How It Works</h2>
-        <p>Simple steps that help you buy with confidence and help sellers stay organized.</p>
-    </div>
+    <section class="about-agrinest-section about-agrinest-section--cream" aria-labelledby="about-story-heading">
+        <div class="about-agrinest-container about-agrinest-story">
+            <figure class="about-agrinest-story__figure">
+                <img
+                    src="{{ asset('images/Flock.png') }}"
+                    alt="Healthy flock on a local farm"
+                    width="800"
+                    height="600"
+                    loading="lazy"
+                >
+            </figure>
+            <div class="about-agrinest-story__body">
+                <h2 id="about-story-heading">Our story &amp; the problem we solve</h2>
+                <p class="about-agrinest-prose">
+                    Poultry moves fast—and buyers deserve to know where it comes from and how it was handled. Too often,
+                    sourcing is fragmented: inconsistent availability, unclear quality signals, and friction between
+                    small farms and everyday customers.
+                </p>
+                <p class="about-agrinest-prose">
+                    <strong>AgriNest exists to fix that.</strong> We bring local supply into one trusted experience:
+                    clear listings, consistent categories, and standards that support clean handling and dependable
+                    fulfillment—so families and businesses can plan with confidence.
+                </p>
+                <ul class="about-agrinest-checks" role="list">
+                    <li><i class="bi bi-check-circle-fill" aria-hidden="true"></i> Transparent product information</li>
+                    <li><i class="bi bi-check-circle-fill" aria-hidden="true"></i> Streamlined handling &amp; coordination</li>
+                    <li><i class="bi bi-check-circle-fill" aria-hidden="true"></i> Reliable supply for retail &amp; home use</li>
+                </ul>
+            </div>
+        </div>
+    </section>
 
-    <div class="contact-grid" style="padding: 0 4rem 10px;">
-        <div class="contact-card">
-            <h3><i class="bi bi-1-circle"></i> Choose</h3>
-            <p>Pick the product you need (eggs, fertilized eggs, chicks, or meat) based on your goals.</p>
+    <section class="about-agrinest-section" aria-labelledby="about-values-heading">
+        <div class="about-agrinest-container">
+            <header class="about-agrinest-section-head">
+                <p class="about-agrinest-eyebrow about-agrinest-eyebrow--dark"><i class="bi bi-stars" aria-hidden="true"></i> What guides us</p>
+                <h2 id="about-values-heading">Core values</h2>
+                <p class="about-agrinest-section-intro">
+                    Principles we apply across listings, logistics, and support—so every order reinforces trust in local agriculture.
+                </p>
+            </header>
+            <div class="about-agrinest-values">
+                <article class="about-agrinest-value-card">
+                    <div class="about-agrinest-value-card__icon" aria-hidden="true"><i class="bi bi-geo-alt"></i></div>
+                    <h3>Local sourcing</h3>
+                    <p>We prioritize regional farmers and suppliers—shortening the chain and strengthening community economies.</p>
+                </article>
+                <article class="about-agrinest-value-card">
+                    <div class="about-agrinest-value-card__icon" aria-hidden="true"><i class="bi bi-shield-check"></i></div>
+                    <h3>Quality control</h3>
+                    <p>Clear categories and consistent expectations help you compare products and choose what fits your needs.</p>
+                </article>
+                <article class="about-agrinest-value-card">
+                    <div class="about-agrinest-value-card__icon" aria-hidden="true"><i class="bi bi-people"></i></div>
+                    <h3>Community support</h3>
+                    <p>Buyers get dependable access; sellers get visibility and tools to grow responsibly alongside demand.</p>
+                </article>
+                <article class="about-agrinest-value-card">
+                    <div class="about-agrinest-value-card__icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></div>
+                    <h3>Modern efficiency</h3>
+                    <p>A streamlined digital experience—built for today’s agricultural commerce without losing the human touch.</p>
+                </article>
+            </div>
         </div>
-        <div class="contact-card">
-            <h3><i class="bi bi-2-circle"></i> Confirm</h3>
-            <p>Review product details clearly so you know what to expect for quality and availability.</p>
-        </div>
-        <div class="contact-card">
-            <h3><i class="bi bi-3-circle"></i> Get Supplied</h3>
-            <p>We coordinate consistent supply to help you stay stocked for daily use or breeding.</p>
-        </div>
-    </div>
+    </section>
 
-    <div class="section-title" style="margin-top: 26px;">
-        <h2><i class="bi bi-stars"></i> Quick FAQ</h2>
-        <p>Short answers to the most common questions.</p>
-    </div>
+    <section class="about-agrinest-section about-agrinest-section--muted" aria-labelledby="about-journey-heading">
+        <div class="about-agrinest-container">
+            <header class="about-agrinest-section-head">
+                <p class="about-agrinest-eyebrow about-agrinest-eyebrow--dark"><i class="bi bi-signpost-split" aria-hidden="true"></i> Farm to table</p>
+                <h2 id="about-journey-heading">How your order comes together</h2>
+                <p class="about-agrinest-section-intro">
+                    A simple journey from verified listings to fulfillment—designed for clarity at every step.
+                </p>
+            </header>
+            <ol class="about-agrinest-journey">
+                <li class="about-agrinest-journey__step">
+                    <div class="about-agrinest-journey__visual">
+                        <img src="{{ asset('images/Eggs.png') }}" alt="" width="320" height="240" loading="lazy">
+                        <span class="about-agrinest-journey__num">1</span>
+                    </div>
+                    <div class="about-agrinest-journey__text">
+                        <h3>List &amp; discover</h3>
+                        <p>Farmers list eggs, chicks, and meat with structured details. You browse by category and need—no guesswork.</p>
+                    </div>
+                </li>
+                <li class="about-agrinest-journey__step">
+                    <div class="about-agrinest-journey__visual">
+                        <img src="{{ asset('images/FertilizedEggs.png') }}" alt="" width="320" height="240" loading="lazy">
+                        <span class="about-agrinest-journey__num">2</span>
+                    </div>
+                    <div class="about-agrinest-journey__text">
+                        <h3>Verify &amp; choose</h3>
+                        <p>Compare options, check availability, and align on handling expectations before you commit.</p>
+                    </div>
+                </li>
+                <li class="about-agrinest-journey__step">
+                    <div class="about-agrinest-journey__visual">
+                        <img src="{{ asset('images/Chicks.jpg') }}" alt="" width="320" height="240" loading="lazy">
+                        <span class="about-agrinest-journey__num">3</span>
+                    </div>
+                    <div class="about-agrinest-journey__text">
+                        <h3>Coordinate &amp; pack</h3>
+                        <p>Orders flow through a consistent workflow so supply stays organized from confirmation to handoff.</p>
+                    </div>
+                </li>
+                <li class="about-agrinest-journey__step">
+                    <div class="about-agrinest-journey__visual">
+                        <img src="{{ asset('images/Meat.jpg') }}" alt="" width="320" height="240" loading="lazy">
+                        <span class="about-agrinest-journey__num">4</span>
+                    </div>
+                    <div class="about-agrinest-journey__text">
+                        <h3>Deliver &amp; enjoy</h3>
+                        <p>Fresh poultry products reach your kitchen or operation—supporting local agriculture with every purchase.</p>
+                    </div>
+                </li>
+            </ol>
+        </div>
+    </section>
 
-    <div class="contact-grid" style="padding: 0 4rem 60px;">
-        <div class="contact-card" style="text-align:left;">
-            <h3 style="justify-content:flex-start;"><i class="bi bi-question-circle"></i> Are fertilized eggs available?</h3>
-            <p>Availability depends on stock. If it’s needed for breeding, contact us and we will guide you.</p>
+    <section class="about-agrinest-cta" aria-labelledby="about-cta-heading">
+        <div class="about-agrinest-container about-agrinest-cta__inner">
+            <div class="about-agrinest-cta__copy">
+                <h2 id="about-cta-heading">Ready to stock your next order?</h2>
+                <p>Browse the marketplace or reach out—we’re here to help buyers and sellers succeed together.</p>
+            </div>
+            <div class="about-agrinest-cta__actions">
+                <a class="about-agrinest-btn about-agrinest-btn--accent about-agrinest-btn--lg" href="{{ path('app_product_index') }}">
+                    <i class="bi bi-shop" aria-hidden="true"></i> Go to shop
+                </a>
+                <a class="about-agrinest-btn about-agrinest-btn--outline about-agrinest-btn--lg" href="{{ path('app_contact') }}">
+                    <i class="bi bi-envelope" aria-hidden="true"></i> Contact
+                </a>
+            </div>
         </div>
-        <div class="contact-card" style="text-align:left;">
-            <h3 style="justify-content:flex-start;"><i class="bi bi-receipt-cutoff"></i> Do you track inventory?</h3>
-            <p>Yes. Orders adjust product quantities so the shop stays accurate.</p>
-        </div>
-        <div class="contact-card" style="text-align:left;">
-            <h3 style="justify-content:flex-start;"><i class="bi bi-shield-check"></i> What makes AgriNest different?</h3>
-            <p>Clear product categories, consistent handling, and a support team that helps you choose correctly.</p>
-        </div>
-    </div>
-</section>
+    </section>
+</main>
 
-<footer class="footer">
-    <p>© 2025 AgriNest. Fresh from the Nest <i class="bi bi-heart-fill"></i></p>
-</footer>
+{{ include('homepage/_footer.html.twig') }}
 {% endblock %}
-

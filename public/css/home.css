@@ -40,6 +40,11 @@ body {
     gap: 12px;
 }
 
+.navbar .logo a {
+    display: flex;
+    align-items: center;
+}
+
 .navbar .logo img {
     height: 65px;
     width: auto;
@@ -610,44 +615,126 @@ body {
     padding-bottom: 12px;
 }
 
-/* === Footer === */
-.footer {
-    background: linear-gradient(135deg, #2e3d29 0%, #1a2415 100%);
+/* === Footer (Eggcelsior-style wave + AgriNest links) === */
+.footer.site-footer-egg {
+    margin-top: 0;
+    padding: 0;
+    background: transparent;
     color: #fff;
-    padding: 60px 4rem 30px;
 }
 
-.footer-content {
+.site-footer-waves {
+    line-height: 0;
+    margin-bottom: -4px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Wave strip — shorter so the footer doesn’t dominate the viewport */
+.site-footer-wave-svg {
+    display: block;
+    width: 100%;
+    height: clamp(56px, 9vw, 100px);
+    vertical-align: bottom;
+}
+
+.site-footer-body {
+    background: linear-gradient(135deg, #f7971e 0%, #ff6f61 55%, #e85d4c 100%);
+    padding: 1.25rem 1.5rem 1rem;
+    position: relative;
+}
+
+.site-footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 40px;
-    max-width: 1400px;
-    margin: 0 auto 40px;
+    grid-template-columns: minmax(160px, 1.1fr) repeat(2, minmax(120px, 1fr));
+    gap: 1rem 1.75rem;
+    align-items: start;
 }
 
-.footer-section h3 {
-    font-size: 1.3rem;
-    margin-bottom: 20px;
-    color: #ffce54;
+.site-footer-brand {
+    padding-right: 0.5rem;
 }
 
-.footer-section p,
-.footer-section a {
-    color: rgba(255, 255, 255, 0.8);
+/* Match navbar: same full logo image, no circle, no duplicate wordmark */
+.site-footer-egg .site-footer-brand .logo.site-footer-logo-link {
+    display: inline-flex;
+    align-items: center;
     text-decoration: none;
-    line-height: 1.8;
-    font-size: 0.95rem;
 }
 
-.footer-section a:hover {
-    color: #ffce54;
+.site-footer-egg .site-footer-brand .logo img {
+    height: 80px;
+    width: auto;
+    max-width: min(100%, 320px);
+    display: block;
+    transition: transform 0.3s ease;
 }
 
-.footer-bottom {
+.site-footer-egg .site-footer-brand .logo img:hover {
+    transform: scale(1.05);
+}
+
+.site-footer-tagline {
+    margin: 14px 0 0;
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.92);
+    max-width: 280px;
+}
+
+.site-footer-heading {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 0 0 6px;
+    color: rgba(255, 255, 255, 0.88);
+    font-weight: 700;
+}
+
+.site-footer-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.site-footer-links li {
+    margin-bottom: 4px;
+}
+
+.site-footer-links a {
+    color: rgba(255, 255, 255, 0.95);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.82rem;
+    line-height: 1.35;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.site-footer-links a:hover {
+    color: #fffde7;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.site-footer-legal {
+    max-width: 1200px;
+    margin: 0.85rem auto 0;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
     text-align: center;
-    padding-top: 30px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.6);
+}
+
+.site-footer-copy {
+    margin: 0;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.site-footer-copy .bi-heart-fill {
+    color: #ffe082;
 }
 
 /* === Responsive === */
@@ -711,12 +798,67 @@ body {
         grid-template-columns: 1fr;
     }
 
-    .footer {
-        padding: 40px 2rem 20px;
+    .site-footer-body {
+        padding: 1.1rem 1.25rem 0.9rem;
     }
 
-    .footer-content {
+    .site-footer-inner {
         grid-template-columns: 1fr;
-        gap: 30px;
+        gap: 1.1rem;
     }
+
+    .site-footer-tagline {
+        max-width: none;
+    }
+}
+
+/* Homepage product card helpers (optional / legacy) */
+.card-image--empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #fff9f0 0%, #f4f7f4 100%);
+    color: #bbb;
+    font-size: 2.5rem;
+}
+
+.card-product-line,
+.card-stock-line,
+.card-price-line {
+    margin: 0.25rem 0;
+    font-size: 0.92rem;
+    color: #555;
+}
+
+.card-stock-line strong {
+    color: #2c3e2b;
+}
+
+.card-price-line {
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: #754c24;
+}
+
+.products-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #666;
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+.products-empty a {
+    color: #ff6f61;
+    font-weight: 700;
+}
+
+.products-view-all {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.shop-page-wrap {
+    padding-top: 96px;
 }

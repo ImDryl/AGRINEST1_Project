@@ -1,0 +1,49 @@
+{# Public site navbar #}
+{% set _route = app.request.attributes.get('_route') %}
+{% set _shop_active = _route and _route starts with 'app_product' %}
+<nav class="navbar" aria-label="Primary">
+    <div class="logo">
+        <a href="{{ path('app_homepage') }}"><img src="{{ asset('images/mainlogo.png') }}" alt="AgriNest Logo"></a>
+    </div>
+    <ul class="nav-links">
+        <li><a href="{{ path('app_homepage') }}" class="{{ _route == 'app_homepage' ? 'active' : '' }}">Home</a></li>
+        <li><a href="{{ path('app_about') }}" class="{{ _route == 'app_about' ? 'active' : '' }}">About Us</a></li>
+        <li>
+            {% if app.user %}
+                <a href="{{ path('app_product_index') }}" class="{{ _shop_active ? 'active' : '' }}">
+                    <i class="bi bi-bag-heart" aria-hidden="true"></i> Shop
+                </a>
+            {% elseif modal_auth|default(false) %}
+                {# Homepage: open login modal, then redirect to shop after sign-in #}
+                <a href="#" data-modal="login" data-shop-redirect="{{ path('app_product_index') }}" class="{{ _shop_active ? 'active' : '' }}">
+                    <i class="bi bi-bag-heart" aria-hidden="true"></i> Shop
+                </a>
+            {% else %}
+                {# Guest: visiting /product sends them to login, then back to shop #}
+                <a href="{{ path('app_product_index') }}" class="{{ _shop_active ? 'active' : '' }}">
+                    <i class="bi bi-bag-heart" aria-hidden="true"></i> Shop
+                </a>
+            {% endif %}
+        </li>
+        <li><a href="{{ path('app_contact') }}" class="{{ _route == 'app_contact' ? 'active' : '' }}">Contact</a></li>
+        <li><a href="{{ path('app_sell') }}" class="{{ _route == 'app_sell' ? 'active' : '' }}">Sell</a></li>
+        {% if app.user %}
+            <li><a href="{{ path('app_logout') }}">Logout</a></li>
+        {% else %}
+            <li>
+                {% if modal_auth|default(false) %}
+                    <a href="#" data-modal="login"><i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> Login</a>
+                {% else %}
+                    <a href="{{ path('app_login') }}"><i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> Login</a>
+                {% endif %}
+            </li>
+            <li>
+                {% if modal_auth|default(false) %}
+                    <a href="#" data-modal="register" class="nav-cta">Sign Up</a>
+                {% else %}
+                    <a href="{{ path('app_register') }}" class="nav-cta">Sign Up</a>
+                {% endif %}
+            </li>
+        {% endif %}
+    </ul>
+</nav>

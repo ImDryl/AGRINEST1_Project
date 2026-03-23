@@ -19,7 +19,7 @@ final class HomepageController extends AbstractController
         AuthenticationUtils $authenticationUtils,
         Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
     ): Response {
         // Get login error and last username
         $error = $authenticationUtils->getLastAuthenticationError();

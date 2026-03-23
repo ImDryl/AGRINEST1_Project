@@ -50,13 +50,24 @@
                     </div>
 
                     <div class="collection-stock">
-                        <i class="bi bi-box-seam"></i> Qty: {{ product.quantity }}
+                        {% if product.quantity > 0 %}
+                            <span class="collection-stock-badge collection-stock-badge--ok"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> {{ product.quantity }} in stock</span>
+                        {% else %}
+                            <span class="collection-stock-badge collection-stock-badge--out"><i class="bi bi-x-circle" aria-hidden="true"></i> Out of stock</span>
+                        {% endif %}
                     </div>
 
-                    <div class="collection-actions">
-                        <a href="{{ path('app_product_show', {'id': product.id}) }}" class="collection-btn">
-                            <i class="bi bi-eye"></i> View
+                    <div class="collection-actions collection-actions--split">
+                        <a href="{{ path('app_product_show', {'id': product.id}) }}" class="collection-btn collection-btn-outline">
+                            <i class="bi bi-eye"></i> Details
                         </a>
+                        {% if product.quantity > 0 %}
+                            <a href="{{ path('app_contact') }}?topic=order&amp;product={{ product.id }}" class="collection-btn collection-btn-buy">
+                                <i class="bi bi-cart-plus"></i> Buy
+                            </a>
+                        {% else %}
+                            <span class="collection-btn collection-btn-disabled" title="Out of stock"><i class="bi bi-cart-x"></i> Unavailable</span>
+                        {% endif %}
                     </div>
                 </div>
             </div>

@@ -1,0 +1,35 @@
+{# Sync .active on homepage nav with #section hash (same page = server can’t know hash) #}
+<script>
+(function () {
+    var homeHref = {{ path('app_homepage')|json_encode|raw }};
+
+    function setHomepageNavActive() {
+        var nav = document.querySelector('.navbar .nav-links');
+        if (!nav) return;
+
+        var hash = (window.location.hash || '').toLowerCase();
+
+        nav.querySelectorAll('a').forEach(function (a) {
+            if (a.classList.contains('nav-cta') || a.hasAttribute('data-modal')) return;
+            a.classList.remove('active');
+        });
+
+        var target = null;
+        if (hash === '#about') target = nav.querySelector('a[href="#about"]');
+        else if (hash === '#shop') target = nav.querySelector('a[href="#shop"]');
+        else if (hash === '#contact') target = nav.querySelector('a[href="#contact"]');
+        else if (hash === '#sell') target = nav.querySelector('a[href="#sell"]');
+        else {
+            nav.querySelectorAll('a').forEach(function (a) {
+                var h = a.getAttribute('href');
+                if (h && h === homeHref) target = a;
+            });
+        }
+
+        if (target) target.classList.add('active');
+    }
+
+    document.addEventListener('DOMContentLoaded', setHomepageNavActive);
+    window.addEventListener('hashchange', setHomepageNavActive);
+})();
+</script>

@@ -12,41 +12,73 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerI
 
 class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterface
 {
-    private $router;
-    private $activityLogService;
+    private const FIREWALL_NAME = 'main';
 
     public function __construct(
-        RouterInterface $router,
-        ActivityLogService $activityLogService
+        private RouterInterface $router,
+        private ActivityLogService $activityLogService,
     ) {
-        $this->router = $router;
-        $this->activityLogService = $activityLogService;
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token): ?Response
     {
         $user = $token->getUser();
-        
-        // Log the login action
+
         if ($user instanceof \App\Entity\User) {
             $this->activityLogService->logLogin($user);
         }
-        
-        // Get roles from both token and user to ensure we have the correct roles
+
         $tokenRoles = $token->getRoleNames();
         $userRoles = $user instanceof \App\Entity\User ? $user->getRoles() : [];
 
-        // Check for admin role first (check both token and user roles)
         if (in_array('ROLE_ADMIN', $tokenRoles, true) || in_array('ROLE_ADMIN', $userRoles, true)) {
             return new RedirectResponse($this->router->generate('app_admin_dashboard'));
         }
 
-        // Check for staff role (check both token and user roles)
         if (in_array('ROLE_STAFF', $tokenRoles, true) || in_array('ROLE_STAFF', $userRoles, true)) {
             return new RedirectResponse($this->router->generate('app_staff_dashboard'));
         }
 
-        // Default redirect for regular users
-        return new RedirectResponse($this->router->generate('app_homepage'));
+        // Regular users: go to intended URL (saved when they tried to open /product while logged out)
+        $targetPath = $this->getAndRemoveTargetPath($request);
+        if ($targetPath !== null) {
+            return new RedirectResponse($targetPath);
+        }
+
+        return new RedirectResponse($this->router->generate('app_product_index'));
+    }
+
+    private function getAndRemoveTargetPath(Request $request): ?string
+    {
+        $session = $request->hasSession() ? $request->getSession() : null;
+        if ($session !== null) {
+            $sessionKey = '_security.'.self::FIREWALL_NAME.'.target_path';
+            if ($session->has($sessionKey)) {
+                $path = $session->get($sessionKey);
+                $session->remove($sessionKey);
+                if (is_string($path) && $this->isSafeRelativePath($path)) {
+                    return $path;
+                }
+            }
+        }
+
+        $postTarget = $request->request->get('_target_path');
+        if (is_string($postTarget) && $this->isSafeRelativePath($postTarget)) {
+            return $postTarget;
+        }
+
+        return null;
+    }
+
+    private function isSafeRelativePath(string $path): bool
+    {
+        if ($path === '' || !str_starts_with($path, '/')) {
+            return false;
+        }
+        if (str_starts_with($path, '//')) {
+            return false;
+        }
+
+        return true;
     }
 }
