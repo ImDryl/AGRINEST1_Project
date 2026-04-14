@@ -27,7 +27,7 @@ class ActivityLogService
         
         if ($user instanceof User) {
             $log->setUser($user);
-            $log->setUsername($user->getUsername());
+            $log->setUsername((string) $user->getEmail());
             
             // Get the primary role (Admin, Staff, or User)
             $roles = $user->getRoles();
@@ -134,9 +134,8 @@ class ActivityLogService
     public function logUserCreate($user): void
     {
         $details = json_encode([
-            'username' => $user->getUsername(),
             'email' => $user->getEmail(),
-            'roles' => $user->getRoles(),
+            'role' => $this->resolvePrimaryRole($user->getRoles()),
         ], JSON_PRETTY_PRINT);
         
         $this->log('Create', 'User', $user->getId(), $details);
@@ -145,9 +144,8 @@ class ActivityLogService
     public function logUserUpdate($user): void
     {
         $details = json_encode([
-            'username' => $user->getUsername(),
             'email' => $user->getEmail(),
-            'roles' => $user->getRoles(),
+            'role' => $this->resolvePrimaryRole($user->getRoles()),
         ], JSON_PRETTY_PRINT);
         
         $this->log('Update', 'User', $user->getId(), $details);
@@ -155,27 +153,40 @@ class ActivityLogService
 
     public function logUserDelete($user): void
     {
-        $this->log('Delete', 'User', $user->getId(), json_encode(['username' => $user->getUsername()], JSON_PRETTY_PRINT));
+        $this->log('Delete', 'User', $user->getId(), json_encode(['email' => $user->getEmail()], JSON_PRETTY_PRINT));
     }
 
     public function logLogin($user): void
     {
-        $this->log('Login', null, null, json_encode(['username' => $user->getUsername()], JSON_PRETTY_PRINT));
+        $this->log('Login', null, null, json_encode(['email' => $user->getEmail()], JSON_PRETTY_PRINT));
     }
 
     public function logLogout($user): void
     {
-        $this->log('Logout', null, null, json_encode(['username' => $user->getUsername()], JSON_PRETTY_PRINT));
+        $this->log('Logout', null, null, json_encode(['email' => $user->getEmail()], JSON_PRETTY_PRINT));
     }
 
     public function logPasswordChange($user): void
     {
         $details = json_encode([
-            'username' => $user->getUsername(),
+            'email' => $user->getEmail(),
             'action' => 'Password Changed',
         ], JSON_PRETTY_PRINT);
         
         $this->log('Update', 'User', $user->getId(), $details);
+    }
+
+    private function resolvePrimaryRole(array $roles): string
+    {
+        if (in_array('ROLE_ADMIN', $roles, true)) {
+            return 'Admin';
+        }
+
+        if (in_array('ROLE_STAFF', $roles, true)) {
+            return 'Staff';
+        }
+
+        return 'User';
     }
 }
 

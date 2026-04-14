@@ -1,3 +1,8 @@
+# Prefer MAILER_SMTP_USER + MAILER_SMTP_PASSWORD (from Brevo SMTP page; avoids DSN typos).
+# Fallback: MAILER_DSN (e.g. null://null in committed .env).
+parameters:
+    mailer.dsn.brevo: 'smtp://%env(urlencode:MAILER_SMTP_USER)%:%env(urlencode:MAILER_SMTP_PASSWORD)%@smtp-relay.brevo.com:587?encryption=tls'
+
 framework:
     mailer:
-        dsn: '%env(MAILER_DSN)%'
+        dsn: '%env(default:mailer.dsn.brevo:MAILER_DSN)%'

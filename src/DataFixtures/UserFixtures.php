@@ -19,20 +19,18 @@ class UserFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         // Admin User
-        $admin = new User();
-        $admin->setUsername('admin');
-        $admin->setEmail('admin@agrinest.com');
-        $admin->setRoles(['ROLE_ADMIN']);
-        $hashedPassword = $this->userPasswordHasher->hashPassword($admin, '123456');
-        $admin->setPassword($hashedPassword);
-        $admin->setIsActive(true);
-        $admin->setCreatedAt(new \DateTime());
-        $manager->persist($admin);
+        // $admin = new User();
+        // $admin->setEmail('admin@agrinest.com');
+        // $admin->setRoles(['ROLE_ADMIN']);
+        // $hashedPassword = $this->userPasswordHasher->hashPassword($admin, '123456');
+        // $admin->setPassword($hashedPassword);
+        // $admin->setIsActive(true);
+        // $admin->setCreatedAt(new \DateTime());
+        // $manager->persist($admin);
 
         // Staff User
         $staff = new User();
-        $staff->setUsername('staff');
-        $staff->setEmail('staff@agrinest.com');
+        $staff->setEmail('drylleird21@gmail.com');
         $staff->setRoles(['ROLE_STAFF']);
         $hashedPassword = $this->userPasswordHasher->hashPassword($staff, '123456');
         $staff->setPassword($hashedPassword);
@@ -42,7 +40,6 @@ class UserFixtures extends Fixture
 
         // // Regular User
         // $user = new User();
-        // $user->setUsername('user');
         // $user->setEmail('user@agrinest.com');
         // $user->setRoles(['ROLE_USER']);
         // $hashedPassword = $this->userPasswordHasher->hashPassword($user, '123456');

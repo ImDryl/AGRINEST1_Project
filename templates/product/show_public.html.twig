@@ -4,8 +4,6 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/product-collection.css') }}?v=7">
 {% endblock %}
 
 {% block body %}
@@ -48,21 +46,29 @@
             </div>
             <div class="product-public-actions">
                 {% if product.quantity > 0 %}
-                    <a class="product-public-btn product-public-btn--primary" href="{{ path('app_contact') }}?topic=order&amp;product={{ product.id }}">
-                        <i class="bi bi-cart-plus" aria-hidden="true"></i> Buy / inquire
-                    </a>
+                    <form method="post" action="{{ path('app_cart_add', {'id': product.id}) }}" class="product-public-inline-form">
+                        <input type="hidden" name="_token" value="{{ csrf_token('cart_add_' ~ product.id) }}">
+                        <input type="number" name="quantity" value="1" min="1" max="{{ product.quantity }}" class="form-control product-public-qty">
+                        <input type="hidden" name="_redirect" value="{{ path('app_product_show', {'id': product.id}) }}">
+                        <button type="submit" class="product-public-btn product-public-btn--primary">
+                            <i class="bi bi-cart-plus" aria-hidden="true"></i> Add to cart
+                        </button>
+                    </form>
                 {% else %}
                     <a class="product-public-btn product-public-btn--muted" href="{{ path('app_contact') }}?topic=stock&amp;product={{ product.id }}">
                         <i class="bi bi-envelope" aria-hidden="true"></i> Ask about restock
                     </a>
                 {% endif %}
+                <a class="product-public-btn product-public-btn--primary" href="{{ path('app_cart_index') }}">
+                    <i class="bi bi-cart3" aria-hidden="true"></i> View cart
+                </a>
                 <a class="product-public-btn product-public-btn--ghost" href="{{ path('app_product_index') }}">
                     <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to shop
                 </a>
             </div>
             <p class="product-public-note">
                 <i class="bi bi-info-circle" aria-hidden="true"></i>
-                Orders are fulfilled by our team—use <strong>Buy / inquire</strong> to reach us with this product in mind.
+                Add items to cart first, then checkout to place your order.
             </p>
         </div>
     </div>

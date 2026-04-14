@@ -1,2 +1,10 @@
-@import "tailwindcss";
-@source not "../../public";
+@import "./base.css";
+@import "./dashboard.css";
+@import "./form.css";
+@import "./product.css";
+@import "./home.css";
+@import "./product-collection.css";
+@import "./auth.css";
+@import "./supplier.css";
+@import "./product-table.css";
+@import "./logs.css";

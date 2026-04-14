@@ -21,10 +21,7 @@
 {% block stylesheets %}
   {{ parent() }}
   {% if isAdmin|default(false) %}
-    <link rel="stylesheet" href="{{ asset('css/product-table.css') }}?v=1">
   {% else %}
-    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/product-collection.css') }}?v=7">
   {% endif %}
 {% endblock %}
 

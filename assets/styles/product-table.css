@@ -5,12 +5,39 @@
     margin-bottom: 12px;
     gap: 12px;
     flex-wrap: wrap;
+    padding-left: 12px;
+    padding-right: 12px;
 }
 
 .table-controls .control-group {
     display: flex;
     align-items: center;
     gap: 6px;
+}
+
+/* Product list should not inherit legacy red "card" accents */
+.table-flat-card,
+.product-list-card {
+    border-left: 0 !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06) !important;
+    overflow: visible !important;
+}
+
+.table-flat-card::before,
+.product-list-card::before {
+    content: none !important;
+}
+
+.table-flat-card:hover,
+.product-list-card:hover {
+    transform: none !important;
+    border-left-color: transparent !important;
+}
+
+.table-flat-card .styled-table tbody tr:hover,
+.product-list-card .styled-table tbody tr:hover {
+    transform: none !important;
+    box-shadow: none !important;
 }
 
 .table-controls select,
@@ -57,11 +84,17 @@
     gap: 12px;
     margin-top: 12px;
     flex-wrap: wrap;
+    padding-left: 12px;
+    padding-right: 12px;
 }
 
 .page-info {
     color: #666;
     font-size: 14px;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
 }
 
 /* === Badge Styles for Roles === */

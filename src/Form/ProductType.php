@@ -11,6 +11,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class ProductType extends AbstractType
 {
@@ -40,6 +41,14 @@ class ProductType extends AbstractType
                 'label' => 'Product Image',
                 'mapped' => false,
                 'required' => false,
+                'constraints' => [
+                    new Assert\File([
+                        'maxSize' => '10M',
+                        'maxSizeMessage' => 'The file is too large. Allowed maximum size is 10 MiB.',
+                        'mimeTypes' => ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+                        'mimeTypesMessage' => 'Please upload a valid image file (JPG, PNG, WEBP, or GIF).',
+                    ]),
+                ],
             ]);
 
 

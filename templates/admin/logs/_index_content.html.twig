@@ -5,16 +5,16 @@
     </div>
 </div>
 
-<div class="card">
+<div class="card table-flat-card logs-list-card">
     <div class="filter-section">
         <form method="GET" action="{{ path('app_admin_logs_index') }}" class="filter-form">
             <div class="filter-row">
                 <div class="filter-group">
-                    <label for="username"><i class="bi bi-person"></i> User</label>
-                    <select name="username" id="username" class="form-control">
-                        <option value="">All Users</option>
-                        {% for u in allUsernames %}
-                            <option value="{{ u }}" {{ username == u ? 'selected' : '' }}>{{ u }}</option>
+                    <label for="email"><i class="bi bi-envelope"></i> Email</label>
+                    <select name="email" id="email" class="form-control">
+                        <option value="">All Emails</option>
+                        {% for u in allUserEmails %}
+                            <option value="{{ u }}" {{ email == u ? 'selected' : '' }}>{{ u }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -70,7 +70,7 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Username</th>
+                    <th>Email</th>
                     <th>Role</th>
                     <th>Action</th>
                     <th>Entity</th>
@@ -83,7 +83,7 @@
                     <tr>
                         <td>{{ log.id }}</td>
                         <td>
-                            <span class="username-badge">{{ log.username }}</span>
+                            <span class="email-badge">{{ log.username }}</span>
                         </td>
                         <td>
                             {% if log.role == 'Admin' %}

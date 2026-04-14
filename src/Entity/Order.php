@@ -32,6 +32,10 @@ class Order
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Customer phone is required.')]
+    #[Assert\Regex(
+        pattern: '/^\+?[0-9][0-9\s-]*$/',
+        message: 'Please enter a valid phone number.'
+    )]
     private ?string $customerPhone = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]

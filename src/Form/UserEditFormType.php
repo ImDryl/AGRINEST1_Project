@@ -8,7 +8,6 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
@@ -21,12 +20,6 @@ class UserEditFormType extends AbstractType
         $isAdmin = $options['is_admin'] ?? false;
         
         $builder
-            ->add('username', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'Enter username'
-                ]
-            ])
             ->add('email', EmailType::class, [
                 'attr' => [
                     'class' => 'form-control',

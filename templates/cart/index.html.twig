@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cart - AgriNest{% endblock %}
+
+{% block body %}
+{% include 'includes/_navbar_public.html.twig' %}
+
+<div class="collection-page cart-page">
+    <div class="collection-hero">
+        <h1><i class="bi bi-cart3"></i> My Cart</h1>
+        <p>Review your selected items, adjust quantities, and proceed to checkout.</p>
+    </div>
+
+    <div class="card cart-main-card">
+        {% if items is empty %}
+            <div class="cart-empty-state">
+                <p class="cart-empty-title">Your cart is empty.</p>
+                <a href="{{ path('app_product_index') }}" class="collection-btn cart-btn cart-btn-success">
+                    <i class="bi bi-bag-heart"></i> Continue Shopping
+                </a>
+            </div>
+        {% else %}
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                        <tr>
+                            <td>
+                                <div style="display:flex; align-items:center; gap:.75rem;">
+                                    {% if item.product.image %}
+                                        <img
+                                            src="{{ asset('uploads/images/' ~ item.product.image) }}"
+                                            alt="{{ item.product.name }}"
+                                            style="width:56px; height:56px; object-fit:cover; border-radius:8px; border:1px solid #e5e7eb;"
+                                        >
+                                    {% else %}
+                                        <div style="width:56px; height:56px; border-radius:8px; border:1px solid #e5e7eb; display:grid; place-items:center; color:#9ca3af; background:#f9fafb;">
+                                            <i class="bi bi-image"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div>
+                                        <div style="font-weight:600;">{{ item.product.name }}</div>
+                                        <div style="font-size:.85rem; color:#6b7280;">In stock: {{ item.product.quantity }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>₱{{ item.product.price|number_format(2, '.', ',') }}</td>
+                            <td style="min-width:160px;">
+                                <form method="post" action="{{ path('app_cart_update', {'id': item.product.id}) }}" class="cart-qty-form">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('cart_update_' ~ item.product.id) }}">
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        max="{{ item.product.quantity }}"
+                                        name="quantity"
+                                        value="{{ item.quantity }}"
+                                        class="form-control"
+                                        style="max-width:85px;"
+                                        onchange="this.form.submit()"
+                                    >
+                                </form>
+                            </td>
+                            <td>₱{{ item.subtotal|number_format(2, '.', ',') }}</td>
+                            <td class="cart-row-action">
+                                <form method="post" action="{{ path('app_cart_remove', {'id': item.product.id}) }}" onsubmit="return confirm('Remove this item from your cart?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('cart_remove_' ~ item.product.id) }}">
+                                    <button type="submit" class="collection-btn cart-btn cart-btn-danger"><i class="bi bi-trash"></i> Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" style="text-align:right; font-weight:700;">Total:</td>
+                        <td colspan="2" style="font-weight:700;">₱{{ total|number_format(2, '.', ',') }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+            <div class="cart-main-actions">
+                <div class="cart-actions">
+                    <form method="post" action="{{ path('app_cart_clear') }}" onsubmit="return confirm('Clear all cart items?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('cart_clear') }}">
+                        <button type="submit" class="collection-btn cart-btn cart-btn-danger"><i class="bi bi-x-circle"></i> Clear Cart</button>
+                    </form>
+                    <a href="{{ path('app_product_index') }}" class="collection-btn cart-btn cart-btn-secondary"><i class="bi bi-arrow-left"></i> Continue Shopping</a>
+                    <a href="{{ path('app_cart_checkout') }}" class="collection-btn cart-btn cart-btn-success"><i class="bi bi-credit-card"></i> Checkout</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{{ include('homepage/_footer.html.twig') }}
+{% endblock %}

@@ -1,6 +1,6 @@
-<form method="post" action="{{ path('app_product_delete', {'id': product.id}) }}" onsubmit="return confirm('Are you sure you want to delete this product? This action cannot be undone.');" style="display: inline-block;">
+<form method="post" action="{{ path('app_product_delete', {'id': product.id}) }}" onsubmit="return confirm('Are you sure you want to delete this product? This action cannot be undone.');" style="display: inline-flex;">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
-    <button type="submit" class="btn btn-delete" style="padding: 12px 30px; font-size: 1rem; background: #dc3545; color: white; border: none; border-radius: 6px; cursor: pointer;">
+    <button type="submit" class="btn btn-delete">
         <i class="bi bi-trash"></i> Delete Product
     </button>
 </form>

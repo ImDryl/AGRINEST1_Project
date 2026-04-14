@@ -2,12 +2,18 @@
 
 {% block stylesheets %}
   {{ parent() }}
-  <link rel="stylesheet" href="{{ asset('css/supplier.css') }}?v=4">
 {% endblock %}
 
 {% block body %}
 <div class="dashboard-container">
+  <button type="button" class="dashboard-mobile-toggle" aria-label="Toggle dashboard menu" aria-expanded="false">
+    <i class="bi bi-list"></i>
+  </button>
+  <div class="dashboard-sidebar-overlay" aria-hidden="true"></div>
   <aside class="sidebar">
+    <button type="button" class="dashboard-sidebar-close" aria-label="Close dashboard menu">
+      <i class="bi bi-x-lg"></i>
+    </button>
     <div class="logo-container">
       <img src="{{ asset('images/logo6.png') }}" alt="Logo" class="logo">
       <h2>
@@ -45,4 +51,43 @@
     {% block admin_content %}{% endblock %}
   </main>
 </div>
+<script>
+(() => {
+  const container = document.querySelector('.dashboard-container');
+  if (!container) return;
+
+  const body = document.body;
+  const toggle = container.querySelector('.dashboard-mobile-toggle');
+  const overlay = container.querySelector('.dashboard-sidebar-overlay');
+  const sidebar = container.querySelector('.sidebar');
+  const closeBtn = container.querySelector('.dashboard-sidebar-close');
+  if (!toggle || !overlay || !sidebar) return;
+
+  const closeSidebar = () => {
+    body.classList.remove('dashboard-sidebar-open');
+    toggle.setAttribute('aria-expanded', 'false');
+  };
+
+  // Always start closed on page load/navigation.
+  closeSidebar();
+
+  toggle.addEventListener('click', () => {
+    const isOpen = body.classList.toggle('dashboard-sidebar-open');
+    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+
+  overlay.addEventListener('click', closeSidebar);
+  closeBtn?.addEventListener('click', closeSidebar);
+
+  sidebar.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 992) closeSidebar();
+    });
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 992) closeSidebar();
+  });
+})();
+</script>
 {% endblock %}

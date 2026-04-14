@@ -4,50 +4,122 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
 {% endblock %}
 
 {% block body %}
 {% include 'includes/_navbar_public.html.twig' %}
 
+{% set contact_hero_image = asset('images/contactbanner.png') %}
+<section class="contact-hero-banner" style="--contact-hero-image: url('{{ contact_hero_image }}');" aria-label="Contact banner">
+    <div class="contact-hero-banner__overlay"></div>
+</section>
+
 <section class="section contact-section">
     <div class="section-title">
         <h2><i class="bi bi-chat-dots"></i> Contact</h2>
         <p>
-            For now, reach us using email links. We will reply as soon as we can.
+            Send us your feedback, product inquiries, or partnership questions. We are happy to help.
         </p>
     </div>
 
-    <div class="contact-grid">
-        <div class="contact-card">
-            <h3><i class="bi bi-envelope"></i> Email</h3>
-            <p>support@agrinest.com</p>
-            <a href="mailto:support@agrinest.com" class="card-btn">
-                <i class="bi bi-send"></i> Email Support
-            </a>
-        </div>  
+    {% for message in app.flashes('success') %}
+        <div class="contact-flash contact-flash-success">
+            <i class="bi bi-check-circle"></i>
+            <span>{{ message }}</span>
+        </div>
+    {% endfor %}
 
-        <div class="contact-card">
-            <h3><i class="bi bi-telephone"></i> Phone</h3>
-            <p>+63 000 000 0000</p>
-            <a href="tel:+630000000000" class="card-btn">
-                <i class="bi bi-telephone"></i> Call Us
-            </a>
+    {% for message in app.flashes('error') %}
+        <div class="contact-flash contact-flash-error">
+            <i class="bi bi-exclamation-triangle"></i>
+            <span>{{ message }}</span>
+        </div>
+    {% endfor %}
+
+    <div class="contact-dual">
+        <div class="contact-feedback-card">
+            <h3><i class="bi bi-chat-square-text"></i> Inquiry Form</h3>
+            <p class="contact-feedback-intro">Tell us what you need and we will reply as soon as we can.</p>
+
+            {{ form_start(contactForm, {'attr': {'class': 'contact-feedback-form'}}) }}
+            <div class="contact-form-grid">
+                <div class="contact-form-field">
+                    {{ form_label(contactForm.name) }}
+                    {{ form_widget(contactForm.name) }}
+                    {{ form_errors(contactForm.name) }}
+                </div>
+                <div class="contact-form-field">
+                    {{ form_label(contactForm.email) }}
+                    {{ form_widget(contactForm.email) }}
+                    {{ form_errors(contactForm.email) }}
+                </div>
+            </div>
+            <div class="contact-form-field">
+                {{ form_label(contactForm.subject) }}
+                {{ form_widget(contactForm.subject) }}
+                {{ form_errors(contactForm.subject) }}
+            </div>
+            <div class="contact-form-field">
+                {{ form_label(contactForm.message) }}
+                {{ form_widget(contactForm.message) }}
+                {{ form_errors(contactForm.message) }}
+            </div>
+
+            <button type="submit" class="card-btn contact-submit-btn">
+                <i class="bi bi-send-fill"></i> Send
+            </button>
+            {{ form_end(contactForm) }}
         </div>
 
-        <div class="contact-card">
-            <h3><i class="bi bi-geo-alt"></i> Location</h3>
-            <p>Your Farm Hub, Philippines</p>
-            <a href="{{ path('app_product_index') }}" class="card-btn">
-                <i class="bi bi-bag"></i> Browse Products
-            </a>
-        </div>
-    </div>
+       <aside class="contact-info-panel">
+            <h3><i class="bi bi-person-lines-fill"></i> Contact Information</h3>
+            <ul class="contact-info-list">
+                <li>
+                    <i class="bi bi-geo-alt-fill" aria-hidden="true"></i>
+                    <span>Agrinest, Philippines</span>
+                </li>
+                <li>
+                    <i class="bi bi-telephone-fill" aria-hidden="true"></i>
+                    <span>+63 981 558 9791</span>
+                </li>
+                <li>
+                    <i class="bi bi-envelope-fill" aria-hidden="true"></i>
+                    <span>support@agrinest.com</span>
+                </li>
+                <li>
+                    <i class="bi bi-facebook" aria-hidden="true"></i>
+                    <span>facebook.com/agrinest</span>
+                </li>
+                <li>
+                    <i class="bi bi-instagram" aria-hidden="true"></i>
+                    <span>@agrinest</span>
+                </li>
+            </ul>
+            <div class="contact-info-actions">
+                <a href="mailto:support@agrinest.com" class="card-btn"><i class="bi bi-send"></i> Email Support</a>
+                <a href="{{ path('app_product_index') }}" class="card-btn"><i class="bi bi-bag"></i> Browse Products</a>
+            </div>
 
-    <div style="max-width: 980px; margin: 26px auto 0; text-align: center;">
-        <p style="color:#666; line-height: 1.8; font-size: 1rem; margin-bottom: 10px;">
-            Tip: When you email us, include what you need (egg type, quantity, or product type) so we can respond faster.
-        </p>
+            <div class="contact-map-container" style="margin-top: 30px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+               
+<div class="contact-map-container" style="margin-top: 30px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+   
+   <iframe
+
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15749.602843350436!2d123.27239367272304!3d9.29771649398053!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33ab6f365291f943%3A0x506f1fec91f18143!2sJunob%2C%20Dumaguete%20City%2C%20Negros%20Oriental!5e0!3m2!1sen!2sph!4v1775281589170!5m2!1sen!2sph" 
+    width="600" 
+    height="450" 
+    style="border:0;" 
+    allowfullscreen="" 
+    loading="lazy" 
+    referrerpolicy="no-referrer-when-downgrade">
+    
+    </iframe>
+</div>
+            </div>
+            </aside>
+
+            
     </div>
 
     <div class="section-title" style="margin-top: 44px;">

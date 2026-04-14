@@ -4,8 +4,6 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/product-collection.css') }}?v=5">
 {% endblock %}
 
 {% block body %}
@@ -28,7 +26,7 @@
         </div>
         <div class="about-agrinest-container about-agrinest-hero__content">
             <p class="about-agrinest-eyebrow"><i class="bi bi-globe2" aria-hidden="true"></i> Marketplace for local poultry</p>
-            <h1 id="about-hero-title">Connecting communities with quality poultry—farm to doorstep.</h1>
+            <h1 id="about-hero-title">Connecting communities with quality poultry farm to doorstep.</h1>
             <p class="about-agrinest-hero__lead">
                 AgriNest is a modern marketplace built for transparency and trust. We help buyers discover fresh eggs,
                 fertilized eggs, chicks, and meat from local farmers—while giving producers a reliable channel to grow.
@@ -48,7 +46,7 @@
         <div class="about-agrinest-container about-agrinest-story">
             <figure class="about-agrinest-story__figure">
                 <img
-                    src="{{ asset('images/Flock.png') }}"
+                    src="{{ asset('images/sideabout.png') }}"
                     alt="Healthy flock on a local farm"
                     width="800"
                     height="600"
@@ -110,57 +108,57 @@
         </div>
     </section>
 
-    <section class="about-agrinest-section about-agrinest-section--muted" aria-labelledby="about-journey-heading">
+    <section class="about-agrinest-section about-agrinest-section--muted" aria-labelledby="about-team-heading">
         <div class="about-agrinest-container">
             <header class="about-agrinest-section-head">
-                <p class="about-agrinest-eyebrow about-agrinest-eyebrow--dark"><i class="bi bi-signpost-split" aria-hidden="true"></i> Farm to table</p>
-                <h2 id="about-journey-heading">How your order comes together</h2>
+                <p class="about-agrinest-eyebrow about-agrinest-eyebrow--dark"><i class="bi bi-people-fill" aria-hidden="true"></i> Meet our team</p>
+                <h2 id="about-team-heading">The people behind AgriNest</h2>
                 <p class="about-agrinest-section-intro">
-                    A simple journey from verified listings to fulfillment—designed for clarity at every step.
+                    A passionate team building a trusted poultry marketplace for farmers, buyers, and communities.
                 </p>
             </header>
-            <ol class="about-agrinest-journey">
-                <li class="about-agrinest-journey__step">
-                    <div class="about-agrinest-journey__visual">
-                        <img src="{{ asset('images/Eggs.png') }}" alt="" width="320" height="240" loading="lazy">
-                        <span class="about-agrinest-journey__num">1</span>
+            <div class="about-agrinest-team" role="list">
+                <article class="about-agrinest-team-card" role="listitem">
+                    <div class="about-agrinest-team-card__media">
+                        <img src="{{ asset('images/person1.png') }}" alt="Team member portrait placeholder" width="360" height="420" loading="lazy">
                     </div>
-                    <div class="about-agrinest-journey__text">
-                        <h3>List &amp; discover</h3>
-                        <p>Farmers list eggs, chicks, and meat with structured details. You browse by category and need—no guesswork.</p>
+                    <div class="about-agrinest-team-card__body">
+                        <h3>Bryl Wan</h3>
+                        <p class="about-agrinest-team-card__role">Founder &amp; Operations Lead</p>
+                        <p>Leads platform strategy, farmer partnerships, and day-to-day operations to keep supply reliable.</p>
                     </div>
-                </li>
-                <li class="about-agrinest-journey__step">
-                    <div class="about-agrinest-journey__visual">
-                        <img src="{{ asset('images/FertilizedEggs.png') }}" alt="" width="320" height="240" loading="lazy">
-                        <span class="about-agrinest-journey__num">2</span>
+                </article>
+                <article class="about-agrinest-team-card" role="listitem">
+                    <div class="about-agrinest-team-card__media">
+                        <img src="{{ asset('images/person2.png') }}" alt="Team member portrait placeholder" width="360" height="420" loading="lazy">
                     </div>
-                    <div class="about-agrinest-journey__text">
-                        <h3>Verify &amp; choose</h3>
-                        <p>Compare options, check availability, and align on handling expectations before you commit.</p>
+                    <div class="about-agrinest-team-card__body">
+                        <h3>Driel Wanmanlupig</h3>
+                        <p class="about-agrinest-team-card__role">Product &amp; UX Designer</p>
+                        <p>Designs clear user flows and interfaces so farmers and buyers can use AgriNest with ease.</p>
                     </div>
-                </li>
-                <li class="about-agrinest-journey__step">
-                    <div class="about-agrinest-journey__visual">
-                        <img src="{{ asset('images/Chicks.jpg') }}" alt="" width="320" height="240" loading="lazy">
-                        <span class="about-agrinest-journey__num">3</span>
+                </article>
+                <article class="about-agrinest-team-card" role="listitem">
+                    <div class="about-agrinest-team-card__media">
+                        <img src="{{ asset('images/person3.png') }}" alt="Team member portrait placeholder" width="360" height="420" loading="lazy">
                     </div>
-                    <div class="about-agrinest-journey__text">
-                        <h3>Coordinate &amp; pack</h3>
-                        <p>Orders flow through a consistent workflow so supply stays organized from confirmation to handoff.</p>
+                    <div class="about-agrinest-team-card__body">
+                        <h3>Drake Romeo</h3>
+                        <p class="about-agrinest-team-card__role">Quality &amp; Supplier Coordinator</p>
+                        <p>Works with sellers to maintain standards, organize listings, and improve product consistency.</p>
                     </div>
-                </li>
-                <li class="about-agrinest-journey__step">
-                    <div class="about-agrinest-journey__visual">
-                        <img src="{{ asset('images/Meat.jpg') }}" alt="" width="320" height="240" loading="lazy">
-                        <span class="about-agrinest-journey__num">4</span>
+                </article>
+                <article class="about-agrinest-team-card" role="listitem">
+                    <div class="about-agrinest-team-card__media">
+                        <img src="{{ asset('images/person4.png') }}" alt="Team member portrait placeholder" width="360" height="420" loading="lazy">
                     </div>
-                    <div class="about-agrinest-journey__text">
-                        <h3>Deliver &amp; enjoy</h3>
-                        <p>Fresh poultry products reach your kitchen or operation—supporting local agriculture with every purchase.</p>
+                    <div class="about-agrinest-team-card__body">
+                        <h3>Manuel Delta</h3>
+                        <p class="about-agrinest-team-card__role">Tech &amp; Platform Engineer</p>
+                        <p>Builds and maintains the system that powers secure, smooth transactions across the platform.</p>
                     </div>
-                </li>
-            </ol>
+                </article>
+            </div>
         </div>
     </section>
 

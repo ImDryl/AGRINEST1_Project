@@ -36,6 +36,6 @@ class EmailVerificationController extends AbstractController
         // 5. Success! Tell them they are verified and open the login screen
         $this->addFlash('success', 'Your email has been successfully verified! You can now log in to AgriNest.');
         
-        return $this->redirectToRoute('app_homepage', ['modal' => 'login']);
+        return $this->redirectToRoute('app_login');
     }
 }

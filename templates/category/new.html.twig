@@ -9,8 +9,8 @@
       {{ form_start(form) }}
           {{ form_widget(form) }}
           <div class="form-actions">
-              <button class="btn btn-success btn-sm">Save</button>
-              <a href="{{ path('app_category_index') }}" class="btn btn-secondary btn-sm"><i class="bi bi-arrow-left"></i> Back to list</a>
+              <button class="btn btn-success btn-sm category-save-btn"><i class="bi bi-save"></i> Save</button>
+              <a href="{{ path('app_category_index') }}" class="btn btn-secondary btn-sm category-back-btn"><i class="bi bi-arrow-left"></i> Back to list</a>
           </div>
       {{ form_end(form) }}
   </div>

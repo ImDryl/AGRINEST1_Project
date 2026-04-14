@@ -1,10 +1,16 @@
 {# Public site navbar #}
 {% set _route = app.request.attributes.get('_route') %}
 {% set _shop_active = _route and _route starts with 'app_product' %}
+{% set _cart_active = _route and _route starts with 'app_cart' %}
 <nav class="navbar" aria-label="Primary">
     <div class="logo">
         <a href="{{ path('app_homepage') }}"><img src="{{ asset('images/mainlogo.png') }}" alt="AgriNest Logo"></a>
     </div>
+    <button class="menu-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
     <ul class="nav-links">
         <li><a href="{{ path('app_homepage') }}" class="{{ _route == 'app_homepage' ? 'active' : '' }}">Home</a></li>
         <li><a href="{{ path('app_about') }}" class="{{ _route == 'app_about' ? 'active' : '' }}">About Us</a></li>
@@ -28,6 +34,7 @@
         <li><a href="{{ path('app_contact') }}" class="{{ _route == 'app_contact' ? 'active' : '' }}">Contact</a></li>
         <li><a href="{{ path('app_sell') }}" class="{{ _route == 'app_sell' ? 'active' : '' }}">Sell</a></li>
         {% if app.user %}
+            <li><a href="{{ path('app_cart_index') }}" class="{{ _cart_active ? 'active' : '' }}"><i class="bi bi-cart3"></i> Cart</a></li>
             <li><a href="{{ path('app_logout') }}">Logout</a></li>
         {% else %}
             <li>
@@ -47,3 +54,36 @@
         {% endif %}
     </ul>
 </nav>
+
+<script>
+(() => {
+    const navbars = document.querySelectorAll('.navbar');
+    navbars.forEach((navbar) => {
+        const toggle = navbar.querySelector('.menu-toggle');
+        const links = navbar.querySelector('.nav-links');
+        if (!toggle || !links) return;
+
+        const closeMenu = () => {
+            links.classList.remove('active');
+            toggle.classList.remove('active');
+            toggle.setAttribute('aria-expanded', 'false');
+        };
+
+        toggle.addEventListener('click', () => {
+            const isOpen = links.classList.toggle('active');
+            toggle.classList.toggle('active', isOpen);
+            toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+
+        links.querySelectorAll('a').forEach((link) => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) closeMenu();
+            });
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) closeMenu();
+        });
+    });
+})();
+</script>

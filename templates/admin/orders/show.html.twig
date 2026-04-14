@@ -4,7 +4,6 @@
 
 {% block stylesheets %}
   {{ parent() }}
-  <link rel="stylesheet" href="{{ asset('css/form.css') }}">
   <style>
     .order-page {
       background: #f8fafc;
@@ -169,7 +168,7 @@
         </div>
         <div class="detail-field">
             <label><i class="bi bi-person-badge"></i> Created By</label>
-            <div class="value">{{ order.createdBy ? order.createdBy.username : 'N/A' }}</div>
+            <div class="value">{{ order.createdBy ? order.createdBy.email : 'N/A' }}</div>
         </div>
     </div>
   </div>

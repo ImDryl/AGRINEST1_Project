@@ -1,7 +1,13 @@
 <div class="collection-page">
+    <div id="shopCartToast" class="shop-cart-toast" aria-live="polite"></div>
+    {% set shop_hero_image = asset('images/banner.png') %}
+    <section class="shop-hero-banner" style="--shop-hero-image: url('{{ shop_hero_image }}');" aria-label="Shop banner">
+        <div class="shop-hero-banner__overlay"></div>
+    </section>
+
     <div class="collection-hero">
         <h1><i class="bi bi-shop-window"></i> Shop</h1>
-        <p>Fresh poultry products available in clear categories. View details and stock below.</p>
+        {# <p>Fresh poultry products available. View details and stock below.</p> #}
     </div>
 
     <form method="get" action="{{ path('app_product_index') }}" class="collection-controls collection-controls-form">
@@ -29,7 +35,7 @@
 
     <div class="collection-grid">
         {% for product in products %}
-            <div class="collection-card">
+            <div id="product-{{ product.id }}" class="collection-card">
                 <div class="collection-media">
                     {% if product.image %}
                         <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="{{ product.name }}" class="collection-img">
@@ -62,9 +68,14 @@
                             <i class="bi bi-eye"></i> Details
                         </a>
                         {% if product.quantity > 0 %}
-                            <a href="{{ path('app_contact') }}?topic=order&amp;product={{ product.id }}" class="collection-btn collection-btn-buy">
-                                <i class="bi bi-cart-plus"></i> Buy
-                            </a>
+                            <form method="post" action="{{ path('app_cart_add', {'id': product.id}) }}" style="display:inline;" class="js-add-to-cart-form" data-product-id="{{ product.id }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('cart_add_' ~ product.id) }}">
+                                <input type="hidden" name="quantity" value="1">
+                                <input type="hidden" name="_redirect" value="{{ path('app_product_index', {q: shopSearch, limit: shopLimit, page: shopPage}) ~ '#product-' ~ product.id }}">
+                                <button type="submit" class="collection-btn collection-btn-buy">
+                                    <i class="bi bi-cart-plus"></i> Add to Cart
+                                </button>
+                            </form>
                         {% else %}
                             <span class="collection-btn collection-btn-disabled" title="Out of stock"><i class="bi bi-cart-x"></i> Unavailable</span>
                         {% endif %}
@@ -112,3 +123,83 @@
         {% endif %}
     </div>
 </div>
+
+<script>
+(() => {
+    const forms = document.querySelectorAll('.js-add-to-cart-form');
+    const toast = document.getElementById('shopCartToast');
+    if (!forms.length) return;
+
+    let toastTimer = null;
+    const showToast = (message, isError = false) => {
+        if (!toast) return;
+        toast.textContent = message;
+        toast.classList.toggle('is-error', isError);
+        toast.classList.add('is-visible');
+        window.clearTimeout(toastTimer);
+        toastTimer = window.setTimeout(() => {
+            toast.classList.remove('is-visible');
+        }, 1600);
+    };
+
+    forms.forEach((form) => {
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const button = form.querySelector('button[type="submit"]');
+            if (!button) return;
+
+            const originalText = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = '<i class="bi bi-hourglass-split"></i> Adding...';
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                    },
+                });
+
+                const data = await response.json();
+                if (!response.ok || !data.success) {
+                    showToast(data.message || 'Could not add to cart.', true);
+                    button.disabled = false;
+                    button.innerHTML = originalText;
+                    return;
+                }
+                showToast(data.message || 'Added to cart.');
+
+                const card = form.closest('.collection-card');
+                const badge = card?.querySelector('.collection-stock-badge');
+                if (badge && typeof data.remainingStock === 'number') {
+                    if (data.remainingStock > 0) {
+                        badge.classList.remove('collection-stock-badge--out');
+                        badge.classList.add('collection-stock-badge--ok');
+                        badge.innerHTML = '<i class="bi bi-check-circle-fill" aria-hidden="true"></i> ' + data.remainingStock + ' in stock';
+                    } else {
+                        badge.classList.remove('collection-stock-badge--ok');
+                        badge.classList.add('collection-stock-badge--out');
+                        badge.innerHTML = '<i class="bi bi-x-circle" aria-hidden="true"></i> Out of stock';
+                        button.disabled = true;
+                        button.classList.add('collection-btn-disabled');
+                        button.innerHTML = '<i class="bi bi-cart-x"></i> Unavailable';
+                        return;
+                    }
+                }
+
+                button.disabled = false;
+                button.innerHTML = '<i class="bi bi-cart-check"></i> Added';
+                window.setTimeout(() => {
+                    button.innerHTML = originalText;
+                }, 900);
+            } catch (e) {
+                showToast('Network error. Please try again.', true);
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }
+        });
+    });
+})();
+</script>

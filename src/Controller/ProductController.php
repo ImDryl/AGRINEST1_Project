@@ -6,6 +6,7 @@ use App\Entity\Product;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use App\Service\ActivityLogService;
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -139,7 +140,15 @@ final class ProductController extends AbstractController
     {
     // Check if user can edit this product (admin, staff, or creator)
     // Staff can edit any product, but regular users can only edit their own
-    if (!$this->isGranted('ROLE_ADMIN') && !$this->isGranted('ROLE_STAFF') && $product->getCreatedBy() !== $this->getUser()) {
+    $currentUser = $this->getUser();
+    $currentUserId = \is_object($currentUser) && method_exists($currentUser, 'getId') ? $currentUser->getId() : null;
+    $ownerId = $product->getCreatedBy()?->getId();
+
+    if (
+        !$this->isGranted('ROLE_ADMIN')
+        && !$this->isGranted('ROLE_STAFF')
+        && ($ownerId === null || $currentUserId === null || $ownerId !== $currentUserId)
+    ) {
         $this->addFlash('error', 'You can only edit products you created.');
         // Redirect to admin route if user is admin/staff
         if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF')) {
@@ -209,7 +218,15 @@ final class ProductController extends AbstractController
     {
     // Check if user can delete this product (admin, staff, or creator)
     // Staff can delete any product, but regular users can only delete their own
-    if (!$this->isGranted('ROLE_ADMIN') && !$this->isGranted('ROLE_STAFF') && $product->getCreatedBy() !== $this->getUser()) {
+    $currentUser = $this->getUser();
+    $currentUserId = \is_object($currentUser) && method_exists($currentUser, 'getId') ? $currentUser->getId() : null;
+    $ownerId = $product->getCreatedBy()?->getId();
+
+    if (
+        !$this->isGranted('ROLE_ADMIN')
+        && !$this->isGranted('ROLE_STAFF')
+        && ($ownerId === null || $currentUserId === null || $ownerId !== $currentUserId)
+    ) {
         $this->addFlash('error', 'You can only delete products you created.');
         // Redirect to admin route if user is admin/staff
         if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STAFF')) {
@@ -221,11 +238,14 @@ final class ProductController extends AbstractController
     if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->getPayload()->getString('_token'))) {
         // Log the action before deletion
         $this->activityLogService->logProductDelete($product);
-        
-        $entityManager->remove($product);
-        $entityManager->flush();
-        
-        $this->addFlash('success', 'Product deleted successfully.');
+
+        try {
+            $entityManager->remove($product);
+            $entityManager->flush();
+            $this->addFlash('success', 'Product deleted successfully.');
+        } catch (ForeignKeyConstraintViolationException) {
+            $this->addFlash('error', 'This product cannot be deleted because it is already used in existing orders.');
+        }
     }
 
     // Redirect to admin route if user is admin/staff

@@ -4,40 +4,68 @@ security:
         App\Entity\User:
             algorithm: auto
 
-        #Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
                 class: App\Entity\User
-                property: username
+                property: email 
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
+        # --- NEW: API LOGIN FIREWALL ---
+        login:
+            pattern: ^/api/login
+            stateless: true
+            json_login:
+                check_path: /api/login_check
+                username_path: email
+                password_path: password
+                success_handler: App\Security\JWTAuthenticationSuccessHandler
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        # --- NEW: API PROTECTION FIREWALL ---
+        api:
+            pattern: ^/api
+            stateless: true
+            jwt: ~
+
+        # --- YOUR EXISTING WEB FIREWALL ---
         main:
             lazy: true
             provider: app_user_provider
             user_checker: App\Security\UserChecker
+            entry_point: form_login
+            custom_authenticators:
+                - App\Security\GoogleStaffAuthenticator
             form_login:
                 login_path: app_login
                 check_path: app_login
+                username_parameter: email
                 success_handler: App\Security\AuthenticationSuccessHandler
             logout:
                 path: app_logout
                 # where to redirect after logout
                 target: app_homepage
 
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#the-firewall
-
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
-
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+        # --- NEW: API ACCESS RULES ---
+        - { path: ^/api/register, roles: PUBLIC_ACCESS }
+        - { path: ^/api/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
+        - { path: ^/api/login_checkout, roles: PUBLIC_ACCESS }
+        - { path: ^/api/products, roles: PUBLIC_ACCESS }
+        - { path: ^/api/verify-email, roles: PUBLIC_ACCESS }
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+
+        # ---  EXISTING WEB RULES ---
+        - { path: ^/connect/google, roles: PUBLIC_ACCESS }
         - { path: ^/admin/logs, roles: ROLE_ADMIN }
         - { path: ^/admin/users, roles: ROLE_ADMIN }
         - { path: ^/admin/dashboard, roles: ROLE_ADMIN }
@@ -47,8 +75,9 @@ security:
         - { path: ^/admin/suppliers, roles: [ROLE_STAFF, ROLE_ADMIN] }
         - { path: ^/admin/orders, roles: [ROLE_STAFF, ROLE_ADMIN] }
         - { path: ^/admin, roles: ROLE_ADMIN }
-        # Shop requires login; guests are sent to /login then redirected back (see AuthenticationSuccessHandler)
+        # Shop requires login; guests are sent to /login then redirected back
         - { path: ^/product, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/cart, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/category, roles: [ROLE_STAFF, ROLE_ADMIN] }
         - { path: ^/supplier, roles: [ROLE_STAFF, ROLE_ADMIN] }
         - { path: ^/verify-email, roles: PUBLIC_ACCESS }
@@ -56,10 +85,6 @@ security:
 when@test:
     security:
         password_hashers:
-            # By default, password hashers are resource intensive and take time. This is
-            # important to generate secure password hashes. In tests however, secure hashes
-            # are not important, waste resources and increase test times. The following
-            # reduces the work factor to the lowest possible values.
             Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
                 algorithm: auto
                 cost: 4 # Lowest possible value for bcrypt

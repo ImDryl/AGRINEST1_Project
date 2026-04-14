@@ -212,6 +212,55 @@
     transform: translateY(0);
 }
 
+/* Compact icon-only action buttons for table rows */
+.table-actions {
+    white-space: nowrap;
+}
+
+.icon-btn {
+    width: auto;
+    height: auto;
+    padding: 0 4px !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    text-decoration: none;
+}
+
+.icon-btn i {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.table-actions .btn-view {
+    color: #ff8e53 !important;
+}
+
+.table-actions .btn-edit {
+    color: #2ea043 !important;
+}
+
+.table-actions .btn-delete {
+    color: #dc3545 !important;
+}
+
+.table-actions .btn-warning {
+    color: #d97706 !important;
+}
+
+.table-actions .btn-success {
+    color: #16a34a !important;
+}
+
+.table-actions .icon-btn:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.08);
+}
+
 /* === Disabled Button Styles === */
 .btn-disabled {
     opacity: 0.6;
@@ -662,26 +711,15 @@
     border-bottom: 2px solid #ffb347;
 }
 
-/* Buttons inside table */
-.btn-view,
-.btn-edit {
-    padding: 6px 12px;
-    border-radius: 6px;
-    color: white;
-    text-decoration: none;
-    font-size: 14px;
-    transition: 0.3s;
+/* Keep icon-action colors consistent (final override) */
+.table-actions .icon-btn.btn-view {
+    color: #ff8e53 !important;
 }
 
-.btn-view {
-    background: #007bff;
+.table-actions .icon-btn.btn-edit {
+    color: #2ea043 !important;
 }
 
-.btn-edit {
-    background: #ff9800;
-}
-
-.btn-view:hover,
-.btn-edit:hover {
-    opacity: 0.8;
+.table-actions .icon-btn.btn-delete {
+    color: #dc3545 !important;
 }

@@ -53,18 +53,20 @@ body {
 
 /* === Logo Styling === */
 .logo-container {
-    text-align: center;
+    text-align: left;
     margin-bottom: 30px;
     padding-bottom: 20px;
+    padding-left: 8px;
     border-bottom: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 .logo-container img.logo {
-    width: 250px;
+    width: 100%;
+    max-width: 188px;
     height: auto;
     margin-bottom: 10px;
     display: block;
-    margin-left: auto;
+    margin-left: 0;
     margin-right: auto;
 }
 
@@ -735,7 +737,7 @@ body {
     flex-wrap: wrap;
 }
 
-.log-username {
+.log-email {
     font-weight: 700;
     color: #754c24;
     font-size: 16px;
@@ -902,6 +904,118 @@ body {
     }
 }
 
+/* Mobile sidebar / burger menu for dashboard */
+.dashboard-mobile-toggle {
+    display: none;
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    z-index: 1201;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: none;
+    color: #fff;
+    background: linear-gradient(135deg, #f7971e 0%, #ff6f61 100%);
+    box-shadow: 0 8px 18px rgba(247, 151, 30, 0.34);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.dashboard-mobile-toggle i {
+    font-size: 1.35rem;
+    line-height: 1;
+}
+
+.dashboard-sidebar-overlay {
+    display: none;
+}
+
+.dashboard-sidebar-close {
+    display: none;
+}
+
+@media (max-width: 992px) {
+    .dashboard-container {
+        overflow: visible;
+    }
+
+    .dashboard-mobile-toggle {
+        display: inline-flex;
+    }
+
+    .dashboard-sidebar-overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.4);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        z-index: 1090;
+        transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+
+    .sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        width: min(280px, 85vw) !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        overflow-y: auto !important;
+        transform: translateX(-105%);
+        transition: transform 0.3s ease;
+        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.25) !important;
+        z-index: 1200 !important;
+    }
+
+    .dashboard-sidebar-close {
+        display: inline-flex;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 34px;
+        height: 34px;
+        border: none;
+        border-radius: 10px;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.28);
+        color: #fff;
+        cursor: pointer;
+    }
+
+    .dashboard-sidebar-close i {
+        font-size: 1rem;
+        line-height: 1;
+    }
+
+    .dashboard-main {
+        margin-left: 0 !important;
+        width: 100%;
+        min-height: 100dvh;
+        padding: 72px 16px 20px !important;
+    }
+
+    body.dashboard-sidebar-open {
+        overflow: hidden;
+    }
+
+    body.dashboard-sidebar-open .sidebar {
+        transform: translateX(0);
+    }
+
+    body.dashboard-sidebar-open .dashboard-sidebar-overlay {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+}
+
 /* === Profile Pages (Simple) === */
 .profile-wrapper {
     max-width: 700px;
@@ -988,6 +1102,50 @@ body {
     justify-content: center;
     gap: 8px;
     padding: 12px 20px;
+}
+
+.profile-actions-simple .btn-primary {
+    background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+    color: #ffffff;
+    border: none;
+}
+
+.profile-actions-simple .btn-primary:hover {
+    background: linear-gradient(135deg, #ffb347 0%, #ffcc33 100%);
+}
+
+.profile-actions-simple .btn-secondary {
+    background: #ffffff;
+    color: #754c24;
+    border: 2px solid #e0e0e0;
+}
+
+.profile-actions-simple .btn-secondary:hover {
+    background: #fff4d9;
+    border-color: #ffd372;
+}
+
+/* User role filter pills (users table) */
+.users-filter-btn {
+    min-width: auto !important;
+    padding: 8px 14px !important;
+    border-radius: 999px !important;
+    font-size: 0.88rem !important;
+    font-weight: 700 !important;
+}
+
+.users-filter-btn.btn-secondary {
+    background: #fff !important;
+    color: #754c24 !important;
+    border: 1px solid #ffd98e !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+.users-filter-btn.btn-success {
+    background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%) !important;
+    color: #1f1408 !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(247, 151, 30, 0.25) !important;
 }
 
 .password-form-simple {

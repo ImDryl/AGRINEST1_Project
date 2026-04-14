@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Checkout - AgriNest{% endblock %}
+
+{% block body %}
+{% include 'includes/_navbar_public.html.twig' %}
+
+<div class="collection-page cart-page">
+    <div class="collection-hero">
+        <h1><i class="bi bi-credit-card"></i> Checkout</h1>
+        <p>Complete your details to place your order.</p>
+    </div>
+
+    {% if errors is not empty %}
+        <div class="alert alert-danger">
+            <ul style="margin:0; padding-left:1.25rem;">
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <div class="card" style="padding:1.25rem;">
+        <h3 style="margin-top:0;">Order Summary</h3>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Qty</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>₱{{ item.product.price|number_format(2, '.', ',') }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>₱{{ item.subtotal|number_format(2, '.', ',') }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" style="text-align:right; font-weight:700;">Total:</td>
+                    <td style="font-weight:700;">₱{{ total|number_format(2, '.', ',') }}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="card" style="padding:1.25rem; margin-top:1rem;">
+        <h3 style="margin-top:0;">Customer Details</h3>
+        <form method="post" action="{{ path('app_cart_checkout') }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('cart_checkout') }}">
+
+            <div class="form-group">
+                <label for="customer_name">Full Name</label>
+                <input id="customer_name" name="customer_name" type="text" class="form-control" value="{{ formData.customer_name|default('') }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="customer_email">Email</label>
+                <input id="customer_email" name="customer_email" type="email" class="form-control" value="{{ formData.customer_email|default('') }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="customer_phone">Phone</label>
+                <input id="customer_phone" name="customer_phone" type="tel" inputmode="numeric" autocomplete="tel" pattern="^\+?[0-9][0-9\s-]{8,18}$" title="Use digits only, with optional +, spaces, or hyphens." class="form-control" value="{{ formData.customer_phone|default('') }}" required>
+            </div>
+
+            <div class="cart-actions">
+                <a href="{{ path('app_cart_index') }}" class="collection-btn cart-btn cart-btn-secondary"><i class="bi bi-arrow-left"></i> Back to Cart</a>
+                <button type="submit" class="collection-btn cart-btn cart-btn-success"><i class="bi bi-check2-circle"></i> Place Order</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{ include('homepage/_footer.html.twig') }}
+{% endblock %}

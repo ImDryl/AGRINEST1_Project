@@ -286,6 +286,43 @@ form input[type="file"]:not(.file-input):focus {
     transform: translateY(0);
 }
 
+/* Category-specific button hardening (prevents white button regression) */
+.category-create-btn {
+    background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%) !important;
+    color: #1f1408 !important;
+    border: none !important;
+    box-shadow: 0 6px 16px rgba(247, 151, 30, 0.28) !important;
+}
+
+.category-create-btn:hover {
+    background: linear-gradient(135deg, #ffb347 0%, #ffcc33 100%) !important;
+}
+
+.form-actions .category-save-btn {
+    background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%) !important;
+    color: #1f1408 !important;
+    border: none !important;
+    box-shadow: 0 6px 16px rgba(247, 151, 30, 0.28) !important;
+}
+
+.form-actions .category-save-btn:hover {
+    background: linear-gradient(135deg, #ffb347 0%, #ffcc33 100%) !important;
+    color: #1f1408 !important;
+}
+
+.form-actions .category-back-btn {
+    background: #ffffff !important;
+    color: #754c24 !important;
+    border: 2px solid #e0e0e0 !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06) !important;
+}
+
+.form-actions .category-back-btn:hover {
+    background: #fff4d9 !important;
+    color: #754c24 !important;
+    border-color: #ffd372 !important;
+}
+
 /* === Form Group Spacing === */
 .form-group {
     margin-bottom: 24px;

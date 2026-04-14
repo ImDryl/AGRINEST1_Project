@@ -4,47 +4,68 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
 {% endblock %}
 
 {% block body %}
 {% include 'includes/_navbar_public.html.twig' %}
 
-<section class="section about-section">
+<div class="sell-page-wrap">
+{% set sell_hero_image = asset('images/Flock.png') %}
+<section class="sell-hero-banner" style="--sell-hero-image: url('{{ sell_hero_image }}');" aria-label="Sell banner">
+    <div class="sell-hero-banner__overlay"></div>
+</section>
+
+<section class="section about-section sell-main-section">
     <div class="section-title">
         <h2><i class="bi bi-hand-thumbs-up"></i> Sell with AgriNest</h2>
         <p>
-            Want to supply eggs or poultry products? Send us an email and we’ll guide you on the next steps.
+            Eggstra income opportunity. Start your poultry business with AgriNest and grow with a trusted local marketplace.
         </p>
     </div>
 
     <div class="contact-grid">
         <div class="contact-card">
-            <h3><i class="bi bi-person-plus"></i> Become a Seller</h3>
-            <p>Start by letting us know what products you can supply.</p>
+            <h3><i class="bi bi-rocket-takeoff"></i> Start your seller journey</h3>
+            <p>
+                Whether you are first-time entrepreneur or an experienced farm owner, AgriNest gives you simple way
+                to list products & connect with more buyers.
+            </p>
             <a href="mailto:support@agrinest.com" class="card-btn">
-                <i class="bi bi-send"></i> Email for Seller Info
+                <i class="bi bi-send"></i> Apply as Seller
             </a>
         </div>
 
         <div class="contact-card">
-            <h3><i class="bi bi-clipboard-check"></i> What to Include</h3>
+            <h3><i class="bi bi-lightning-charge"></i> Quick and easy process</h3>
             <p>
-                Your product type, approximate quantities, and your preferred delivery area.
+                Time-saving onboarding, clear product categories, and guided setup help you launch faster without
+                complicated steps.
             </p>
-            <a href="{{ path('app_contact') }}" class="card-btn" style="background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); color: #754c24;">
-                <i class="bi bi-chat-dots"></i> Contact Details
+            <a href="{{ path('app_contact') }}" class="card-btn">
+                <i class="bi bi-chat-dots"></i> Talk to our team
+            </a>
+        </div>
+
+        <div class="contact-card">
+            <h3><i class="bi bi-cash-coin"></i> Earn more with AgriNest</h3>
+            <p>
+                Reach repeat buyers, improve visibility, and build a steady sales flow through one reliable platform
+                designed for poultry suppliers.
+            </p>
+            <a href="{{ path('app_product_index') }}" class="card-btn">
+                <i class="bi bi-bag"></i> View Marketplace
             </a>
         </div>
     </div>
 
     <div style="max-width: 980px; margin: 26px auto 0; text-align: center;">
         <p style="color:#666; line-height: 1.8; font-size: 1rem; margin-bottom: 0;">
-            For faster approval, include your product list, approximate quantities, and your delivery area.
+            To get started quickly, include your product type, expected volume, price range, and delivery area in your first message.
         </p>
     </div>
 </section>
 
 {{ include('homepage/_footer.html.twig') }}
+</div>
 {% endblock %}
 
