@@ -110,6 +110,7 @@ final class ApiCartController extends AbstractController
             'customer_name' => (string) ($data['customer_name'] ?? ''),
             'customer_email' => (string) ($data['customer_email'] ?? ''),
             'customer_phone' => (string) ($data['customer_phone'] ?? ''),
+            'payment_method' => (string) ($data['payment_method'] ?? ''),
         ], $request);
 
         $status = $result['success'] ? 201 : 400;

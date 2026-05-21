@@ -167,6 +167,14 @@
             <div class="value">{{ order.orderDate|date('Y-m-d H:i:s') }}</div>
         </div>
         <div class="detail-field">
+            <label><i class="bi bi-flag"></i> Status</label>
+            <div class="value">{{ order.status }}</div>
+        </div>
+        <div class="detail-field">
+            <label><i class="bi bi-credit-card"></i> Payment Method</label>
+            <div class="value">{{ order.paymentMethod ?: '—' }}</div>
+        </div>
+        <div class="detail-field">
             <label><i class="bi bi-person-badge"></i> Created By</label>
             <div class="value">{{ order.createdBy ? order.createdBy.email : 'N/A' }}</div>
         </div>

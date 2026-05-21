@@ -187,6 +187,8 @@
                 <th>Email</th>
                 <th>Phone</th>
                 <th>Date</th>
+                <th>Status</th>
+                <th>Payment</th>
                 <th>Total</th>
                 <th>Actions</th>
             </tr>
@@ -199,6 +201,8 @@
                     <td>{{ order.customerEmail }}</td>
                     <td>{{ order.customerPhone }}</td>
                     <td>{{ order.orderDate|date('M d, Y H:i') }}</td>
+                    <td>{{ order.status }}</td>
+                    <td>{{ order.paymentMethod ?: '—' }}</td>
                     <td>₱{{ order.total }}</td>
                     <td class="table-actions">
                         <a href="{{ path('app_admin_order_show', {'id': order.id}) }}" class="btn btn-view icon-btn" title="View">

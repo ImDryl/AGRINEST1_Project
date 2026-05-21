@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Payment\OrderPaymentMethods;
 use App\Entity\Order;
 use App\Entity\OrderItem;
 use App\Entity\Product;
@@ -221,7 +222,7 @@ final class ApiCartService
     }
 
     /**
-     * @param array{customer_name?: string, customer_email?: string, customer_phone?: string} $formData
+     * @param array{customer_name?: string, customer_email?: string, customer_phone?: string, payment_method?: string} $formData
      *
      * @return array{success: bool, message: string, data?: array<string, mixed>, errors?: string[]}
      */
@@ -249,15 +250,23 @@ final class ApiCartService
             $errors[] = 'Please enter a valid email address.';
         }
 
+        $paymentKey = strtolower(trim((string) ($formData['payment_method'] ?? '')));
+        if ($paymentKey === '' || !OrderPaymentMethods::isValidKey($paymentKey)) {
+            $errors[] = 'Please select a valid payment method.';
+        }
+
         if ($errors !== []) {
             return ['success' => false, 'message' => 'Please fix the form errors.', 'errors' => $errors];
         }
+
+        $paymentLabel = OrderPaymentMethods::labelForKey($paymentKey);
 
         $order = new Order();
         $order->setCustomerName($customerName);
         $order->setCustomerEmail(mb_strtolower($customerEmail));
         $order->setCustomerPhone($customerPhone);
         $order->setStatus('Pending');
+        $order->setPaymentMethod($paymentLabel);
         $order->setOrderDate(new \DateTime());
         $order->setCreatedBy($user);
 
@@ -308,6 +317,8 @@ final class ApiCartService
                 'orderId' => $order->getId(),
                 'orderNumber' => $order->getOrderNumber(),
                 'total' => (float) $order->getTotal(),
+                'paymentMethod' => $paymentLabel,
+                'status' => $order->getStatus() ?? 'Pending',
             ],
         ];
     }

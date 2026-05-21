@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Order;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -15,5 +16,42 @@ class OrderRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Order::class);
     }
-}
 
+    /**
+     * @return Order[]
+     */
+    public function findForCustomer(User $user): array
+    {
+        $email = mb_strtolower(trim((string) $user->getEmail()));
+
+        return $this->createQueryBuilder('o')
+            ->leftJoin('o.orderItems', 'oi')
+            ->addSelect('oi')
+            ->leftJoin('oi.product', 'p')
+            ->addSelect('p')
+            ->where('o.createdBy = :user OR LOWER(o.customerEmail) = :email')
+            ->setParameter('user', $user)
+            ->setParameter('email', $email)
+            ->orderBy('o.orderDate', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findOneForCustomer(int $id, User $user): ?Order
+    {
+        $email = mb_strtolower(trim((string) $user->getEmail()));
+
+        return $this->createQueryBuilder('o')
+            ->leftJoin('o.orderItems', 'oi')
+            ->addSelect('oi')
+            ->leftJoin('oi.product', 'p')
+            ->addSelect('p')
+            ->where('o.id = :id')
+            ->andWhere('o.createdBy = :user OR LOWER(o.customerEmail) = :email')
+            ->setParameter('id', $id)
+            ->setParameter('user', $user)
+            ->setParameter('email', $email)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+}

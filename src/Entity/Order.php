@@ -44,6 +44,9 @@ class Order
     #[ORM\Column(length: 50)]
     private ?string $status = 'Pending';
 
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $paymentMethod = null;
+
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $total = '0.00';
 
@@ -137,6 +140,18 @@ class Order
     public function setStatus(string $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getPaymentMethod(): ?string
+    {
+        return $this->paymentMethod;
+    }
+
+    public function setPaymentMethod(?string $paymentMethod): static
+    {
+        $this->paymentMethod = $paymentMethod;
 
         return $this;
     }

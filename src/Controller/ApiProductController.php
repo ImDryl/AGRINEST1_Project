@@ -62,5 +62,29 @@ final class ApiProductController extends AbstractController
             'errors' => [],
         ]);
     }
+
+    #[Route('/products/{id}', name: 'api_products_show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function show(Product $product, Request $request): JsonResponse
+    {
+        $imageUrl = null;
+        if ($product->getImage()) {
+            $imageUrl = $request->getSchemeAndHttpHost() . '/uploads/images/' . $product->getImage();
+        }
+
+        return $this->json([
+            'success' => true,
+            'message' => 'Product fetched successfully.',
+            'data' => [
+                'id' => $product->getId(),
+                'name' => $product->getName(),
+                'description' => $product->getDescription(),
+                'price' => $product->getPrice() !== null ? (float) $product->getPrice() : null,
+                'quantity' => $product->getQuantity(),
+                'category' => $product->getCategory()?->getName(),
+                'imageUrl' => $imageUrl,
+            ],
+            'errors' => [],
+        ]);
+    }
 }
 
