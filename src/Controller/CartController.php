@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Order;
 use App\Entity\OrderItem;
 use App\Entity\Product;
+use App\Payment\OrderPaymentMethods;
 use App\Repository\ProductRepository;
 use App\Service\ActivityLogService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -251,6 +252,7 @@ class CartController extends AbstractController
             'customer_name' => (string) $request->request->get('customer_name', ''),
             'customer_email' => (string) $request->request->get('customer_email', (string) ($this->getUser()?->getUserIdentifier() ?? '')),
             'customer_phone' => (string) $request->request->get('customer_phone', ''),
+            'payment_method' => (string) $request->request->get('payment_method', ''),
         ];
         $errors = [];
 
@@ -273,12 +275,19 @@ class CartController extends AbstractController
                 $errors[] = 'Please enter a valid email address.';
             }
 
+            $paymentKey = strtolower(trim($formData['payment_method']));
+            $paymentLabel = OrderPaymentMethods::labelForKey($paymentKey);
+            if ($paymentLabel === null) {
+                $errors[] = 'Please select a valid payment method.';
+            }
+
             if ($errors === []) {
                 $order = new Order();
                 $order->setCustomerName(trim($formData['customer_name']));
                 $order->setCustomerEmail(mb_strtolower(trim($formData['customer_email'])));
                 $order->setCustomerPhone(trim($formData['customer_phone']));
                 $order->setStatus('Pending');
+                $order->setPaymentMethod($paymentLabel);
                 $order->setOrderDate(new \DateTime());
 
                 if ($this->getUser() instanceof \App\Entity\User) {
@@ -327,6 +336,7 @@ class CartController extends AbstractController
             'total' => $total,
             'formData' => $formData,
             'errors' => $errors,
+            'paymentMethods' => OrderPaymentMethods::apiItems(),
         ]);
     }
 
@@ -360,10 +370,13 @@ class CartController extends AbstractController
 
             $price = (float) $product->getPrice();
             $subtotal = $price * $quantity;
+            $availableStock = max(0, (int) $product->getQuantity());
             $items[] = [
                 'product' => $product,
                 'quantity' => $quantity,
                 'subtotal' => $subtotal,
+                'maxQuantity' => $quantity + $availableStock,
+                'availableStock' => $availableStock,
             ];
             $normalizedCart[$productId] = $quantity;
             $total += $subtotal;

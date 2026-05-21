@@ -5,99 +5,227 @@
 {% block body %}
 {% include 'includes/_navbar_public.html.twig' %}
 
-<div class="collection-page cart-page">
-    <div class="collection-hero">
-        <h1><i class="bi bi-cart3"></i> My Cart</h1>
-        <p>Review your selected items, adjust quantities, and proceed to checkout.</p>
+<div class="collection-page cart-page cart-index-page agrinest-flow-page">
+    <div class="checkout-hero cart-hero">
+        <div class="checkout-hero__text">
+            <p class="checkout-hero__eyebrow"><i class="bi bi-cart3"></i> Your shopping cart</p>
+            <h1>Review your items</h1>
+            <p>Adjust quantities, then proceed to checkout to enter details and choose a payment method.</p>
+        </div>
+        <ol class="checkout-steps" aria-label="Checkout progress">
+            <li class="checkout-steps__item is-active" aria-current="step">
+                <span class="checkout-steps__dot"><i class="bi bi-cart3"></i></span>
+                <span class="checkout-steps__label">Cart</span>
+            </li>
+            <li class="checkout-steps__item">
+                <span class="checkout-steps__dot"><i class="bi bi-credit-card"></i></span>
+                <span class="checkout-steps__label">Payment</span>
+            </li>
+            <li class="checkout-steps__item">
+                <span class="checkout-steps__dot"><i class="bi bi-check2"></i></span>
+                <span class="checkout-steps__label">Done</span>
+            </li>
+        </ol>
     </div>
 
-    <div class="card cart-main-card">
-        {% if items is empty %}
-            <div class="cart-empty-state">
-                <p class="cart-empty-title">Your cart is empty.</p>
-                <a href="{{ path('app_product_index') }}" class="collection-btn cart-btn cart-btn-success">
-                    <i class="bi bi-bag-heart"></i> Continue Shopping
-                </a>
+    {% for message in app.flashes('success') %}
+        <div class="cart-flash cart-flash--success" role="status"><i class="bi bi-check-circle-fill"></i> {{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('warning') %}
+        <div class="cart-flash cart-flash--warning" role="status"><i class="bi bi-exclamation-triangle-fill"></i> {{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="cart-flash cart-flash--error" role="alert"><i class="bi bi-x-circle-fill"></i> {{ message }}</div>
+    {% endfor %}
+
+    {% if items is empty %}
+        <div class="cart-empty-panel">
+            <div class="cart-empty-panel__icon" aria-hidden="true">
+                <i class="bi bi-cart-x"></i>
             </div>
-        {% else %}
-            <table class="styled-table">
-                <thead>
-                    <tr>
-                        <th>Product</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Subtotal</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in items %}
-                        <tr>
-                            <td>
-                                <div style="display:flex; align-items:center; gap:.75rem;">
+            <h2>Your cart is empty</h2>
+            <p>Browse our shop and add fresh poultry products to get started.</p>
+            <a href="{{ path('app_product_index') }}" class="checkout-btn checkout-btn--primary">
+                <i class="bi bi-bag-heart"></i> Continue shopping
+            </a>
+        </div>
+    {% else %}
+        {% set totalQty = 0 %}
+        {% for item in items %}
+            {% set totalQty = totalQty + item.quantity %}
+        {% endfor %}
+
+        <div class="cart-layout">
+            <section class="cart-items-panel">
+                <div class="checkout-panel">
+                    <div class="checkout-panel__head">
+                        <h2><i class="bi bi-basket"></i> Cart items</h2>
+                        <span class="checkout-panel__badge">{{ totalQty }} unit{{ totalQty == 1 ? '' : 's' }}</span>
+                    </div>
+
+                    <ul class="cart-line-list">
+                        {% for item in items %}
+                            <li class="cart-line">
+                                <a href="{{ path('app_product_show', {'id': item.product.id}) }}" class="cart-line__media">
                                     {% if item.product.image %}
-                                        <img
-                                            src="{{ asset('uploads/images/' ~ item.product.image) }}"
-                                            alt="{{ item.product.name }}"
-                                            style="width:56px; height:56px; object-fit:cover; border-radius:8px; border:1px solid #e5e7eb;"
-                                        >
+                                        <img src="{{ asset('uploads/images/' ~ item.product.image) }}" alt="{{ item.product.name }}">
                                     {% else %}
-                                        <div style="width:56px; height:56px; border-radius:8px; border:1px solid #e5e7eb; display:grid; place-items:center; color:#9ca3af; background:#f9fafb;">
-                                            <i class="bi bi-image"></i>
-                                        </div>
+                                        <span class="cart-line__placeholder"><i class="bi bi-image"></i></span>
                                     {% endif %}
-                                    <div>
-                                        <div style="font-weight:600;">{{ item.product.name }}</div>
-                                        <div style="font-size:.85rem; color:#6b7280;">In stock: {{ item.product.quantity }}</div>
+                                </a>
+
+                                <div class="cart-line__body">
+                                    <div class="cart-line__top">
+                                        <div>
+                                            <h3 class="cart-line__name">
+                                                <a href="{{ path('app_product_show', {'id': item.product.id}) }}">{{ item.product.name }}</a>
+                                            </h3>
+                                            {% if item.product.category %}
+                                                <span class="cart-line__category">{{ item.product.category.name }}</span>
+                                            {% endif %}
+                                        </div>
+                                        <form method="post" action="{{ path('app_cart_remove', {'id': item.product.id}) }}" class="cart-line__remove-form" onsubmit="return confirm('Remove this item from your cart?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('cart_remove_' ~ item.product.id) }}">
+                                            <button type="submit" class="cart-line__remove" title="Remove item" aria-label="Remove {{ item.product.name }}">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <div class="cart-line__meta">
+                                        <span class="cart-line__unit">₱{{ item.product.price|number_format(2, '.', ',') }} each</span>
+                                        {% if item.availableStock > 0 %}
+                                            <span class="cart-line__stock cart-line__stock--ok"><i class="bi bi-check-circle-fill"></i> {{ item.availableStock }} more available</span>
+                                        {% else %}
+                                            <span class="cart-line__stock cart-line__stock--low"><i class="bi bi-exclamation-circle"></i> Max quantity in cart</span>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="cart-line__footer">
+                                        <form method="post" action="{{ path('app_cart_update', {'id': item.product.id}) }}" class="cart-qty-stepper-form" data-max="{{ item.maxQuantity }}">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('cart_update_' ~ item.product.id) }}">
+                                            <span class="cart-qty-stepper__label">Quantity</span>
+                                            <div class="cart-qty-stepper">
+                                                <button type="button" class="cart-qty-stepper__btn" data-step="-1" aria-label="Decrease quantity">−</button>
+                                                <input
+                                                    type="number"
+                                                    min="1"
+                                                    max="{{ item.maxQuantity }}"
+                                                    name="quantity"
+                                                    value="{{ item.quantity }}"
+                                                    class="cart-qty-stepper__input"
+                                                    aria-label="Quantity for {{ item.product.name }}"
+                                                >
+                                                <button type="button" class="cart-qty-stepper__btn" data-step="1" aria-label="Increase quantity">+</button>
+                                            </div>
+                                        </form>
+                                        <div class="cart-line__subtotal">
+                                            <span>Subtotal</span>
+                                            <strong>₱{{ item.subtotal|number_format(2, '.', ',') }}</strong>
+                                        </div>
                                     </div>
                                 </div>
-                            </td>
-                            <td>₱{{ item.product.price|number_format(2, '.', ',') }}</td>
-                            <td style="min-width:160px;">
-                                <form method="post" action="{{ path('app_cart_update', {'id': item.product.id}) }}" class="cart-qty-form">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('cart_update_' ~ item.product.id) }}">
-                                    <input
-                                        type="number"
-                                        min="1"
-                                        max="{{ item.product.quantity }}"
-                                        name="quantity"
-                                        value="{{ item.quantity }}"
-                                        class="form-control"
-                                        style="max-width:85px;"
-                                        onchange="this.form.submit()"
-                                    >
-                                </form>
-                            </td>
-                            <td>₱{{ item.subtotal|number_format(2, '.', ',') }}</td>
-                            <td class="cart-row-action">
-                                <form method="post" action="{{ path('app_cart_remove', {'id': item.product.id}) }}" onsubmit="return confirm('Remove this item from your cart?');">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('cart_remove_' ~ item.product.id) }}">
-                                    <button type="submit" class="collection-btn cart-btn cart-btn-danger"><i class="bi bi-trash"></i> Remove</button>
-                                </form>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="3" style="text-align:right; font-weight:700;">Total:</td>
-                        <td colspan="2" style="font-weight:700;">₱{{ total|number_format(2, '.', ',') }}</td>
-                    </tr>
-                </tfoot>
-            </table>
-            <div class="cart-main-actions">
-                <div class="cart-actions">
-                    <form method="post" action="{{ path('app_cart_clear') }}" onsubmit="return confirm('Clear all cart items?');">
-                        <input type="hidden" name="_token" value="{{ csrf_token('cart_clear') }}">
-                        <button type="submit" class="collection-btn cart-btn cart-btn-danger"><i class="bi bi-x-circle"></i> Clear Cart</button>
-                    </form>
-                    <a href="{{ path('app_product_index') }}" class="collection-btn cart-btn cart-btn-secondary"><i class="bi bi-arrow-left"></i> Continue Shopping</a>
-                    <a href="{{ path('app_cart_checkout') }}" class="collection-btn cart-btn cart-btn-success"><i class="bi bi-credit-card"></i> Checkout</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                    <div class="cart-items-panel__foot">
+                        <form method="post" action="{{ path('app_cart_clear') }}" onsubmit="return confirm('Clear all cart items?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('cart_clear') }}">
+                            <button type="submit" class="cart-clear-link">
+                                <i class="bi bi-x-circle"></i> Clear entire cart
+                            </button>
+                        </form>
+                    </div>
                 </div>
+            </section>
+
+            <aside class="cart-sidebar">
+                <div class="checkout-panel checkout-panel--summary cart-sidebar-panel">
+                    <div class="checkout-panel__head">
+                        <h2><i class="bi bi-receipt-cutoff"></i> Order summary</h2>
+                    </div>
+
+                    <dl class="cart-sidebar-stats">
+                        <div>
+                            <dt>Products</dt>
+                            <dd>{{ items|length }}</dd>
+                        </div>
+                        <div>
+                            <dt>Total units</dt>
+                            <dd>{{ totalQty }}</dd>
+                        </div>
+                    </dl>
+
+                    <div class="checkout-summary-total cart-sidebar-total">
+                        <span>Estimated total</span>
+                        <strong>₱{{ total|number_format(2, '.', ',') }}</strong>
+                    </div>
+
+                    <p class="cart-sidebar-note">
+                        <i class="bi bi-info-circle"></i>
+                        Taxes and delivery fees are not included in this estimate.
+                    </p>
+
+                    <a href="{{ path('app_cart_checkout') }}" class="checkout-btn checkout-btn--primary cart-sidebar-cta">
+                        <i class="bi bi-credit-card"></i> Proceed to checkout
+                    </a>
+                    <a href="{{ path('app_product_index') }}" class="checkout-btn checkout-btn--ghost cart-sidebar-secondary">
+                        <i class="bi bi-arrow-left"></i> Continue shopping
+                    </a>
+                </div>
+
+                <div class="cart-trust-card">
+                    <i class="bi bi-shield-check"></i>
+                    <div>
+                        <strong>Secure checkout</strong>
+                        <span>Choose GCash, COD, or card at the next step (demo mode).</span>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <div class="cart-mobile-bar" aria-label="Quick checkout">
+            <div class="cart-mobile-bar__total">
+                <span>Total</span>
+                <strong>₱{{ total|number_format(2, '.', ',') }}</strong>
             </div>
-        {% endif %}
-    </div>
+            <a href="{{ path('app_cart_checkout') }}" class="checkout-btn checkout-btn--primary cart-mobile-bar__cta">
+                <i class="bi bi-credit-card"></i> Checkout
+            </a>
+        </div>
+    {% endif %}
 </div>
 
 {{ include('homepage/_footer.html.twig') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.cart-qty-stepper-form').forEach((form) => {
+            const max = parseInt(form.dataset.max || '999', 10);
+            const input = form.querySelector('.cart-qty-stepper__input');
+            if (!input) return;
+
+            const clamp = (value) => Math.min(max, Math.max(1, value));
+
+            form.querySelectorAll('[data-step]').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const step = parseInt(btn.dataset.step || '0', 10);
+                    const next = clamp((parseInt(input.value, 10) || 1) + step);
+                    if (next === parseInt(input.value, 10)) return;
+                    input.value = String(next);
+                    form.submit();
+                });
+            });
+
+            input.addEventListener('change', () => {
+                input.value = String(clamp(parseInt(input.value, 10) || 1));
+                form.submit();
+            });
+        });
+        });
+    </script>
 {% endblock %}
