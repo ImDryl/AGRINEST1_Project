@@ -17,6 +17,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[Route('/api')]
 class ApiRegistrationController extends AbstractController
 {
+    private const MOBILE_APP_CLIENT = 'manlupig-mobile';
+
     public function __construct(
         private EntityManagerInterface $entityManager,
         private UserPasswordHasherInterface $passwordHasher,
@@ -28,25 +30,27 @@ class ApiRegistrationController extends AbstractController
     #[Route('/register', name: 'api_register', methods: ['POST'])]
     public function register(Request $request): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
+        $data = json_decode($request->getContent(), true) ?? [];
 
-        // Validate required fields (Removed username)
-        if (!isset($data['email']) || !isset($data['password'])) {
+        $email = mb_strtolower(trim((string) ($data['email'] ?? '')));
+        $password = (string) ($data['password'] ?? '');
+
+        if ($email === '' || $password === '') {
             return $this->json(['success' => false, 'message' => 'Email and password are required'], 400);
         }
 
-        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return $this->json(['success' => false, 'message' => 'Invalid email address'], 400);
         }
 
-        if (strlen($data['password']) < 6) {
+        if (strlen($password) < 6) {
             return $this->json(['success' => false, 'message' => 'Password must be at least 6 characters long'], 400);
         }
 
         // Check if email already exists
         $existingEmail = $this->entityManager
             ->getRepository(User::class)
-            ->findOneBy(['email' => $data['email']]);
+            ->findOneBy(['email' => $email]);
 
         if ($existingEmail) {
             return $this->json(['success' => false, 'message' => 'Email already registered'], 409);
@@ -54,15 +58,22 @@ class ApiRegistrationController extends AbstractController
 
         // Create new user (Removed setUsername)
         $user = new User();
-        $user->setEmail($data['email']);
+        $user->setEmail($email);
 
-        $hashedPassword = $this->passwordHasher->hashPassword($user, $data['password']);
+        $hashedPassword = $this->passwordHasher->hashPassword($user, $password);
         $user->setPassword($hashedPassword);
         $user->setRoles(['ROLE_USER']);
 
-        $verificationToken = $this->emailVerificationService->generateVerificationToken();
-        $user->setVerificationToken($verificationToken);
-        $user->setIsVerified(false);
+        $isMobileApp = $request->headers->get('X-App-Client') === self::MOBILE_APP_CLIENT;
+
+        if ($isMobileApp) {
+            $user->setIsVerified(true);
+            $user->setVerificationToken(null);
+        } else {
+            $verificationToken = $this->emailVerificationService->generateVerificationToken();
+            $user->setVerificationToken($verificationToken);
+            $user->setIsVerified(false);
+        }
 
         $errors = $this->validator->validate($user);
         if (count($errors) > 0) {
@@ -76,25 +87,30 @@ class ApiRegistrationController extends AbstractController
         $this->entityManager->persist($user);
         $this->entityManager->flush();
         $this->activityLogService->log('Create', 'User', $user->getId(), json_encode([
-            'source' => 'API Register',
+            'source' => $isMobileApp ? 'API Register (Mobile App)' : 'API Register',
             'email' => $user->getEmail(),
+            'autoVerified' => $isMobileApp,
         ], JSON_PRETTY_PRINT));
 
-        $verificationUrl = $this->generateUrl(
-            'app_verify_email',
-            ['token' => $verificationToken],
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
+        if (!$isMobileApp) {
+            $verificationUrl = $this->generateUrl(
+                'app_verify_email',
+                ['token' => $user->getVerificationToken()],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
 
-        try {
-            $this->emailVerificationService->sendVerificationEmail($user, $verificationUrl);
-        } catch (\Exception $e) {
-            // Log error
+            try {
+                $this->emailVerificationService->sendVerificationEmail($user, $verificationUrl);
+            } catch (\Exception $e) {
+                // Log error
+            }
         }
 
         return $this->json([
             'success' => true,
-            'message' => 'Registration successful. Please check your email to verify your account.',
+            'message' => $isMobileApp
+                ? 'Registration successful. You can log in now.'
+                : 'Registration successful. Please check your email to verify your account.',
             'user' => [
                 'id' => $user->getId(),
                 'email' => $user->getEmail(),

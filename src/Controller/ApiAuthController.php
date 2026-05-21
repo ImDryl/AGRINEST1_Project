@@ -52,7 +52,11 @@ final class ApiAuthController extends AbstractController
             ], 403);
         }
 
-        if (!$user->isVerified()) {
+        $roles = $user->getRoles();
+        $isElevated = in_array('ROLE_ADMIN', $roles, true)
+            || in_array('ROLE_STAFF', $roles, true);
+
+        if (!$isElevated && !$user->isVerified()) {
             return $this->json([
                 'success' => false,
                 'message' => 'Please verify your email address before logging in.',
