@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\ActivityLogRepository;
+use App\Repository\StockLogRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
@@ -21,6 +22,7 @@ final class AdminDashboardController extends AbstractController
         private SupplierRepository $supplierRepository,
         private OrderRepository $orderRepository,
         private ActivityLogRepository $activityLogRepository,
+        private StockLogRepository $stockLogRepository,
     ) {
     }
 
@@ -61,6 +63,8 @@ final class AdminDashboardController extends AbstractController
             ->getQuery()
             ->getResult();
 
+        $recentStockLogs = $this->stockLogRepository->findRecent(10);
+
         return $this->render('admin/dashboard.html.twig', [
             'totalUsers' => $totalUsers,
             'totalStaff' => $totalStaff,
@@ -71,6 +75,7 @@ final class AdminDashboardController extends AbstractController
             'totalRevenue' => number_format($totalRevenue, 2, '.', ''),
             'uniqueCustomers' => $uniqueCustomers,
             'recentLogs' => $recentLogs,
+            'recentStockLogs' => $recentStockLogs,
         ]);
     }
 
@@ -100,6 +105,8 @@ final class AdminDashboardController extends AbstractController
         }
         $uniqueCustomers = count(array_unique(array_filter($customers)));
 
+        $recentStockLogs = $this->stockLogRepository->findRecent(10);
+
         return $this->render('admin/staff_dashboard.html.twig', [
             'totalProducts' => $totalProducts,
             'totalCategories' => $totalCategories,
@@ -107,6 +114,7 @@ final class AdminDashboardController extends AbstractController
             'totalOrders' => $totalOrders,
             'totalRevenue' => number_format($totalRevenue, 2, '.', ''),
             'uniqueCustomers' => $uniqueCustomers,
+            'recentStockLogs' => $recentStockLogs,
         ]);
     }
 }

@@ -6,7 +6,9 @@ use App\Entity\Order;
 use App\Entity\OrderItem;
 use App\Form\OrderType;
 use App\Repository\OrderRepository;
+use App\Entity\StockLog;
 use App\Service\ActivityLogService;
+use App\Service\StockLogService;
 use Symfony\Component\Form\FormError;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,7 +20,8 @@ use Symfony\Component\Routing\Attribute\Route;
 final class OrderController extends AbstractController
 {
     public function __construct(
-        private ActivityLogService $activityLogService
+        private ActivityLogService $activityLogService,
+        private StockLogService $stockLogService,
     ) {
     }
 
@@ -120,8 +123,20 @@ final class OrderController extends AbstractController
             foreach ($order->getOrderItems() as $item) {
                 $product = $item->getProduct();
                 if ($product) {
-                    $product->setQuantity($product->getQuantity() - $item->getQuantity());
+                    $previousQuantity = (int) $product->getQuantity();
+                    $newQuantity = $previousQuantity - (int) $item->getQuantity();
+                    $product->setQuantity($newQuantity);
                     $entityManager->persist($product);
+
+                    $this->stockLogService->logChange(
+                        $product,
+                        $previousQuantity,
+                        $newQuantity,
+                        StockLog::TYPE_ORDER,
+                        sprintf('Stock deducted for order %s', (string) $order->getOrderNumber()),
+                        null,
+                        false,
+                    );
                 }
             }
 

@@ -1,0 +1,12 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Stock Logs{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  {% include 'includes/inline/_stock_logs_table_js.html.twig' %}
+{% endblock %}
+
+{% block admin_content %}
+    {% include 'admin/stock_logs/_index_content.html.twig' %}
+{% endblock %}

@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Entity\Product;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
+use App\Entity\StockLog;
 use App\Service\ActivityLogService;
+use App\Service\StockLogService;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,7 +23,8 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 final class ProductController extends AbstractController
 {
     public function __construct(
-        private ActivityLogService $activityLogService
+        private ActivityLogService $activityLogService,
+        private StockLogService $stockLogService,
     ) {
     }
     #[Route(name: 'app_product_index', methods: ['GET'])]
@@ -97,6 +100,14 @@ final class ProductController extends AbstractController
             $entityManager->persist($product);
             $entityManager->flush();
 
+            $this->stockLogService->logChange(
+                $product,
+                0,
+                (int) $product->getQuantity(),
+                StockLog::TYPE_INITIAL,
+                'Product created with initial stock',
+            );
+
             // Log the action
             $this->activityLogService->logProductCreate($product);
 
@@ -161,6 +172,7 @@ final class ProductController extends AbstractController
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
+        $previousQuantity = $this->stockLogService->getOriginalQuantity($product);
         $imageFile = $form->get('image')->getData();
 
         if ($imageFile) {
@@ -191,6 +203,14 @@ final class ProductController extends AbstractController
         }
 
         $entityManager->flush();
+
+        $this->stockLogService->logChange(
+            $product,
+            $previousQuantity,
+            (int) $product->getQuantity(),
+            StockLog::TYPE_ADJUSTMENT,
+            'Product stock updated',
+        );
 
         // Log the action
         $this->activityLogService->logProductUpdate($product);

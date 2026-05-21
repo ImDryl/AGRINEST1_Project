@@ -67,6 +67,7 @@ security:
         # ---  EXISTING WEB RULES ---
         - { path: ^/connect/google, roles: PUBLIC_ACCESS }
         - { path: ^/admin/logs, roles: ROLE_ADMIN }
+        - { path: ^/admin/stock-logs, roles: [ROLE_STAFF, ROLE_ADMIN] }
         - { path: ^/admin/users, roles: ROLE_ADMIN }
         - { path: ^/admin/dashboard, roles: ROLE_ADMIN }
         - { path: ^/staff/dashboard, roles: ROLE_STAFF }

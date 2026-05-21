@@ -1,0 +1,151 @@
+<div class="page-header">
+    <h1><i class="bi bi-box-seam"></i> Stock Logs</h1>
+    <div class="header-info">
+        <span class="badge badge-info">Total: {{ totalLogs }}</span>
+    </div>
+</div>
+
+<p class="dashboard-subtitle" style="margin-top: -0.5rem; margin-bottom: 1.25rem;">
+    See when stock is added, adjusted, or deducted. Visible to administrators and staff.
+</p>
+
+<div class="card table-flat-card logs-list-card">
+    <div class="filter-section">
+        <form method="GET" action="{{ path('app_admin_stock_logs_index') }}" class="filter-form">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label for="product"><i class="bi bi-box"></i> Product</label>
+                    <input type="text" name="product" id="product" class="form-control" value="{{ product }}" placeholder="Search by name">
+                </div>
+
+                <div class="filter-group">
+                    <label for="email"><i class="bi bi-envelope"></i> Email</label>
+                    <select name="email" id="email" class="form-control">
+                        <option value="">All users</option>
+                        {% for u in allUserEmails %}
+                            <option value="{{ u }}" {{ email == u ? 'selected' : '' }}>{{ u }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="change_type"><i class="bi bi-arrow-left-right"></i> Change type</label>
+                    <select name="change_type" id="change_type" class="form-control">
+                        <option value="">All types</option>
+                        {% for key, label in allChangeTypes %}
+                            <option value="{{ key }}" {{ changeType == key ? 'selected' : '' }}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="date_from"><i class="bi bi-calendar-event"></i> Date from</label>
+                    <input type="date" name="date_from" id="date_from" class="form-control" value="{{ dateFrom }}">
+                </div>
+
+                <div class="filter-group">
+                    <label for="date_to"><i class="bi bi-calendar-check"></i> Date to</label>
+                    <input type="date" name="date_to" id="date_to" class="form-control" value="{{ dateTo }}">
+                </div>
+
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-funnel"></i> Filter
+                    </button>
+                    <a href="{{ path('app_admin_stock_logs_index') }}" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Clear
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="table-controls">
+        <div class="control-group">
+            <label for="stockLogsPageLength" style="font-weight:600;">Show</label>
+            <select id="stockLogsPageLength">
+                <option value="5">5</option>
+                <option value="10" selected>10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+            <span>entries</span>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table id="stockLogsTable" class="styled-table logs-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Product</th>
+                    <th>User</th>
+                    <th>Role</th>
+                    <th>Type</th>
+                    <th>Before</th>
+                    <th>After</th>
+                    <th>Change</th>
+                    <th>Note</th>
+                    <th>When</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                    <tr>
+                        <td>{{ log.id }}</td>
+                        <td>
+                            <strong>{{ log.productName }}</strong>
+                            {% if log.product %}
+                                <span class="text-muted" style="display:block;font-size:0.85rem;">#{{ log.product.id }}</span>
+                            {% endif %}
+                        </td>
+                        <td><span class="email-badge">{{ log.username }}</span></td>
+                        <td>
+                            {% if log.role == 'Admin' %}
+                                <span class="badge badge-admin">{{ log.role }}</span>
+                            {% elseif log.role == 'Staff' %}
+                                <span class="badge badge-staff">{{ log.role }}</span>
+                            {% else %}
+                                <span class="badge badge-user">{{ log.role }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if log.changeType == 'initial' %}
+                                <span class="action-badge action-create"><i class="bi bi-plus-circle"></i> Initial</span>
+                            {% elseif log.changeType == 'adjustment' %}
+                                <span class="action-badge action-update"><i class="bi bi-pencil"></i> Adjustment</span>
+                            {% elseif log.changeType == 'order' %}
+                                <span class="action-badge action-delete"><i class="bi bi-cart-dash"></i> Order</span>
+                            {% else %}
+                                <span class="action-badge">{{ log.changeType }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ log.previousQuantity }}</td>
+                        <td>{{ log.newQuantity }}</td>
+                        <td>
+                            {% if log.quantityChange > 0 %}
+                                <span class="badge" style="background:#16a34a;color:#fff;">+{{ log.quantityChange }}</span>
+                            {% elseif log.quantityChange < 0 %}
+                                <span class="badge" style="background:#dc2626;color:#fff;">{{ log.quantityChange }}</span>
+                            {% else %}
+                                <span class="text-muted">0</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ log.note ?? '—' }}</td>
+                        <td><span class="timestamp">{{ log.createdAt|date('Y-m-d H:i:s') }}</span></td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="10" class="no-data">No stock changes recorded yet.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-footer">
+        <div id="stockLogsPageInfo" class="page-info"></div>
+        <div id="stockLogsPagination"></div>
+    </div>
+</div>
