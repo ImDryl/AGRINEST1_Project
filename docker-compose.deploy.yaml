@@ -1,0 +1,74 @@
+# Full stack (app + MySQL) — like your friend's setup. Test locally before Railway.
+# Usage: copy .env.docker.example to .env.docker, fill values, then:
+#   docker compose -f docker-compose.deploy.yaml --env-file .env.docker up --build
+
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - agrinest_mysql_data:/var/lib/mysql
+    networks:
+      - agrinest_network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agrinest_app
+    restart: unless-stopped
+    volumes:
+      - app_var:/var/www/html/var
+    networks:
+      - agrinest_network
+    depends_on:
+      - mysql
+    environment:
+      APP_ENV: prod
+      APP_DEBUG: 0
+      APP_SECRET: ${APP_SECRET}
+      DATABASE_URL: "mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306/${MYSQL_DATABASE}?serverVersion=8.0&charset=utf8mb4"
+      JWT_PASSPHRASE: ${JWT_PASSPHRASE}
+      JWT_SECRET_KEY: "%kernel.project_dir%/config/jwt/private.pem"
+      JWT_PUBLIC_KEY: "%kernel.project_dir%/config/jwt/public.pem"
+      DEFAULT_URI: ${DEFAULT_URI:-http://127.0.0.1:8000}
+      CORS_ALLOW_ORIGIN: ${CORS_ALLOW_ORIGIN:-'^https?://.*$'}
+      GOOGLE_OAUTH_CLIENT_ID: ${GOOGLE_OAUTH_CLIENT_ID:-}
+      GOOGLE_OAUTH_CLIENT_SECRET: ${GOOGLE_OAUTH_CLIENT_SECRET:-}
+      GOOGLE_OAUTH_REDIRECT_URI: ${GOOGLE_OAUTH_REDIRECT_URI:-}
+      GOOGLE_MOBILE_WEB_CLIENT_ID: ${GOOGLE_MOBILE_WEB_CLIENT_ID:-}
+      MAILER_DSN: ${MAILER_DSN:-}
+      MAILER_SMTP_USER: ${MAILER_SMTP_USER:-}
+      MAILER_SMTP_PASSWORD: ${MAILER_SMTP_PASSWORD:-}
+      MAILER_FROM_EMAIL: ${MAILER_FROM_EMAIL:-}
+      MAILER_FROM_NAME: ${MAILER_FROM_NAME:-AGRINEST}
+    ports:
+      - "${APP_PORT:-8000}:8080"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: ${MYSQL_USER}
+      PMA_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${PMA_PORT:-8082}:80"
+    depends_on:
+      - mysql
+    networks:
+      - agrinest_network
+
+volumes:
+  agrinest_mysql_data:
+  app_var:
+
+networks:
+  agrinest_network:
